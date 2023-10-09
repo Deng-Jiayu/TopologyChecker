@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/topologychecker/" >
+        <file>topologychecker.png</file>
+    </qresource>
+</RCC>
