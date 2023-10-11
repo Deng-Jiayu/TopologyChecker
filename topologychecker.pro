@@ -19,15 +19,24 @@ include( $$SDK_PATH/include/qgisconfig.pri )
 include( $$SDK_PATH/include/translations.pri )
 
 HEADERS += \
-    topologychecker.h \
-    topologycheckergui.h
+    checkdock.h \
+    checkset.h \
+    resulttab.h \
+    setuptab.h \
+    topologychecker.h
 
 SOURCES += \
-    topologychecker.cpp \
-    topologycheckergui.cpp
+    checkdock.cpp \
+    checkset.cpp \
+    resulttab.cpp \
+    setuptab.cpp \
+    topologychecker.cpp
      
 RESOURCES += \
     topologychecker.qrc
 
 FORMS += \
+    checkdock.ui \
+    resulttab.ui \
+    setuptab.ui \
     topologycheckerguibase.ui

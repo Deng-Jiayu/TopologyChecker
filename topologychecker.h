@@ -40,6 +40,7 @@
 
 //QGIS includes
 #include "qgisplugin.h"
+#include "checkdock.h"
 
 //forward declarations
 class QAction;
@@ -95,11 +96,8 @@ class TopologyChecker: public QObject, public QgisPlugin
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
     QAction * mQActionPointer;
-    ////////////////////////////////////////////////////////////////////
-    //
-    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
-    //
-    ////////////////////////////////////////////////////////////////////
+
+    CheckDock *mDock = nullptr;
 };
 
 #endif //TopologyChecker_H

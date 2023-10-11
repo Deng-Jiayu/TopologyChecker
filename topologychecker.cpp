@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   topologychecker.cpp
   QGIS topology checker
   -------------------
@@ -24,7 +24,6 @@
 #include "qgsguiutils.h"
 
 #include "topologychecker.h"
-#include "topologycheckergui.h"
 
 //
 // Qt Related Includes
@@ -37,11 +36,10 @@
 #include <QSettings>
 #include <QDir>
 
-
-static const QString sName = QObject::tr( "Topology checker" );
-static const QString sDescription = QObject::tr( "QGIS topology checker" );
-static const QString sCategory = QObject::tr( "vector" );
-static const QString sPluginVersion = QObject::tr( "Version 0.1" );
+static const QString sName = QObject::tr("Topology checker");
+static const QString sDescription = QObject::tr("QGIS topology checker");
+static const QString sCategory = QObject::tr("vector");
+static const QString sPluginVersion = QObject::tr("Version 0.1");
 static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/topologychecker/topologychecker.png";
 
@@ -56,15 +54,13 @@ static const QString sPluginIcon = ":/topologychecker/topologychecker.png";
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-TopologyChecker::TopologyChecker( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+TopologyChecker::TopologyChecker(QgisInterface *theQgisInterface) : QgisPlugin(sName, sDescription, sCategory, sPluginVersion, sPluginType),
+                                                                    mQGisIface(theQgisInterface)
 {
 }
 
 TopologyChecker::~TopologyChecker()
 {
-
 }
 
 /*
@@ -75,21 +71,20 @@ void TopologyChecker::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/topologychecker/topologychecker.png" ), tr( "Topology checker" ), this );
-  mQActionPointer->setObjectName( "mQActionPointer" );
+  mQActionPointer = new QAction(QIcon(":/topologychecker/topologychecker.png"), tr("Topology checker"), this);
+  mQActionPointer->setObjectName("mQActionPointer");
   // Set the what's this text
-  mQActionPointer->setWhatsThis( tr( "QGIS topology checker" ) );
+  mQActionPointer->setWhatsThis(tr("QGIS topology checker"));
   // Connect the action to the run
-  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
+  connect(mQActionPointer, SIGNAL(triggered()), this, SLOT(run()));
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToMenu( tr( "&Topology checker" ), mQActionPointer );
-
+  mQGisIface->addToolBarIcon(mQActionPointer);
+  mQGisIface->addPluginToMenu(tr("&Topology checker"), mQActionPointer);
 }
-//method defined in interface
+// method defined in interface
 void TopologyChecker::help()
 {
-  //implement me!
+  // implement me!
 }
 
 // Slot called when the menu item is triggered
@@ -98,21 +93,28 @@ void TopologyChecker::help()
 // not be enough
 void TopologyChecker::run()
 {
-  TopologyCheckerGui *myPluginGui = new TopologyCheckerGui( mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
-  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
+  //  TopologyCheckerGui *myPluginGui = new TopologyCheckerGui( mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
+  //  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
-  myPluginGui->show();
+  //  myPluginGui->show();
+
+  if (mDock == nullptr)
+  {
+    mDock = new CheckDock(mQGisIface, mQGisIface->mainWindow());
+    mDock->setWindowTitle(QStringLiteral("数据检查"));
+    mQGisIface->addDockWidget(Qt::RightDockWidgetArea, mDock);
+  }
+  mDock->show();
 }
 
 // Unload the plugin by cleaning up the GUI
 void TopologyChecker::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( "&Topology checker", mQActionPointer );
-  mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->removePluginMenu("&Topology checker", mQActionPointer);
+  mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -129,48 +131,48 @@ void TopologyChecker::unload()
 QTranslator gTranslator;
 void loadTranslator()
 {
-    if( !gTranslator.isEmpty() )
-        return;
+  if (!gTranslator.isEmpty())
+    return;
 
-    QSettings mySettings;
-    QString i18nPath = QApplication::applicationDirPath() + QDir::separator() + "i18n";
-    QString myUserLocale = mySettings.value( "locale/userLocale", "" ).toString();
-    bool myLocaleOverrideFlag = mySettings.value( "locale/overrideFlag", false ).toBool();
-    QString myTranslationCode;
-    if ( !myTranslationCode.isNull() && !myTranslationCode.isEmpty() )
+  QSettings mySettings;
+  QString i18nPath = QApplication::applicationDirPath() + QDir::separator() + "i18n";
+  QString myUserLocale = mySettings.value("locale/userLocale", "").toString();
+  bool myLocaleOverrideFlag = mySettings.value("locale/overrideFlag", false).toBool();
+  QString myTranslationCode;
+  if (!myTranslationCode.isNull() && !myTranslationCode.isEmpty())
+  {
+    mySettings.setValue("locale/userLocale", myTranslationCode);
+  }
+  else
+  {
+    if (!myLocaleOverrideFlag || myUserLocale.isEmpty())
     {
-        mySettings.setValue( "locale/userLocale", myTranslationCode );
+      myTranslationCode = QLocale::system().name();
+      mySettings.setValue("locale/userLocale", myTranslationCode);
     }
     else
     {
-        if ( !myLocaleOverrideFlag || myUserLocale.isEmpty() )
-        {
-            myTranslationCode = QLocale::system().name();
-            mySettings.setValue( "locale/userLocale", myTranslationCode );
-        }
-        else
-        {
-            myTranslationCode = myUserLocale;
-        }
+      myTranslationCode = myUserLocale;
     }
+  }
 
-    if ( myTranslationCode != "C" )
+  if (myTranslationCode != "C")
+  {
+    if (gTranslator.load(QString("TopologyChecker_") + myTranslationCode, i18nPath))
     {
-        if ( gTranslator.load( QString( "TopologyChecker_" ) + myTranslationCode, i18nPath ) )
-        {
-            QApplication::installTranslator( &gTranslator );
-        }
-        else
-        {
-            qWarning( "loading of TopologyChecker translation failed [%s]", QString( "%1/TopologyChecker_%2" ).arg( i18nPath ).arg( myTranslationCode ).toLocal8Bit().constData() );
-        }
+      QApplication::installTranslator(&gTranslator);
     }
+    else
+    {
+      qWarning("loading of TopologyChecker translation failed [%s]", QString("%1/TopologyChecker_%2").arg(i18nPath).arg(myTranslationCode).toLocal8Bit().constData());
+    }
+  }
 }
 
 void unloadTranslator()
 {
-    if( !gTranslator.isEmpty() )
-        QApplication::removeTranslator( &gTranslator );
+  if (!gTranslator.isEmpty())
+    QApplication::removeTranslator(&gTranslator);
 }
 //////////////////////////////////////////////////////////////
 
@@ -180,10 +182,10 @@ void unloadTranslator()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory(QgisInterface *theQgisInterfacePointer)
 {
   loadTranslator();
-  return new TopologyChecker( theQgisInterfacePointer );
+  return new TopologyChecker(theQgisInterfacePointer);
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -222,7 +224,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload(QgisPlugin *thePluginPointer)
 {
   delete thePluginPointer;
   unloadTranslator();
