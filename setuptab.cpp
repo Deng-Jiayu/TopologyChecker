@@ -15,12 +15,14 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
     initUi();
     connect(ui->btnSave, &QPushButton::clicked, this, &SetupTab::save);
     connect(ui->btnRead, &QPushButton::clicked, this, &SetupTab::read);
+
 }
 
 SetupTab::~SetupTab()
 {
     delete ui;
 }
+
 
 void SetupTab::initLists()
 {
@@ -126,6 +128,9 @@ void SetupTab::initUi()
 
     if(curList == nullptr) return;
 
+    this->groupBoxs.clear();
+    this->btns.clear();
+
     if (ui->widgetInputs)
         delete ui->widgetInputs;
     ui->widgetInputs = new QWidget(this);
@@ -139,8 +144,9 @@ void SetupTab::initUi()
 
     for (int i = 0; i < curList->groups.size(); ++i)
     {
-        QgsCollapsibleGroupBox *groupBox;
-        groupBox = new QgsCollapsibleGroupBox(curList->groups[i].name, ui->widgetInputs);
+        CollapsibleGroupBox *groupBox;
+        groupBox = new CollapsibleGroupBox(curList->groups[i].name, ui->widgetInputs);
+
         groupBox->setObjectName(QString::fromUtf8("groupBoxGeometryProperties"));
         groupBox->setProperty("flat", QVariant(true));
 
@@ -161,10 +167,18 @@ void SetupTab::initUi()
             btn->setText(curList->groups[i].items[j].name);
 
             verticalLayout_2->addWidget(btn);
+            this->btns.push_back(btn);
         }
 
         verticalLayout->addWidget(groupBox);
+        this->groupBoxs.push_back(groupBox);
     }
+    initConnection();
+}
+
+void SetupTab::initConnection()
+{
+
 }
 
 
@@ -219,6 +233,15 @@ void SetupTab::save()
 
 void SetupTab::read()
 {
+    for(int i = 0; i<btns.size();++i){
+        qDebug()<<btns[i]->pos();
+        qDebug()<<btns[i]->text();
+    }
+    for(int i = 0;i<groupBoxs.size();++i){
+        qDebug()<<groupBoxs[i]->pos();
+        qDebug()<<groupBoxs[i]->title();
+    }
+
     QString fileName = QFileDialog::getOpenFileName(this, QStringLiteral("选择文件"), "./", "Json(*.json)");
 
     QFile file(fileName);

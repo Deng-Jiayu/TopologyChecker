@@ -21,6 +21,8 @@ include( $$SDK_PATH/include/translations.pri )
 HEADERS += \
     checkdock.h \
     checkset.h \
+    collapsiblegroupbox.h \
+    pushbutton.h \
     resulttab.h \
     setuptab.h \
     topologychecker.h
@@ -28,6 +30,8 @@ HEADERS += \
 SOURCES += \
     checkdock.cpp \
     checkset.cpp \
+    collapsiblegroupbox.cpp \
+    pushbutton.cpp \
     resulttab.cpp \
     setuptab.cpp \
     topologychecker.cpp

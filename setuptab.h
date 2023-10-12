@@ -5,6 +5,7 @@
 #include <qgisinterface.h>
 #include <QPushButton>
 #include <QMutex>
+#include "collapsiblegroupbox.h"
 #include "checkset.h"
 
 namespace Ui {
@@ -28,8 +29,12 @@ private:
     vector<CheckList> mlists;
     QMap<QPushButton *, CheckItem *> btnToCheck;
 
+    vector<CollapsibleGroupBox*> groupBoxs;
+    vector<QPushButton*> btns;
+
     void initLists();
     void initUi();
+    void initConnection();
     void save();
     void read();
 };
