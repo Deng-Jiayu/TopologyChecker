@@ -9,11 +9,27 @@ class CollapsibleGroupBox : public QgsCollapsibleGroupBox
 
 public:
     CollapsibleGroupBox(const QString &title,QWidget *parent = nullptr);
+    ~CollapsibleGroupBox();
 
-protected:
-    void mouseReleaseEvent(QMouseEvent *event) override;
+signals:
+    void rename();
+    void remove();
+    void addGroup();
+    void addItem();
+    void runAll();
+
+private:
+    QMenu *menu;
+
+    QAction *acRemove;
+    QAction *acRename;
+    QAction *acAddGroup;
+    QAction *acAddItem;
+    QAction *acRunAll;
+
+private slots:
+    void ShowcustomContextMenu();
 
 };
-
 
 #endif // COLLAPSIBLEGROUPBOX_H

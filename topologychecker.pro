@@ -25,7 +25,8 @@ HEADERS += \
     pushbutton.h \
     resulttab.h \
     setuptab.h \
-    topologychecker.h
+    topologychecker.h \
+    widget.h
 
 SOURCES += \
     checkdock.cpp \
@@ -34,7 +35,8 @@ SOURCES += \
     pushbutton.cpp \
     resulttab.cpp \
     setuptab.cpp \
-    topologychecker.cpp
+    topologychecker.cpp \
+    widget.cpp
      
 RESOURCES += \
     topologychecker.qrc

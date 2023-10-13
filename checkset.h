@@ -2,7 +2,7 @@
 
 #include <QString>
 #include <qgsvectorlayer.h>
-#include <vector>
+#include <QVector>>
 using namespace std;
 
 class CheckSet
@@ -31,9 +31,9 @@ public:
 
     QString name;
     QString description;
-    vector<QgsVectorLayer *> layersA;
-    vector<QgsVectorLayer *> layersB;
-    vector<QgsVectorLayer *> excludedLayers;
+    QVector<QgsVectorLayer *> layersA;
+    QVector<QgsVectorLayer *> layersB;
+    QVector<QgsVectorLayer *> excludedLayers;
     double angle = 0.00;
     double upperLimit = 0.00;
     double lowerLimit = 0.00;
@@ -50,7 +50,7 @@ class CheckItem
 
     QString name;
     QString description;
-    vector<CheckSet> sets;
+    QVector<CheckSet> sets;
 };
 
 class CheckGroup
@@ -60,7 +60,7 @@ public:
     CheckGroup(QString name) : name(name) {}
 
     QString name;
-    vector<CheckItem> items;
+    QVector<CheckItem> items;
 };
 
 class CheckList
@@ -70,5 +70,5 @@ public:
     CheckList(QString name) : name(name) {}
 
     QString name;
-    vector<CheckGroup> groups;
+    QVector<CheckGroup> groups;
 };

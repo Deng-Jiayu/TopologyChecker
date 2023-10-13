@@ -22,7 +22,7 @@
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="widgetInputs">
+     <widget class="Widget" name="widgetInputs">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -31,6 +31,7 @@
         <height>462</height>
        </rect>
       </property>
+      <layout class="QGridLayout" name="gridLayout_3"/>
      </widget>
     </widget>
    </item>
@@ -68,6 +69,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Widget</class>
+   <extends>QWidget</extends>
+   <header>widget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

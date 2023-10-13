@@ -1,8 +1,11 @@
 ﻿#include "setuptab.h"
 #include "ui_setuptab.h"
 
-#include <qgscollapsiblegroupbox.h>
+#include "widget.h"
+
 #include <QFileDialog>
+#include <QLineEdit>
+#include <QInputDialog>
 #include <QJsonObject>
 #include <QJsonArray>
 
@@ -10,11 +13,14 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
     : QWidget(parent), ui(new Ui::SetupTab), mIface(iface), mCheckDock(checkDock)
 {
     ui->setupUi(this);
+    connect(ui->widgetInputs, &Widget::addGroup, this, &SetupTab::addGroup);
 
     //initLists();
     initUi();
     connect(ui->btnSave, &QPushButton::clicked, this, &SetupTab::save);
     connect(ui->btnRead, &QPushButton::clicked, this, &SetupTab::read);
+    connect(ui->btnCreateList, &QPushButton::clicked, this, &SetupTab::createList);
+    connect(ui->comboBox, &QComboBox::currentTextChanged, this, &SetupTab::initUi);
 
 }
 
@@ -133,9 +139,9 @@ void SetupTab::initUi()
 
     if (ui->widgetInputs)
         delete ui->widgetInputs;
-    ui->widgetInputs = new QWidget(this);
+    ui->widgetInputs = new Widget(this);
+    connect(ui->widgetInputs, &Widget::addGroup, this, &SetupTab::addGroup);
     ui->widgetInputs->setObjectName(QString::fromUtf8("widgetInputs"));
-    ui->widgetInputs->setGeometry(QRect(0, 0, 800, 600));
     ui->scrollArea->setWidget(ui->widgetInputs);
 
     QVBoxLayout *verticalLayout;
@@ -158,7 +164,8 @@ void SetupTab::initUi()
 
         for (int j = 0; j < curList->groups[i].items.size(); ++j)
         {
-            QPushButton *btn = new QPushButton(groupBox);
+            PushButton *btn = new PushButton(groupBox);
+
 
             btnToCheck[btn] = &curList->groups[i].items[j];
 
@@ -287,4 +294,44 @@ void SetupTab::read()
 
     ui->comboBox->addItem(mlists.back().name);
     initUi();
+}
+
+void SetupTab::createList()
+{
+    QString dlgTitle = QStringLiteral("新建方案");
+    QString txtLabel = QStringLiteral("请输入检查方案名");
+    QLineEdit::EchoMode echoMode = QLineEdit::Normal;
+    bool ok = false;
+    QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, QString(), &ok);
+    if (!ok || text.isEmpty())
+        return;
+    CheckList newList(text);
+    int i = mlists.size();
+    mlists.push_back(newList);
+    ui->comboBox->addItem(mlists[i].name);
+    ui->comboBox->setCurrentIndex(i);
+}
+
+void SetupTab::createGroup()
+{
+    QString dlgTitle = QStringLiteral("新建方案");
+    QString txtLabel = QStringLiteral("请输入检查方案名");
+    QLineEdit::EchoMode echoMode = QLineEdit::Normal;
+    bool ok = false;
+    QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, QString(), &ok);
+    if (!ok || text.isEmpty())
+        return;
+}
+
+void SetupTab::addGroup()
+{
+    qDebug() << "SetupTab::addGroup()";
+    qDebug() << &typeid(*sender());
+    qDebug() << &typeid(Widget);
+    qDebug() << mlists.size();
+    qDebug() << (curList == nullptr);
+    if (curList == nullptr) {
+        createList();
+        createGroup();
+    }
 }

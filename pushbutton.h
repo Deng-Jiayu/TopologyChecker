@@ -14,21 +14,23 @@ signals:
     void runSelected();
     void rename();
     void remove();
-    void add();
+    void addGroup();
+    void addItem();
     void runAll();
-
-protected:
-    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     QMenu *menu;
 
     QAction *acRemove;
-    QAction *acAdd;
+    QAction *acAddGroup;
+    QAction *acAddItem;
     QAction *acRename;
     QAction *acRun;
     QAction *acRunSelected;
     QAction *acRunAll;
+
+private slots:
+    void ShowcustomContextMenu();
 };
 
 #endif // PUSHBUTTON_H

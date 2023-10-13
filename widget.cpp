@@ -1,0 +1,19 @@
+#include "widget.h"
+#include <QMouseEvent>
+#include <QDebug>
+
+Widget::Widget(QWidget *parent) : QWidget(parent)
+{
+    menu = new QMenu(this);
+    acAddGroup = menu->addAction(QStringLiteral("新建检查组"));
+
+    connect(acAddGroup, &QAction::triggered, this, &Widget::addGroup);
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this,&Widget::customContextMenuRequested,this,&Widget::ShowcustomContextMenu);
+}
+
+void Widget::ShowcustomContextMenu()
+{
+    //qDebug()<<"Widget";
+    menu->exec(QCursor::pos());
+}
