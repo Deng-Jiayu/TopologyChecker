@@ -39,6 +39,7 @@ private:
     void save();
     void read();
     void createList();
+    void deleteList();
     void createGroup();
 
 private slots:

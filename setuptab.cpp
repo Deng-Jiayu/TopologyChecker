@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QJsonObject>
 #include <QJsonArray>
 
@@ -20,6 +21,7 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
     connect(ui->btnSave, &QPushButton::clicked, this, &SetupTab::save);
     connect(ui->btnRead, &QPushButton::clicked, this, &SetupTab::read);
     connect(ui->btnCreateList, &QPushButton::clicked, this, &SetupTab::createList);
+    connect(ui->btnDeleteList, &QPushButton::clicked, this, &SetupTab::deleteList);
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, &SetupTab::initUi);
 
 }
@@ -124,6 +126,7 @@ void SetupTab::initLists()
 
 void SetupTab::initUi()
 {
+    curList = nullptr;
     for (int i = 0; i < mlists.size(); ++i)
     {
         if (mlists[i].name == ui->comboBox->currentText())
@@ -131,8 +134,6 @@ void SetupTab::initUi()
             curList = &mlists[i];
         }
     }
-
-    if(curList == nullptr) return;
 
     this->groupBoxs.clear();
     this->btns.clear();
@@ -147,6 +148,8 @@ void SetupTab::initUi()
     QVBoxLayout *verticalLayout;
     verticalLayout = new QVBoxLayout(ui->widgetInputs);
     verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+
+    if(curList == nullptr) return;
 
     for (int i = 0; i < curList->groups.size(); ++i)
     {
@@ -166,7 +169,6 @@ void SetupTab::initUi()
         {
             PushButton *btn = new PushButton(groupBox);
 
-
             btnToCheck[btn] = &curList->groups[i].items[j];
 
             btn->setStyleSheet("text-align : left;");
@@ -185,7 +187,15 @@ void SetupTab::initUi()
 
 void SetupTab::initConnection()
 {
+    for (auto it = btnToCheck.begin(); it != btnToCheck.end(); ) {
+        if (it.key()) {
 
+            ++it;
+        } else {
+            it = btnToCheck.erase(it);
+        }
+
+    }
 }
 
 
@@ -290,10 +300,10 @@ void SetupTab::read()
 
     list.name  = QFileInfo(fileName).completeBaseName();
 
-    this->mlists.push_back(list);
-
-    ui->comboBox->addItem(mlists.back().name);
-    initUi();
+    int i = mlists.size();
+    mlists.push_back(list);
+    ui->comboBox->addItem(mlists[i].name);
+    ui->comboBox->setCurrentIndex(i);
 }
 
 void SetupTab::createList()
@@ -312,15 +322,24 @@ void SetupTab::createList()
     ui->comboBox->setCurrentIndex(i);
 }
 
+void SetupTab::deleteList()
+{
+    int i = ui->comboBox->currentIndex();
+    mlists.remove(i);
+    ui->comboBox->removeItem(i);
+}
+
 void SetupTab::createGroup()
 {
-    QString dlgTitle = QStringLiteral("新建方案");
-    QString txtLabel = QStringLiteral("请输入检查方案名");
+    QString dlgTitle = QStringLiteral("新建组");
+    QString txtLabel = QStringLiteral("请输入检查组名");
     QLineEdit::EchoMode echoMode = QLineEdit::Normal;
     bool ok = false;
     QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, QString(), &ok);
     if (!ok || text.isEmpty())
         return;
+    curList->groups.push_back(CheckGroup(text));
+    initUi();
 }
 
 void SetupTab::addGroup()
@@ -329,9 +348,9 @@ void SetupTab::addGroup()
     qDebug() << &typeid(*sender());
     qDebug() << &typeid(Widget);
     qDebug() << mlists.size();
-    qDebug() << (curList == nullptr);
     if (curList == nullptr) {
-        createList();
-        createGroup();
+        QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("请先新建方案"));
+        return;
     }
+    createGroup();
 }
