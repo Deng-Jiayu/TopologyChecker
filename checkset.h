@@ -46,11 +46,20 @@ class CheckItem
  public:
     CheckItem() = default;
     CheckItem(QString name) : name(name) {}
-    CheckItem(QString name, QString description) : name(name), description(description) {}
 
     QString name;
-    QString description;
     QVector<CheckSet> sets;
+
+    QString getDescription() {
+        QString ans;
+        for (auto &it : as_const(sets)) {
+            ans += it.name;
+            ans += ", ";
+        }
+        if(!ans.isEmpty())
+            ans.remove(ans.length() - 2, 2);
+        return ans;
+    }
 };
 
 class CheckGroup

@@ -28,7 +28,8 @@ private:
 
     CheckList *curList = nullptr;
     QVector<CheckList> mlists;
-    QMap<QPushButton *, CheckItem *> btnToCheck;
+    QMap<CollapsibleGroupBox *, CheckGroup *> boxToGroup;
+    QMap<PushButton *, CheckItem *> btnToCheck;
 
     QVector<CollapsibleGroupBox*> groupBoxs;
     QVector<PushButton*> btns;
@@ -40,10 +41,12 @@ private:
     void read();
     void createList();
     void deleteList();
-    void createGroup();
 
 private slots:
     void addGroup();
+    void addItem();
+    void deleteGroup();
+    void rename();
 };
 
 #endif // SETUPTAB_H

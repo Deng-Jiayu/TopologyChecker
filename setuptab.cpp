@@ -16,14 +16,12 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
     ui->setupUi(this);
     connect(ui->widgetInputs, &Widget::addGroup, this, &SetupTab::addGroup);
 
-    //initLists();
     initUi();
     connect(ui->btnSave, &QPushButton::clicked, this, &SetupTab::save);
     connect(ui->btnRead, &QPushButton::clicked, this, &SetupTab::read);
     connect(ui->btnCreateList, &QPushButton::clicked, this, &SetupTab::createList);
     connect(ui->btnDeleteList, &QPushButton::clicked, this, &SetupTab::deleteList);
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, &SetupTab::initUi);
-
 }
 
 SetupTab::~SetupTab()
@@ -34,16 +32,16 @@ SetupTab::~SetupTab()
 
 void SetupTab::initLists()
 {
-    CheckSet pointOnLineCheckSet(QStringLiteral("点必须在线上	"),QStringLiteral("点必须在线对象上，包括在线内、线节点和线端点上，但是不能在线外。"));
+    CheckSet pointOnLineCheckSet(QStringLiteral("点必须在线上"),QStringLiteral("点必须在线对象上，包括在线内、线节点和线端点上，但是不能在线外。"));
     CheckSet pointOnEndpointCheckSet(QStringLiteral("点必须被线端点覆盖"),QStringLiteral("点只能在线对象的端点上，而不能在线的节点上、线内其它位置和线外。"));
     CheckSet pointOnLineNodeCheckSet(QStringLiteral("点必须被线节点覆盖"),QStringLiteral("点只能在线对象的节点上，而不能在线的端点上、线内其它位置和线外。"));
     CheckSet pointDuplicateCheckSet(QStringLiteral("无重复点"),QStringLiteral("检查是否存在重复的点对象。"));
 
-    CheckItem pointLineItem(QStringLiteral("点线矛盾检查"),QStringLiteral("检查点对象与线对象的位置关系"));
+    CheckItem pointLineItem(QStringLiteral("点线矛盾检查"));
     pointLineItem.sets.push_back(pointOnLineCheckSet);
     pointLineItem.sets.push_back(pointOnEndpointCheckSet);
     pointLineItem.sets.push_back(pointOnLineNodeCheckSet);
-    CheckItem duplicateNodeItem(QStringLiteral("无重复点"),QStringLiteral("是否存在重复的点对象"));
+    CheckItem duplicateNodeItem(QStringLiteral("无重复点"));
     duplicateNodeItem.sets.push_back(pointDuplicateCheckSet);
 
     CheckGroup pointGroup(QStringLiteral("点拓扑检查"));
@@ -63,19 +61,19 @@ void SetupTab::initLists()
     CheckSet lineCoveredByLineCheckSet(QStringLiteral("线被多条线完全覆盖"),QStringLiteral("检查线数据集中是否存在没有被参考线数据集的一条或多条线覆盖的线对象。"));
     CheckSet lineDuplicateCheckSet(QStringLiteral("线与线不重复"),QStringLiteral("检查是否存在重复的线对象。"));
 
-    CheckItem turnbackItem(QStringLiteral("折角检查"),QStringLiteral("检查线对象/面边界折角"));
+    CheckItem turnbackItem(QStringLiteral("折角检查"));
     turnbackItem.sets.push_back(turnbackCheckSet);
     turnbackItem.sets.push_back(angleCheckSet);
-    CheckItem lineIntersectionItem(QStringLiteral("线相交"),QStringLiteral("检查线对象是否相交"));
+    CheckItem lineIntersectionItem(QStringLiteral("线相交"));
     lineIntersectionItem.sets.push_back(lineIntersectionCheckSet);
     lineIntersectionItem.sets.push_back(lineLayerIntersectionCheckSet);
     lineIntersectionItem.sets.push_back(lineSelfIntersectionCheckSet);
-    CheckItem lineOverlapItem(QStringLiteral("线重叠"),QStringLiteral("检查线对象是否重叠/重复"));
+    CheckItem lineOverlapItem(QStringLiteral("线重叠"));
     lineOverlapItem.sets.push_back(lineSelfOverlapCheckSet);
     lineOverlapItem.sets.push_back(lineOverlapCheckSet);
     lineOverlapItem.sets.push_back(lineLayerOverlapCheckSet);
     lineOverlapItem.sets.push_back(lineDuplicateCheckSet);
-    CheckItem lineCoveredByItem(QStringLiteral("线被覆盖"),QStringLiteral("检查线对象是否被覆盖"));
+    CheckItem lineCoveredByItem(QStringLiteral("线被覆盖"));
     lineCoveredByItem.sets.push_back(lineCoveredByBoundaryCheckSet);
     lineCoveredByItem.sets.push_back(lineCoveredByLineCheckSet);
 
@@ -96,13 +94,13 @@ void SetupTab::initLists()
     CheckSet polygonOverlapCheck(QStringLiteral("面内无重叠"),QStringLiteral("检查一个面数据集中是否存在两个（或两个以上）相互重叠的面对象，包括部分重叠和完全重叠。"));
     CheckSet polygonLayerOverlapCheck(QStringLiteral("面与面无重叠"),QStringLiteral("检查面数据集中是否存在与参考面数据集的面重叠的面对象，包括部分重叠和完全重叠，即两个面数据集内的面对象之间不能存在交集。"));
 
-    CheckItem withinItem(QStringLiteral("包含检查"),QStringLiteral("检查面对象之间的重复、重叠、包含关系"));
+    CheckItem withinItem(QStringLiteral("包含检查"));
     withinItem.sets.push_back(withinCheckSet);
     withinItem.sets.push_back(notWithinCheckSet);
     withinItem.sets.push_back(polygonDuplicateCheckSet);
     withinItem.sets.push_back(polygonOverlapCheck);
     withinItem.sets.push_back(polygonLayerOverlapCheck);
-    CheckItem holeItem(QStringLiteral("面内无岛/缝隙"),QStringLiteral("检查相邻面对象之间是否存在空隙，面对象内是否存在孔洞"));
+    CheckItem holeItem(QStringLiteral("面内无岛/缝隙"));
     holeItem.sets.push_back(holeCheckSet);
     holeItem.sets.push_back(gapCheckSet);
     CheckItem convexhullItem(QStringLiteral("凸包图斑"));
@@ -155,9 +153,13 @@ void SetupTab::initUi()
     {
         CollapsibleGroupBox *groupBox;
         groupBox = new CollapsibleGroupBox(curList->groups[i].name, ui->widgetInputs);
-
+        connect(groupBox, &CollapsibleGroupBox::addItem, this, &SetupTab::addItem);
+        connect(groupBox, &CollapsibleGroupBox::addGroup, this, &SetupTab::addGroup);
+        connect(groupBox, &CollapsibleGroupBox::remove, this, &SetupTab::deleteGroup);
+        connect(groupBox, &CollapsibleGroupBox::rename, this, &SetupTab::rename);
         groupBox->setObjectName(QString::fromUtf8("groupBoxGeometryProperties"));
         groupBox->setProperty("flat", QVariant(true));
+        boxToGroup[groupBox] = &curList->groups[i];
 
         QVBoxLayout *verticalLayout_2;
         verticalLayout_2 = new QVBoxLayout(groupBox);
@@ -168,6 +170,8 @@ void SetupTab::initUi()
         for (int j = 0; j < curList->groups[i].items.size(); ++j)
         {
             PushButton *btn = new PushButton(groupBox);
+            CheckItem &item = curList->groups[i].items[j];
+            btn->setToolTip(item.getDescription());
 
             btnToCheck[btn] = &curList->groups[i].items[j];
 
@@ -187,6 +191,14 @@ void SetupTab::initUi()
 
 void SetupTab::initConnection()
 {
+    for (auto it = boxToGroup.begin(); it != boxToGroup.end(); ) {
+        if (it.key()) {
+
+            ++it;
+        } else {
+            it = boxToGroup.erase(it);
+        }
+    }
     for (auto it = btnToCheck.begin(); it != btnToCheck.end(); ) {
         if (it.key()) {
 
@@ -194,14 +206,12 @@ void SetupTab::initConnection()
         } else {
             it = btnToCheck.erase(it);
         }
-
     }
 }
 
 
 void SetupTab::save()
 {
-
     QJsonArray groupArray;
     for (int i = 0; i < curList->groups.size(); ++i) {
 
@@ -223,7 +233,6 @@ void SetupTab::save()
 
             QJsonObject itemObj;
             itemObj.insert("name",item.name);
-            itemObj.insert("description",item.description);
             itemObj.insert("sets",setArray);
             itemArray.append(itemObj);
         }
@@ -250,16 +259,9 @@ void SetupTab::save()
 
 void SetupTab::read()
 {
-    for(int i = 0; i<btns.size();++i){
-        qDebug()<<btns[i]->pos();
-        qDebug()<<btns[i]->text();
-    }
-    for(int i = 0;i<groupBoxs.size();++i){
-        qDebug()<<groupBoxs[i]->pos();
-        qDebug()<<groupBoxs[i]->title();
-    }
-
     QString fileName = QFileDialog::getOpenFileName(this, QStringLiteral("选择文件"), "./", "Json(*.json)");
+    if (fileName.isEmpty())
+        return;
 
     QFile file(fileName);
 
@@ -278,8 +280,7 @@ void SetupTab::read()
         for(int j = 0;j<items.size();++j){
             val = items[j];
             obj = val.toObject();
-            CheckItem item(obj["name"].toString(),obj["description"].toString());
-
+            CheckItem item(obj["name"].toString());
 
             QJsonArray sets = obj["sets"].toArray();
             for(int k = 0;k<sets.size();++k){
@@ -296,7 +297,6 @@ void SetupTab::read()
         list.groups.push_back(group);
 
     }
-
 
     list.name  = QFileInfo(fileName).completeBaseName();
 
@@ -324,13 +324,24 @@ void SetupTab::createList()
 
 void SetupTab::deleteList()
 {
+    if (QMessageBox::No ==
+        QMessageBox::question(this, QStringLiteral("拓扑检查"), QStringLiteral("删除后不可恢复，您确认删除？"),
+            QMessageBox::Yes, QMessageBox::No)) {
+        return;
+    }
+
     int i = ui->comboBox->currentIndex();
     mlists.remove(i);
     ui->comboBox->removeItem(i);
 }
 
-void SetupTab::createGroup()
+void SetupTab::addGroup()
 {
+    if (curList == nullptr) {
+        QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("请先新建方案"));
+        return;
+    }
+
     QString dlgTitle = QStringLiteral("新建组");
     QString txtLabel = QStringLiteral("请输入检查组名");
     QLineEdit::EchoMode echoMode = QLineEdit::Normal;
@@ -338,19 +349,97 @@ void SetupTab::createGroup()
     QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, QString(), &ok);
     if (!ok || text.isEmpty())
         return;
+
+    for (int i = 0; i < curList->groups.size(); ++i)
+    {
+        if (text == curList->groups[i].name) {
+            QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("组已存在"));
+            return;
+        }
+    }
+
     curList->groups.push_back(CheckGroup(text));
     initUi();
 }
 
-void SetupTab::addGroup()
+void SetupTab::addItem()
 {
-    qDebug() << "SetupTab::addGroup()";
-    qDebug() << &typeid(*sender());
-    qDebug() << &typeid(Widget);
-    qDebug() << mlists.size();
-    if (curList == nullptr) {
-        QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("请先新建方案"));
+    CollapsibleGroupBox *p = qobject_cast<CollapsibleGroupBox *>(sender());
+    if (p) {
+        QString dlgTitle = QStringLiteral("新建项");
+        QString txtLabel = QStringLiteral("请输入检查项名");
+        QLineEdit::EchoMode echoMode = QLineEdit::Normal;
+        bool ok = false;
+        QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, QString(), &ok);
+        if (!ok || text.isEmpty())
+            return;
+
+        CheckGroup *group = boxToGroup[p];
+        if (!group) return;
+
+        for (auto &it : as_const(group->items)) {
+            if (it.name == text) {
+                QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("项已存在"));
+                return;
+            }
+        }
+
+        group->items.push_back(CheckItem(text));
+        initUi();
+    } else {
+
+    }
+}
+
+void SetupTab::deleteGroup()
+{
+    if (QMessageBox::No ==
+        QMessageBox::question(this, QStringLiteral("拓扑检查"), QStringLiteral("确认删除？"),
+            QMessageBox::Yes, QMessageBox::No)) {
         return;
     }
-    createGroup();
+
+    CollapsibleGroupBox *p = qobject_cast<CollapsibleGroupBox *>(sender());
+
+    if (p) {
+        for (int i = 0; i < curList->groups.size(); ++i)
+        {
+            if (curList->groups[i].name == p->title())
+            {
+                curList->groups.remove(i);
+                initUi();
+                return;
+            }
+        }
+    } else {
+
+    }
+}
+
+void SetupTab::rename()
+{
+    CollapsibleGroupBox *p = qobject_cast<CollapsibleGroupBox *>(sender());
+
+    if (p) {
+        QString dlgTitle = QStringLiteral("重命名");
+        QString txtLabel = QStringLiteral("请输入检查组名");
+        QLineEdit::EchoMode echoMode = QLineEdit::Normal;
+        bool ok = false;
+        QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, p->title(), &ok);
+        if (!ok || text.isEmpty() || text == p->title())
+            return;
+
+        for (int i = 0; i < curList->groups.size(); ++i)
+        {
+            if (text == curList->groups[i].name) {
+                QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("组已存在"));
+                return;
+            }
+        }
+
+        boxToGroup[p]->name = text;
+        initUi();
+    } else {
+
+    }
 }
