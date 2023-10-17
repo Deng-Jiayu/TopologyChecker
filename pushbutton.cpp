@@ -11,8 +11,8 @@ PushButton::PushButton(QWidget *parent) : QPushButton(parent)
     acRunSelected = menu->addAction(QStringLiteral("执行检查项（对选中地物）"));
     acAddItem = menu->addAction(QStringLiteral("新建检查项"));
     acAddGroup = menu->addAction(QStringLiteral("新建检查组"));
-    acRemove = menu->addAction(QStringLiteral("删除"));
-    acRename = menu->addAction(QStringLiteral("重命名"));
+    acRemove = menu->addAction(QStringLiteral("删除项"));
+    acRename = menu->addAction(QStringLiteral("重命名项"));
     acRunAll = menu->addAction(QStringLiteral("一键检查项"));
 
     connect(acRun, &QAction::triggered, this, &PushButton::run);
@@ -29,6 +29,5 @@ PushButton::PushButton(QWidget *parent) : QPushButton(parent)
 
 void PushButton::ShowcustomContextMenu()
 {
-    qDebug() << "PushButton";
     menu->exec(QCursor::pos());
 }

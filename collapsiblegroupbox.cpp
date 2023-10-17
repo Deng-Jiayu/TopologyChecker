@@ -10,8 +10,8 @@ CollapsibleGroupBox::CollapsibleGroupBox(const QString &title, QWidget *parent)
     menu = new QMenu();
     acAddItem = menu->addAction(QStringLiteral("新建检查项"));
     acAddGroup = menu->addAction(QStringLiteral("新建检查组"));
-    acRemove = menu->addAction(QStringLiteral("删除"));
-    acRename = menu->addAction(QStringLiteral("重命名"));
+    acRemove = menu->addAction(QStringLiteral("删除组"));
+    acRename = menu->addAction(QStringLiteral("重命名组"));
     acRunAll = menu->addAction(QStringLiteral("一键检查项"));
 
     connect(acAddGroup, &QAction::triggered, this, &CollapsibleGroupBox::addGroup);

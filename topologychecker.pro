@@ -20,6 +20,7 @@ include( $$SDK_PATH/include/translations.pri )
 
 HEADERS += \
     checkdock.h \
+    checkitemdialog.h \
     checkset.h \
     collapsiblegroupbox.h \
     pushbutton.h \
@@ -30,6 +31,7 @@ HEADERS += \
 
 SOURCES += \
     checkdock.cpp \
+    checkitemdialog.cpp \
     checkset.cpp \
     collapsiblegroupbox.cpp \
     pushbutton.cpp \
@@ -43,6 +45,7 @@ RESOURCES += \
 
 FORMS += \
     checkdock.ui \
+    checkitemdialog.ui \
     resulttab.ui \
     setuptab.ui \
     topologycheckerguibase.ui

@@ -31,6 +31,7 @@ private:
     QMap<CollapsibleGroupBox *, CheckGroup *> boxToGroup;
     QMap<PushButton *, CheckItem *> btnToCheck;
 
+    QVector<bool> boxCollapsed;
     QVector<CollapsibleGroupBox*> groupBoxs;
     QVector<PushButton*> btns;
 
@@ -45,7 +46,7 @@ private:
 private slots:
     void addGroup();
     void addItem();
-    void deleteGroup();
+    void remove();
     void rename();
 };
 

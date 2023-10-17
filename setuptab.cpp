@@ -2,6 +2,7 @@
 #include "ui_setuptab.h"
 
 #include "widget.h"
+#include "checkitemdialog.h"
 
 #include <QFileDialog>
 #include <QLineEdit>
@@ -155,10 +156,9 @@ void SetupTab::initUi()
         groupBox = new CollapsibleGroupBox(curList->groups[i].name, ui->widgetInputs);
         connect(groupBox, &CollapsibleGroupBox::addItem, this, &SetupTab::addItem);
         connect(groupBox, &CollapsibleGroupBox::addGroup, this, &SetupTab::addGroup);
-        connect(groupBox, &CollapsibleGroupBox::remove, this, &SetupTab::deleteGroup);
+        connect(groupBox, &CollapsibleGroupBox::remove, this, &SetupTab::remove);
         connect(groupBox, &CollapsibleGroupBox::rename, this, &SetupTab::rename);
         groupBox->setObjectName(QString::fromUtf8("groupBoxGeometryProperties"));
-        groupBox->setProperty("flat", QVariant(true));
         boxToGroup[groupBox] = &curList->groups[i];
 
         QVBoxLayout *verticalLayout_2;
@@ -172,6 +172,10 @@ void SetupTab::initUi()
             PushButton *btn = new PushButton(groupBox);
             CheckItem &item = curList->groups[i].items[j];
             btn->setToolTip(item.getDescription());
+            connect(btn, &PushButton::rename, this, &SetupTab::rename);
+            connect(btn, &PushButton::remove, this, &SetupTab::remove);
+            connect(btn, &PushButton::addItem, this, &SetupTab::addItem);
+            connect(btn, &PushButton::addGroup, this, &SetupTab::addGroup);
 
             btnToCheck[btn] = &curList->groups[i].items[j];
 
@@ -186,6 +190,7 @@ void SetupTab::initUi()
         verticalLayout->addWidget(groupBox);
         this->groupBoxs.push_back(groupBox);
     }
+
     initConnection();
 }
 
@@ -206,6 +211,15 @@ void SetupTab::initConnection()
         } else {
             it = btnToCheck.erase(it);
         }
+    }
+
+    for (auto it : as_const(btns)) {
+        connect(it, &PushButton::clicked, this, [=]() {
+            CheckItemDialog *dialog = new CheckItemDialog(btnToCheck[it], this);
+            dialog->setAttribute(Qt::WA_DeleteOnClose);
+            dialog->show();
+            dialog->set();
+        });
     }
 }
 
@@ -364,34 +378,57 @@ void SetupTab::addGroup()
 
 void SetupTab::addItem()
 {
+    QString dlgTitle = QStringLiteral("新建项");
+    QString txtLabel = QStringLiteral("请输入检查项名");
+    QLineEdit::EchoMode echoMode = QLineEdit::Normal;
+    bool ok = false;
+    QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, QString(), &ok);
+    if (!ok || text.isEmpty())
+        return;
+
+    CheckGroup *group = nullptr;
     CollapsibleGroupBox *p = qobject_cast<CollapsibleGroupBox *>(sender());
+
     if (p) {
-        QString dlgTitle = QStringLiteral("新建项");
-        QString txtLabel = QStringLiteral("请输入检查项名");
-        QLineEdit::EchoMode echoMode = QLineEdit::Normal;
-        bool ok = false;
-        QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, QString(), &ok);
-        if (!ok || text.isEmpty())
-            return;
-
-        CheckGroup *group = boxToGroup[p];
-        if (!group) return;
-
-        for (auto &it : as_const(group->items)) {
-            if (it.name == text) {
-                QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("项已存在"));
-                return;
-            }
-        }
-
-        group->items.push_back(CheckItem(text));
-        initUi();
-    } else {
-
+        group = boxToGroup[p];
     }
+    else
+    {
+        PushButton *p = qobject_cast<PushButton *>(sender());
+        if(!p) return;
+
+        CheckItem *item = btnToCheck[p];
+        bool found = false;
+        for (int i = 0; i < curList->groups.size(); ++i)
+        {
+            for (int j = 0; j < curList->groups[i].items.size(); ++j)
+            {
+                if (item == &curList->groups[i].items[j]) {
+                    group = &curList->groups[i];
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+        }
+    }
+
+    if (!group) return;
+
+    for (auto &it : as_const(group->items)) {
+        if (it.name == text) {
+            QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("项已存在"));
+            return;
+        }
+    }
+
+    CheckItem item(text);
+    group->items.push_back(item);
+
+    initUi();
 }
 
-void SetupTab::deleteGroup()
+void SetupTab::remove()
 {
     if (QMessageBox::No ==
         QMessageBox::question(this, QStringLiteral("拓扑检查"), QStringLiteral("确认删除？"),
@@ -412,7 +449,22 @@ void SetupTab::deleteGroup()
             }
         }
     } else {
+        PushButton *p = qobject_cast<PushButton *>(sender());
+        if(!p) return;
 
+        CheckItem *item = btnToCheck[p];
+        for (int i = 0; i < curList->groups.size(); ++i)
+        {
+            for (int j = 0; j < curList->groups[i].items.size(); ++j)
+            {
+                if (item == &curList->groups[i].items[j])
+                {
+                    curList->groups[i].items.remove(j);
+                    initUi();
+                    return;
+                }
+            }
+        }
     }
 }
 
@@ -439,7 +491,44 @@ void SetupTab::rename()
 
         boxToGroup[p]->name = text;
         initUi();
-    } else {
+    } else
+    {
+        PushButton *p = qobject_cast<PushButton *>(sender());
+        if(!p) return;
 
+        QString dlgTitle = QStringLiteral("重命名");
+        QString txtLabel = QStringLiteral("请输入检查项名");
+        QLineEdit::EchoMode echoMode = QLineEdit::Normal;
+        bool ok = false;
+        QString text = QInputDialog::getText(this, dlgTitle, txtLabel, echoMode, p->text(), &ok);
+        if (!ok || text.isEmpty() || text == p->text())
+            return;
+
+        CheckItem *item = btnToCheck[p];
+        CheckGroup *group = nullptr;
+        bool found = false;
+        for (int i = 0; i < curList->groups.size(); ++i)
+        {
+            for (int j = 0; j < curList->groups[i].items.size(); ++j)
+            {
+                if (item == &curList->groups[i].items[j]) {
+                    group = &curList->groups[i];
+                    found = true;
+                    break;
+                }
+            }
+            if(found) break;
+        }
+        if(group == nullptr) return;
+
+        for (int i = 0; i < group->items.size(); ++i) {
+            if (group->items[i].name == text) {
+                QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("项已存在"));
+                return;
+            }
+        }
+
+        item->name = text;
+        initUi();
     }
 }
