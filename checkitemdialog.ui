@@ -6,554 +6,766 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>907</width>
-    <height>669</height>
+    <width>908</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>检查定制</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5">
-   <item row="0" column="0" rowspan="3">
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="widgetResizable">
-      <bool>true</bool>
+  <layout class="QGridLayout" name="gridLayout_8">
+   <item row="0" column="0">
+    <widget class="QSplitter" name="splitter">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <widget class="QWidget" name="widgetItems">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>423</width>
-        <height>1060</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBoxGeometryProperties" native="true">
-         <property name="title" stdset="0">
-          <string>属性检查</string>
-         </property>
-         <property name="flat" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="spacing">
-           <number>2</number>
-          </property>
-          <property name="leftMargin">
-           <number>2</number>
-          </property>
-          <property name="topMargin">
-           <number>2</number>
-          </property>
-          <property name="rightMargin">
-           <number>2</number>
-          </property>
-          <property name="bottomMargin">
-           <number>2</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="btnInvalidAttr">
-            <property name="text">
-             <string>属性无效检查</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnUniqueCode">
-            <property name="text">
-             <string>检查唯一标识码</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBoxGeometry" native="true">
-         <property name="title" stdset="0">
-          <string>拓扑检查</string>
-         </property>
-         <property name="flat" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <property name="leftMargin">
-           <number>2</number>
-          </property>
-          <property name="topMargin">
-           <number>2</number>
-          </property>
-          <property name="rightMargin">
-           <number>2</number>
-          </property>
-          <property name="bottomMargin">
-           <number>2</number>
-          </property>
-          <item row="25" column="0">
-           <widget class="QPushButton" name="btnHole">
-            <property name="text">
-             <string>面内无岛</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QPushButton" name="btnPointDuplicate">
-            <property name="text">
-             <string>无重复点</string>
-            </property>
-           </widget>
-          </item>
-          <item row="24" column="0">
-           <widget class="QPushButton" name="btnGap">
-            <property name="text">
-             <string>面内无缝隙</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QPushButton" name="btnLineOverlap">
-            <property name="text">
-             <string>线内无重叠</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="0">
-           <widget class="QPushButton" name="btnLineLayerOverlap">
-            <property name="text">
-             <string>线与线无重叠</string>
-            </property>
-           </widget>
-          </item>
-          <item row="16" column="0">
-           <widget class="QPushButton" name="btnLineCoveredByBoundary">
-            <property name="text">
-             <string>线被面边界覆盖</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="btnPointOnBoundary">
-            <property name="text">
-             <string>点必须在面边界上</string>
-            </property>
-           </widget>
-          </item>
-          <item row="20" column="0">
-           <widget class="QPushButton" name="btnAngle">
-            <property name="text">
-             <string>锐角检查</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="btnPointOnLine">
-            <property name="text">
-             <string>点必须在线上</string>
-            </property>
-           </widget>
-          </item>
-          <item row="31" column="0">
-           <widget class="QPushButton" name="btnArea">
-            <property name="text">
-             <string>面积</string>
-            </property>
-           </widget>
-          </item>
-          <item row="13" column="0">
-           <widget class="QPushButton" name="btnLineSelfOverlap">
-            <property name="text">
-             <string>线内无自交叠</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QPushButton" name="btnPointNotInPolygon">
-            <property name="text">
-             <string>点不被面包含</string>
-            </property>
-           </widget>
-          </item>
-          <item row="32" column="0">
-           <widget class="QPushButton" name="btnClockwise">
-            <property name="text">
-             <string>时针方向</string>
-            </property>
-           </widget>
-          </item>
-          <item row="15" column="0">
-           <widget class="QPushButton" name="btnLineCoveredByLine">
-            <property name="text">
-             <string>线被多条线完全覆盖</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QPushButton" name="btnLineLayerIntersection">
-            <property name="text">
-             <string>线与线无相交</string>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="0">
-           <widget class="QPushButton" name="btnLineSelfIntersection">
-            <property name="text">
-             <string>线内无自相交</string>
-            </property>
-           </widget>
-          </item>
-          <item row="28" column="0">
-           <widget class="QPushButton" name="btnPolygonInPolygon">
-            <property name="text">
-             <string>面被面包含</string>
-            </property>
-           </widget>
-          </item>
-          <item row="17" column="0">
-           <widget class="QPushButton" name="btnLineEndOnPoint">
-            <property name="text">
-             <string>线端点必须被点覆盖</string>
-            </property>
-           </widget>
-          </item>
-          <item row="27" column="0">
-           <widget class="QPushButton" name="btnPolygonCoveredByPolygon">
-            <property name="text">
-             <string>面被多个面覆盖</string>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="0">
-           <widget class="QPushButton" name="btnDangle">
-            <property name="text">
-             <string>线线悬挂</string>
-            </property>
-           </widget>
-          </item>
-          <item row="22" column="0">
-           <widget class="QPushButton" name="btnLength">
-            <property name="text">
-             <string>长度</string>
-            </property>
-           </widget>
-          </item>
-          <item row="18" column="0">
-           <widget class="QPushButton" name="btnLineInPolygon">
-            <property name="text">
-             <string>线不能和面相交或被包含</string>
-            </property>
-           </widget>
-          </item>
-          <item row="26" column="0">
-           <widget class="QPushButton" name="btnPolygonLayerOverlap">
-            <property name="text">
-             <string>面与面无重叠</string>
-            </property>
-           </widget>
-          </item>
-          <item row="21" column="0">
-           <widget class="QPushButton" name="btnSegmentLength">
-            <property name="text">
-             <string>线段长度</string>
-            </property>
-           </widget>
-          </item>
-          <item row="33" column="0">
-           <widget class="QPushButton" name="btnInvalid">
-            <property name="text">
-             <string>无效地物</string>
-            </property>
-           </widget>
-          </item>
-          <item row="19" column="0">
-           <widget class="QPushButton" name="btnTurnback">
-            <property name="text">
-             <string>线内无打折</string>
-            </property>
-           </widget>
-          </item>
-          <item row="29" column="0">
-           <widget class="QPushButton" name="btnPolygonNotInPolygon">
-            <property name="text">
-             <string>面斑不相互包含</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="btnPointOnLineEnd">
-            <property name="text">
-             <string>点必须被线端点覆盖</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QPushButton" name="btnPointInPolygon">
-            <property name="text">
-             <string>点被面完全包含</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="0">
-           <widget class="QPushButton" name="btnLineIntersection">
-            <property name="text">
-             <string>线内无相交</string>
-            </property>
-           </widget>
-          </item>
-          <item row="30" column="0">
-           <widget class="QPushButton" name="btnConvexhull">
-            <property name="text">
-             <string>凸包图斑</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QPushButton" name="btnDuplicateNode">
-            <property name="text">
-             <string>无重复端点</string>
-            </property>
-           </widget>
-          </item>
-          <item row="23" column="0">
-           <widget class="QPushButton" name="btnPolygonOverlap">
-            <property name="text">
-             <string>面内无重叠</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QPushButton" name="btnDuplicate">
-            <property name="text">
-             <string>重叠对象</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QScrollArea" name="scrollArea_2">
-     <property name="widgetResizable">
-      <bool>true</bool>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="widget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>439</width>
-        <height>263</height>
-       </rect>
+     <property name="handleWidth">
+      <number>16</number>
+     </property>
+     <widget class="QWidget" name="widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>1</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>参数设置</string>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="1" column="1">
+        <widget class="QScrollArea" name="scrollArea_3">
+         <property name="widgetResizable">
+          <bool>true</bool>
          </property>
+         <widget class="QWidget" name="widgetLists">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>295</width>
+            <height>271</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QTableWidget" name="tableWidget">
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::ExtendedSelection</enum>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+             <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>当前任务列表</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QTableWidget" name="tableWidgetPara">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+       <item row="0" column="1">
+        <widget class="QScrollArea" name="scrollArea_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::ExtendedSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="sortingEnabled">
+         <property name="widgetResizable">
           <bool>true</bool>
          </property>
-         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>属性名</string>
+         <widget class="QWidget" name="widget_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>295</width>
+            <height>271</height>
+           </rect>
           </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>属性值</string>
-          </property>
-         </column>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="2" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QPushButton" name="btnSaveEdit">
+               <property name="text">
+                <string>保存修改</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>参数设置</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QTableWidget" name="tableWidgetPara">
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::ExtendedSelection</enum>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+             <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>属性名</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>属性值</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
-       <item row="2" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QPushButton" name="btnSaveEdit">
+       <item row="2" column="1">
+        <layout class="QGridLayout" name="gridLayout_6">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>2</number>
+         </property>
+         <property name="rightMargin">
+          <number>2</number>
+         </property>
+         <property name="bottomMargin">
+          <number>2</number>
+         </property>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelTolerance">
            <property name="text">
-            <string>保存修改</string>
+            <string>Tolerance</string>
            </property>
           </widget>
          </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="checkBoxInputSelectedOnly">
+           <property name="text">
+            <string>仅限选中要素</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="btnDeleteCheck">
+           <property name="text">
+            <string>删除任务</string>
            </property>
-          </spacer>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QgsSpinBox" name="spinBoxTolerance">
+           <property name="prefix">
+            <string notr="true">1E-</string>
+           </property>
+           <property name="minimum">
+            <number>3</number>
+           </property>
+           <property name="maximum">
+            <number>16</number>
+           </property>
+           <property name="value">
+            <number>8</number>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="btnAddCheck">
-       <property name="text">
-        <string>添加任务</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnDeleteCheck">
-       <property name="text">
-        <string>删除任务</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnRun">
-       <property name="text">
-        <string>执行检查</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnClose">
-       <property name="text">
-        <string>关闭</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="1">
-    <widget class="QScrollArea" name="scrollArea_3">
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="widgetLists">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>439</width>
-        <height>262</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QTableWidget" name="tableWidget">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+       <item row="0" column="0" rowspan="3">
+        <widget class="QScrollArea" name="scrollArea">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::ExtendedSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="sortingEnabled">
+         <property name="widgetResizable">
           <bool>true</bool>
          </property>
-         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>当前任务列表</string>
+         <widget class="QWidget" name="widgetItems">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>278</width>
+            <height>1030</height>
+           </rect>
           </property>
-         </column>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="1" column="1">
+            <widget class="QgsCollapsibleGroupBox" name="groupBoxPoint" native="true">
+             <property name="title" stdset="0">
+              <string>点规则</string>
+             </property>
+             <property name="flat" stdset="0">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <property name="leftMargin">
+               <number>2</number>
+              </property>
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="rightMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="btnPointOnLine">
+                <property name="toolTip">
+                 <string>点必须在线对象上，包括在线内、线节点和线端点上，但是不能在线外。</string>
+                </property>
+                <property name="text">
+                 <string>点必须在线上</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnPointOnLineEnd">
+                <property name="toolTip">
+                 <string>点只能在线对象的端点上，而不能在线的节点上、线内其它位置和线外。</string>
+                </property>
+                <property name="text">
+                 <string>点必须被线端点覆盖</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnPointOnLineNode">
+                <property name="toolTip">
+                 <string>点只能在线对象的节点上，而不能在线的端点上、线内其它位置和线外。</string>
+                </property>
+                <property name="text">
+                 <string>点必须被线节点覆盖</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnPointDuplicate">
+                <property name="toolTip">
+                 <string>检查是否存在重复的点对象。</string>
+                </property>
+                <property name="text">
+                 <string>无重复点</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnPointOnBoundary">
+                <property name="toolTip">
+                 <string>点对象不能位于参考面数据的面内和面外。</string>
+                </property>
+                <property name="text">
+                 <string>点必须在面边界上</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnPointInPolygon">
+                <property name="toolTip">
+                 <string>点对象不能位于参考面数据集的面外或面的边界上。</string>
+                </property>
+                <property name="text">
+                 <string>点被面完全包含</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QgsCollapsibleGroupBox" name="groupBoxPolygon" native="true">
+             <property name="title" stdset="0">
+              <string>面规则</string>
+             </property>
+             <property name="flat" stdset="0">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_4">
+              <property name="leftMargin">
+               <number>2</number>
+              </property>
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="rightMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
+               <number>2</number>
+              </property>
+              <item row="37" column="0">
+               <widget class="QPushButton" name="btnConvexhull">
+                <property name="toolTip">
+                 <string>检查面对象是否为凸包。</string>
+                </property>
+                <property name="text">
+                 <string>凸包图斑</string>
+                </property>
+               </widget>
+              </item>
+              <item row="33" column="0">
+               <widget class="QPushButton" name="btnHole">
+                <property name="toolTip">
+                 <string>检查面对象内部是否存在被挖空（岛洞多边形）的情况。</string>
+                </property>
+                <property name="text">
+                 <string>面内无岛</string>
+                </property>
+               </widget>
+              </item>
+              <item row="30" column="0">
+               <widget class="QPushButton" name="btnPolygonLayerOverlap">
+                <property name="toolTip">
+                 <string>检查面数据集中是否存在与参考面数据集的面重叠的面对象，包括部分重叠和完全重叠，即两个面数据集内的面对象之间不能存在交集。</string>
+                </property>
+                <property name="text">
+                 <string>面与面无重叠</string>
+                </property>
+               </widget>
+              </item>
+              <item row="32" column="0">
+               <widget class="QPushButton" name="btnPolygonInPolygon">
+                <property name="toolTip">
+                 <string>检查面数据集中是否存在没有被参考面数据集的面包含的面对象，即待检查面数据集的面必须是参考面数据集中面对象的子集。</string>
+                </property>
+                <property name="text">
+                 <string>面被面包含</string>
+                </property>
+               </widget>
+              </item>
+              <item row="38" column="0">
+               <widget class="QPushButton" name="btnArea">
+                <property name="toolTip">
+                 <string>检查指定面积的面对象。</string>
+                </property>
+                <property name="text">
+                 <string>面积</string>
+                </property>
+               </widget>
+              </item>
+              <item row="29" column="0">
+               <widget class="QPushButton" name="btnGap">
+                <property name="toolTip">
+                 <string>检查相邻面对象之间是否存在空隙，即相邻面对象之间的边界必须重合。</string>
+                </property>
+                <property name="text">
+                 <string>面内无缝隙</string>
+                </property>
+               </widget>
+              </item>
+              <item row="39" column="0">
+               <widget class="QPushButton" name="btnClockwise">
+                <property name="toolTip">
+                 <string>查询地物的方向性。</string>
+                </property>
+                <property name="text">
+                 <string>时针方向</string>
+                </property>
+               </widget>
+              </item>
+              <item row="27" column="0">
+               <widget class="QPushButton" name="btnPolygonOverlap">
+                <property name="toolTip">
+                 <string>检查一个面数据集中是否存在两个（或两个以上）相互重叠的面对象，包括部分重叠和完全重叠。</string>
+                </property>
+                <property name="text">
+                 <string>面内无重叠</string>
+                </property>
+               </widget>
+              </item>
+              <item row="31" column="0">
+               <widget class="QPushButton" name="btnPolygonCoveredByPolygon">
+                <property name="toolTip">
+                 <string>检查面数据集中是否存在没有被参考面数据集的面覆盖的面对象，即待检查面数据集的一个或多个面必须完全覆盖于参考面数据集中的面对象。</string>
+                </property>
+                <property name="text">
+                 <string>面被多个面覆盖</string>
+                </property>
+               </widget>
+              </item>
+              <item row="40" column="0">
+               <widget class="QPushButton" name="btnAngle">
+                <property name="toolTip">
+                 <string>检查面数据集中是否存在小于某个给定角度的锐角。</string>
+                </property>
+                <property name="text">
+                 <string>面内无锐角</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QgsCollapsibleGroupBox" name="groupBoxProperties" native="true">
+             <property name="title" stdset="0">
+              <string>多类型规则</string>
+             </property>
+             <property name="flat" stdset="0">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <property name="leftMargin">
+               <number>2</number>
+              </property>
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="rightMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="btnInvalidAttr">
+                <property name="toolTip">
+                 <string>检查地物是否有无效属性。</string>
+                </property>
+                <property name="text">
+                 <string>属性无效检查</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnUniqueCode">
+                <property name="toolTip">
+                 <string>检查地物的唯一标识码。</string>
+                </property>
+                <property name="text">
+                 <string>检查唯一标识码</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnInvalid">
+                <property name="toolTip">
+                 <string>检查地物是否有效。</string>
+                </property>
+                <property name="text">
+                 <string>无效地物</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnDuplicate">
+                <property name="toolTip">
+                 <string>查询完全重叠的地物的情况。</string>
+                </property>
+                <property name="text">
+                 <string>重叠对象</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton">
+                <property name="toolTip">
+                 <string>检查线或面数据集自身的线对象或面边界是否存在冗余节点，即两节点之间不能存在其他共线节点，这些共线节点为冗余节点。</string>
+                </property>
+                <property name="text">
+                 <string>线或面边界无冗余节点</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnDuplicateNode">
+                <property name="toolTip">
+                 <string>检查线或面数据集自身的线对象或面边界是否存在重复节点，即某一段两节点不能重复。</string>
+                </property>
+                <property name="text">
+                 <string>线或面边界无重复节点</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QgsCollapsibleGroupBox" name="groupBoxLine" native="true">
+             <property name="title" stdset="0">
+              <string>线规则</string>
+             </property>
+             <property name="flat" stdset="0">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <property name="leftMargin">
+               <number>2</number>
+              </property>
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="rightMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="btnLineLayerIntersection">
+                <property name="toolTip">
+                 <string>检查线数据集中是否存在与参考线数据集的线相交的线对象，即两个线数据集中的所有线对象必须相互分离。</string>
+                </property>
+                <property name="text">
+                 <string>线与线无相交</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineIntersection">
+                <property name="toolTip">
+                 <string>检查一个线数据集中是否存在两个（或两个以上）相交且共享交点，但并未从交点处打断的线对象。</string>
+                </property>
+                <property name="text">
+                 <string>线内无相交</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineSelfIntersection">
+                <property name="toolTip">
+                 <string>检查一个线数据集中是否存在与自身相交的线对象，即线对象中不能有重叠（坐标相同）的节点。</string>
+                </property>
+                <property name="text">
+                 <string>线内无自相交</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineLayerOverlap">
+                <property name="toolTip">
+                 <string>检查线数据集中是否存在与参考线数据集的线重叠的线对象，即两个线数据集之间的线对象不能有重合的部分。</string>
+                </property>
+                <property name="text">
+                 <string>线与线无重叠</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineOverlap">
+                <property name="toolTip">
+                 <string>检查一个线数据集中是否存在两个（或两个以上）线对象之间有相互重叠的部分。</string>
+                </property>
+                <property name="text">
+                 <string>线内无重叠</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineSelfOverlap">
+                <property name="toolTip">
+                 <string>检查一个线数据集中是否存在与自身重叠的线对象，即一个线对象本身不能有重叠部分。</string>
+                </property>
+                <property name="text">
+                 <string>线内无自交叠</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnDangle">
+                <property name="toolTip">
+                 <string>检查一个线数据集中是否存在被定义为悬线的线对象，即线对象的端点没有连接到其它线的内部或线的端点，包括长悬线和短悬线两种情况。</string>
+                </property>
+                <property name="text">
+                 <string>线线悬挂</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnPseudos">
+                <property name="toolTip">
+                 <string>检查一个线数据集中是否存在含有假结点（只连接两条弧段的结点）的线对象，即一个线对象必须与两个（或两个以上）线对象相连接。</string>
+                </property>
+                <property name="text">
+                 <string>线内无假结点</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineCoveredByLine">
+                <property name="toolTip">
+                 <string>检查线数据集中是否存在没有被参考线数据集的一条或多条线覆盖的线对象。</string>
+                </property>
+                <property name="text">
+                 <string>线被多条线完全覆盖</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineCoveredByBoundary">
+                <property name="toolTip">
+                 <string>检查线数据集中是否存在没有被参考面数据集的面边界（可以是一个或多个面边界）覆盖的线对象。</string>
+                </property>
+                <property name="text">
+                 <string>线被面边界覆盖</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineEndOnPoint">
+                <property name="toolTip">
+                 <string>检查线数据集中是否存在线端点未被参考点数据集的点覆盖的线对象。</string>
+                </property>
+                <property name="text">
+                 <string>线端点必须被点覆盖</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineInPolygon">
+                <property name="toolTip">
+                 <string>检查线数据集中是否存在与参考面数据集的面相交或被面包含的线对象，即线数据集与参考面数据集不能存在交集。</string>
+                </property>
+                <property name="text">
+                 <string>线不能和面相交或包含</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnTurnback">
+                <property name="toolTip">
+                 <string>检查线数据集中是否存在连续四个节点构成的两个夹角的角度都小于所给的角度值（单位为度），若两个夹角都小于角度值，则认为线对象在中间两个节点处打折。</string>
+                </property>
+                <property name="text">
+                 <string>线内无打折</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLineDuplicate">
+                <property name="toolTip">
+                 <string>检查是否存在重复的线对象。</string>
+                </property>
+                <property name="text">
+                 <string>线与线不重复</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnSegmentLength">
+                <property name="toolTip">
+                 <string>检查线对象某段长度。</string>
+                </property>
+                <property name="text">
+                 <string>线段长度</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLength">
+                <property name="toolTip">
+                 <string>检查指定长度的线对象。</string>
+                </property>
+                <property name="text">
+                 <string>长度</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
      </widget>
+     <widget class="QTextBrowser" name="textShortHelp">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="accessibleName">
+       <string/>
+      </property>
+      <property name="openLinks">
+       <bool>false</bool>
+      </property>
+     </widget>
     </widget>
    </item>
-   <item row="2" column="1">
-    <layout class="QGridLayout" name="gridLayout_10">
-     <property name="leftMargin">
-      <number>2</number>
-     </property>
-     <property name="topMargin">
-      <number>2</number>
-     </property>
-     <property name="rightMargin">
-      <number>2</number>
-     </property>
-     <property name="bottomMargin">
-      <number>2</number>
-     </property>
-     <item row="2" column="0">
-      <widget class="QLabel" name="labelTolerance">
-       <property name="text">
-        <string>Tolerance</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QgsSpinBox" name="spinBoxTolerance">
-       <property name="prefix">
-        <string notr="true">1E-</string>
-       </property>
-       <property name="minimum">
-        <number>3</number>
-       </property>
-       <property name="maximum">
-        <number>16</number>
-       </property>
-       <property name="value">
-        <number>8</number>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="checkBoxInputSelectedOnly">
-       <property name="text">
-        <string>仅限选中要素</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="5" column="0" colspan="2">
+   <item row="1" column="0">
     <widget class="QWidget" name="widgetProgress" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
+     <layout class="QGridLayout" name="gridLayout_7">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -566,17 +778,51 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
-       <widget class="QProgressBar" name="progressBar">
-        <property name="value">
-         <number>24</number>
+      <item row="1" column="6">
+       <widget class="QPushButton" name="btnClose">
+        <property name="text">
+         <string>关闭</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="5">
        <widget class="QLabel" name="labelStatus">
         <property name="text">
          <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>707</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="btnRun">
+        <property name="text">
+         <string>执行检查</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="btnCancel">
+        <property name="text">
+         <string>取消</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="4">
+       <widget class="QProgressBar" name="progressBar">
+        <property name="value">
+         <number>0</number>
         </property>
        </widget>
       </item>

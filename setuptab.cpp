@@ -214,8 +214,9 @@ void SetupTab::initConnection()
     }
 
     for (auto it : as_const(btns)) {
+        if(!it) continue;
         connect(it, &PushButton::clicked, this, [=]() {
-            CheckItemDialog *dialog = new CheckItemDialog(btnToCheck[it], this);
+            CheckItemDialog *dialog = new CheckItemDialog(mIface, btnToCheck[it], this);
             dialog->setAttribute(Qt::WA_DeleteOnClose);
             dialog->show();
             dialog->set();
