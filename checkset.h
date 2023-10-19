@@ -14,17 +14,17 @@ public:
     CheckSet(QString name, QString description) : name(name), description(description) {}
 
     void fromPoint(CheckSet *set) {
-      if (!set)
-        return;
-      name = set->name;
-      layersA = set->layersA;
-      layersB = set->layersB;
-      excludedLayers = set->excludedLayers;
-      angle = set->angle;
-      upperLimit = set->upperLimit;
-      lowerLimit = set->lowerLimit;
-      excludeEndpoint = set->excludeEndpoint;
-      tolerance = set->tolerance;
+        if (!set)
+          return;
+        name = set->name;
+        layersA = set->layersA;
+        layersB = set->layersB;
+        excludedLayers = set->excludedLayers;
+        angle = set->angle;
+        upperLimit = set->upperLimit;
+        lowerLimit = set->lowerLimit;
+        excludeEndpoint = set->excludeEndpoint;
+        tolerance = set->tolerance;
     }
 
     virtual ~CheckSet() = default;

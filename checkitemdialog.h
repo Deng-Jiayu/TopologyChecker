@@ -6,6 +6,9 @@
 #include <qgsdoublespinbox.h>
 #include <QComboBox>
 #include <QCheckBox>
+#include "layerselectiondialog.h"
+
+#include "check.h"
 
 #include "checkset.h"
 
@@ -27,21 +30,36 @@ private:
     Ui::CheckItemDialog *ui;
     QgisInterface *iface = nullptr;
     CheckItem *mcheckItem = nullptr;
-
-    QMap<int, CheckSet*> mCheckMap;
-
+    CheckSet *mCheckSet = nullptr;
+    LayerSelectionDialog* layerSelectDialog = nullptr;
+    QMap<int, CheckSet *> mCheckMap;
+    bool mIsRunningInBackground;
 
     void initTable();
     void initParaTable();
+    void setBtnText(QPushButton* btn, QVector<QgsVectorLayer*> vec);
+    void setText(QPushButton* btn);
 
-    QPushButton* layerA;
-    QPushButton* layerB;
-    QPushButton* layerC;
-    QgsDoubleSpinBox* doubleSpinBoxMax;
-    QgsDoubleSpinBox* doubleSpinBoxMin;
-    QComboBox* comboBoxLayerMode;
+    QPushButton *layerA;
+    QPushButton *layerB;
+    QPushButton *layerC;
+    QgsDoubleSpinBox *doubleSpinBoxMax;
+    QgsDoubleSpinBox *doubleSpinBoxMin;
+    QComboBox *comboBoxLayerMode;
     QgsDoubleSpinBox *doubleSpinBoxAngle;
     QCheckBox *excludeEndpoint;
+
+private slots:
+    void onSelectionChanged(const QItemSelection& newSel, const QItemSelection& /*oldSel*/);
+    void selectLayerA();
+    void selectLayerB();
+    void saveEdit();
+    void deleteCheck();
+    void run();
+
+private:
+    QList<Check *> getChecks(CheckContext *context);
+    void initPointOnLineUi();
 
 };
 

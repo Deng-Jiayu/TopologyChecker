@@ -19,25 +19,51 @@ include( $$SDK_PATH/include/qgisconfig.pri )
 include( $$SDK_PATH/include/translations.pri )
 
 HEADERS += \
+    check.h \
+    checkcontext.h \
     checkdock.h \
+    checker.h \
+    checkerror.h \
+    checkerutils.h \
     checkitemdialog.h \
+    checkresolutionmethod.h \
     checkset.h \
     collapsiblegroupbox.h \
+    featurepool.h \
+    layerselectiondialog.h \
+    pointonlinecheck.h \
+    pointonlineendcheck.h \
+    pointonlinenodecheck.h \
     pushbutton.h \
     resulttab.h \
     setuptab.h \
     topologychecker.h \
+    vectordataproviderfeaturepool.h \
+    vectorlayerfeaturepool.h \
     widget.h
 
 SOURCES += \
+    check.cpp \
+    checkcontext.cpp \
     checkdock.cpp \
+    checker.cpp \
+    checkerror.cpp \
+    checkerutils.cpp \
     checkitemdialog.cpp \
+    checkresolutionmethod.cpp \
     checkset.cpp \
     collapsiblegroupbox.cpp \
+    featurepool.cpp \
+    layerselectiondialog.cpp \
+    pointonlinecheck.cpp \
+    pointonlineendcheck.cpp \
+    pointonlinenodecheck.cpp \
     pushbutton.cpp \
     resulttab.cpp \
     setuptab.cpp \
     topologychecker.cpp \
+    vectordataproviderfeaturepool.cpp \
+    vectorlayerfeaturepool.cpp \
     widget.cpp
      
 RESOURCES += \
@@ -46,6 +72,7 @@ RESOURCES += \
 FORMS += \
     checkdock.ui \
     checkitemdialog.ui \
+    layerselectiondialog.ui \
     resulttab.ui \
     setuptab.ui \
     topologycheckerguibase.ui

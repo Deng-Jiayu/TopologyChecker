@@ -26,7 +26,6 @@ private:
     QAction *acAddItem;
     QAction *acRename;
     QAction *acRun;
-    QAction *acRunSelected;
     QAction *acRunAll;
 
 private slots:
