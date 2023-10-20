@@ -59,6 +59,8 @@ ResultTab::ResultTab( QgisInterface *iface, Checker *checker, QTabWidget *tabWid
 ResultTab::~ResultTab()
 {
     delete ui;
+    delete mChecker;
+    qDeleteAll( mCurrentRubberBands );
 }
 
 void ResultTab::setRowStatus(int row, const QColor &color, const QString &message, bool selectable)

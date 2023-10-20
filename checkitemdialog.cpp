@@ -120,6 +120,7 @@ void CheckItemDialog::initConnection()
     for (int i = 0; i < list.size(); i++)
     {
         QPushButton* btn = list.at(i);
+        nameToBtn[btn->text()] = btn;
         connect(btn, &QPushButton::clicked, this, [&](){
             QPushButton *p = qobject_cast<QPushButton *>(sender());
             if(mCheckSet) delete mCheckSet;
@@ -150,7 +151,7 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
 {
     for (int i = 0; i < ui->tableWidgetPara->rowCount(); ++i)
         ui->tableWidgetPara->showRow(i);
-    if(btn == ui->btnPointOnLine || btn == ui->btnPointOnLineEnd || btn == ui->btnPointOnLineNode) {
+    if(btn == ui->btnPointOnLine || btn == ui->btnPointOnLineEnd || btn == ui->btnPointOnLineNode || btn == ui->btnPointOnBoundary) {
         ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
         ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线图层"));
         setBtnText(layerA, mCheckSet->layersA);
@@ -162,10 +163,9 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
         ui->tableWidgetPara->hideRow(5);
         ui->tableWidgetPara->hideRow(6);
         ui->tableWidgetPara->hideRow(7);
-    }else if(btn == ui->btnPointDuplicate){
-        ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
-        setBtnText(layerA, mCheckSet->layersA);
-
+        if(btn == ui->btnPointOnBoundary) ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("面图层"));
+    }
+    else if(btn == ui->btnPointDuplicate || btn == ui->btnLineDuplicate || btn == ui->btnPolygonDuplicate){
         ui->tableWidgetPara->hideRow(1);
         ui->tableWidgetPara->hideRow(2);
         ui->tableWidgetPara->hideRow(3);
@@ -173,6 +173,13 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
         ui->tableWidgetPara->hideRow(5);
         ui->tableWidgetPara->hideRow(6);
         ui->tableWidgetPara->hideRow(7);
+        if(btn == ui->btnPointDuplicate)
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
+        else if(btn == ui->btnLineDuplicate)
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
+        else
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
+        setBtnText(layerA, mCheckSet->layersA);
     }
 }
 
@@ -198,19 +205,10 @@ void CheckItemDialog::onSelectionChanged(const QItemSelection &, const QItemSele
     mCheckSet = new CheckSet;
     mCheckSet->fromPoint(mCheckMap[row]);
 
-    if (mCheckSet->name == ui->btnPointOnLine->text()) {
-        setParaUi(ui->btnPointOnLine);
-        setText(ui->btnPointOnLine);
-    }else if(mCheckSet->name == ui->btnPointOnLineEnd->text()){
-        setParaUi(ui->btnPointOnLineEnd);
-        setText(ui->btnPointOnLineEnd);
-    }else if(mCheckSet->name == ui->btnPointOnLineNode->text()){
-        setParaUi(ui->btnPointOnLineEnd);
-        setText(ui->btnPointOnLineNode);
-    }else if(mCheckSet->name == ui->btnPointDuplicate->text()){
-        setParaUi(ui->btnPointDuplicate);
-        setText(ui->btnPointDuplicate);
-    }
+    QPushButton *btn = nameToBtn[mCheckSet->name];
+    if(btn == nullptr) return;
+    setParaUi(btn);
+    setText(btn);
 }
 
 void CheckItemDialog::selectLayerA()
@@ -357,42 +355,40 @@ void CheckItemDialog::run()
 #include "pointonlinecheck.h"
 #include "pointonlineendcheck.h"
 #include "pointonlinenodecheck.h"
-#include "pointduplicatecheck.h"
+#include "duplicatecheck.h"
+#include "pointonboundarycheck.h"
 QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
 {
     QList<Check *> checks;
     for (auto &checkset : as_const(mcheckItem->sets))
     {
+        QVariantMap configuration;
+        QVariant var;
+        var.setValue(checkset.layersA);
+        configuration.insert("layersA", var);
+        var.setValue(checkset.layersB);
+        configuration.insert("layersB", var);
         if (checkset.name == ui->btnPointOnLine->text()) {
-            QVariantMap configuration;
-            QVariant var;
-            var.setValue(checkset.layersA);
-            configuration.insert("layersA", var);
-            var.setValue(checkset.layersB);
-            configuration.insert("layersB", var);
             checks.append(new PointOnLineCheck(context, configuration));
         }else if(checkset.name == ui->btnPointOnLineEnd->text()){
-            QVariantMap configuration;
-            QVariant var;
-            var.setValue(checkset.layersA);
-            configuration.insert("layersA", var);
-            var.setValue(checkset.layersB);
-            configuration.insert("layersB", var);
             checks.append(new PointOnLineEndCheck(context, configuration));
         }else if(checkset.name == ui->btnPointOnLineNode->text()){
-            QVariantMap configuration;
-            QVariant var;
-            var.setValue(checkset.layersA);
-            configuration.insert("layersA", var);
-            var.setValue(checkset.layersB);
-            configuration.insert("layersB", var);
             checks.append(new PointOnLineNodeCheck(context, configuration));
         }else if(checkset.name == ui->btnPointDuplicate->text()){
-            QVariantMap configuration;
-            QVariant var;
-            var.setValue(checkset.layersA);
-            configuration.insert("layersA", var);
-            checks.append(new PointDuplicateCheck(context, configuration));
+            var.setValue(QgsWkbTypes::PointGeometry);
+            configuration.insert("type", var);
+            checks.append(new DuplicateCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineDuplicate->text()){
+            var.setValue(QgsWkbTypes::LineGeometry);
+            configuration.insert("type", var);
+            checks.append(new DuplicateCheck(context, configuration));
+        }else if(checkset.name == ui->btnPolygonDuplicate->text()){
+            var.setValue(QgsWkbTypes::PolygonGeometry);
+            configuration.insert("type", var);
+            checks.append(new DuplicateCheck(context, configuration));
+        }else if(checkset.name == ui->btnPointOnBoundary->text()){
+            qDebug()<<"390";
+            checks.append(new PointOnBoundaryCheck(context, configuration));
         }
     }
 

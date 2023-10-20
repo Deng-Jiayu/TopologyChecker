@@ -244,9 +244,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-449</y>
             <width>278</width>
-            <height>1030</height>
+            <height>1059</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -358,7 +358,17 @@
               <property name="bottomMargin">
                <number>2</number>
               </property>
-              <item row="37" column="0">
+              <item row="41" column="0">
+               <widget class="QPushButton" name="btnAngle">
+                <property name="toolTip">
+                 <string>检查面数据集中是否存在小于某个给定角度的锐角。</string>
+                </property>
+                <property name="text">
+                 <string>面内无锐角</string>
+                </property>
+               </widget>
+              </item>
+              <item row="38" column="0">
                <widget class="QPushButton" name="btnConvexhull">
                 <property name="toolTip">
                  <string>检查面对象是否为凸包。</string>
@@ -368,7 +378,37 @@
                 </property>
                </widget>
               </item>
-              <item row="33" column="0">
+              <item row="30" column="0">
+               <widget class="QPushButton" name="btnGap">
+                <property name="toolTip">
+                 <string>检查相邻面对象之间是否存在空隙，即相邻面对象之间的边界必须重合。</string>
+                </property>
+                <property name="text">
+                 <string>面内无缝隙</string>
+                </property>
+               </widget>
+              </item>
+              <item row="28" column="0">
+               <widget class="QPushButton" name="btnPolygonOverlap">
+                <property name="toolTip">
+                 <string>检查一个面数据集中是否存在两个（或两个以上）相互重叠的面对象，包括部分重叠和完全重叠。</string>
+                </property>
+                <property name="text">
+                 <string>面内无重叠</string>
+                </property>
+               </widget>
+              </item>
+              <item row="40" column="0">
+               <widget class="QPushButton" name="btnClockwise">
+                <property name="toolTip">
+                 <string>查询地物的方向性。</string>
+                </property>
+                <property name="text">
+                 <string>时针方向</string>
+                </property>
+               </widget>
+              </item>
+              <item row="34" column="0">
                <widget class="QPushButton" name="btnHole">
                 <property name="toolTip">
                  <string>检查面对象内部是否存在被挖空（岛洞多边形）的情况。</string>
@@ -378,7 +418,17 @@
                 </property>
                </widget>
               </item>
-              <item row="30" column="0">
+              <item row="33" column="0">
+               <widget class="QPushButton" name="btnPolygonInPolygon">
+                <property name="toolTip">
+                 <string>检查面数据集中是否存在没有被参考面数据集的面包含的面对象，即待检查面数据集的面必须是参考面数据集中面对象的子集。</string>
+                </property>
+                <property name="text">
+                 <string>面被面包含</string>
+                </property>
+               </widget>
+              </item>
+              <item row="31" column="0">
                <widget class="QPushButton" name="btnPolygonLayerOverlap">
                 <property name="toolTip">
                  <string>检查面数据集中是否存在与参考面数据集的面重叠的面对象，包括部分重叠和完全重叠，即两个面数据集内的面对象之间不能存在交集。</string>
@@ -389,56 +439,6 @@
                </widget>
               </item>
               <item row="32" column="0">
-               <widget class="QPushButton" name="btnPolygonInPolygon">
-                <property name="toolTip">
-                 <string>检查面数据集中是否存在没有被参考面数据集的面包含的面对象，即待检查面数据集的面必须是参考面数据集中面对象的子集。</string>
-                </property>
-                <property name="text">
-                 <string>面被面包含</string>
-                </property>
-               </widget>
-              </item>
-              <item row="38" column="0">
-               <widget class="QPushButton" name="btnArea">
-                <property name="toolTip">
-                 <string>检查指定面积的面对象。</string>
-                </property>
-                <property name="text">
-                 <string>面积</string>
-                </property>
-               </widget>
-              </item>
-              <item row="29" column="0">
-               <widget class="QPushButton" name="btnGap">
-                <property name="toolTip">
-                 <string>检查相邻面对象之间是否存在空隙，即相邻面对象之间的边界必须重合。</string>
-                </property>
-                <property name="text">
-                 <string>面内无缝隙</string>
-                </property>
-               </widget>
-              </item>
-              <item row="39" column="0">
-               <widget class="QPushButton" name="btnClockwise">
-                <property name="toolTip">
-                 <string>查询地物的方向性。</string>
-                </property>
-                <property name="text">
-                 <string>时针方向</string>
-                </property>
-               </widget>
-              </item>
-              <item row="27" column="0">
-               <widget class="QPushButton" name="btnPolygonOverlap">
-                <property name="toolTip">
-                 <string>检查一个面数据集中是否存在两个（或两个以上）相互重叠的面对象，包括部分重叠和完全重叠。</string>
-                </property>
-                <property name="text">
-                 <string>面内无重叠</string>
-                </property>
-               </widget>
-              </item>
-              <item row="31" column="0">
                <widget class="QPushButton" name="btnPolygonCoveredByPolygon">
                 <property name="toolTip">
                  <string>检查面数据集中是否存在没有被参考面数据集的面覆盖的面对象，即待检查面数据集的一个或多个面必须完全覆盖于参考面数据集中的面对象。</string>
@@ -448,13 +448,20 @@
                 </property>
                </widget>
               </item>
-              <item row="40" column="0">
-               <widget class="QPushButton" name="btnAngle">
+              <item row="39" column="0">
+               <widget class="QPushButton" name="btnArea">
                 <property name="toolTip">
-                 <string>检查面数据集中是否存在小于某个给定角度的锐角。</string>
+                 <string>检查指定面积的面对象。</string>
                 </property>
                 <property name="text">
-                 <string>面内无锐角</string>
+                 <string>面积</string>
+                </property>
+               </widget>
+              </item>
+              <item row="27" column="0">
+               <widget class="QPushButton" name="btnPolygonDuplicate">
+                <property name="text">
+                 <string>面斑不重复</string>
                 </property>
                </widget>
               </item>

@@ -36,6 +36,7 @@ private:
     CheckSet *mCheckSet = nullptr;
     LayerSelectionDialog* layerSelectDialog = nullptr;
     QMap<int, CheckSet *> mCheckMap;
+    QMap<QString, QPushButton*> nameToBtn;
     bool mIsRunningInBackground;
 
     void initTable();

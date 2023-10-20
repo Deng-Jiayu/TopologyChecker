@@ -18,6 +18,14 @@ CheckDock::CheckDock(QgisInterface *iface, QWidget *parent)
 
     connect( dynamic_cast< SetupTab * >( mTabWidget->widget( 0 ) ), &SetupTab::checkerStarted, this, &CheckDock::onCheckerStarted );
     connect( dynamic_cast< SetupTab * >( mTabWidget->widget( 0 ) ), &SetupTab::checkerFinished, this, &CheckDock::onCheckerFinished );
+    connect( this, &CheckDock::visibilityChanged, this, [&](){
+        if(this->isHidden()){
+            delete mTabWidget->widget( 1 );
+            mTabWidget->removeTab( 1 );
+            mTabWidget->addTab( new QWidget(), tr( "Result" ) );
+            mTabWidget->setTabEnabled( 1, false );
+        }
+    });
 }
 
 CheckDock::~CheckDock()

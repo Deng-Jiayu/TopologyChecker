@@ -29,9 +29,11 @@ HEADERS += \
     checkresolutionmethod.h \
     checkset.h \
     collapsiblegroupbox.h \
+    duplicatecheck.h \
     featurepool.h \
     layerselectiondialog.h \
     pointduplicatecheck.h \
+    pointonboundarycheck.h \
     pointonlinecheck.h \
     pointonlineendcheck.h \
     pointonlinenodecheck.h \
@@ -54,9 +56,11 @@ SOURCES += \
     checkresolutionmethod.cpp \
     checkset.cpp \
     collapsiblegroupbox.cpp \
+    duplicatecheck.cpp \
     featurepool.cpp \
     layerselectiondialog.cpp \
     pointduplicatecheck.cpp \
+    pointonboundarycheck.cpp \
     pointonlinecheck.cpp \
     pointonlineendcheck.cpp \
     pointonlinenodecheck.cpp \
