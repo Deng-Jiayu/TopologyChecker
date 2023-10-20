@@ -217,6 +217,8 @@ void SetupTab::initConnection()
         if(!it) continue;
         connect(it, &PushButton::clicked, this, [=]() {
             CheckItemDialog *dialog = new CheckItemDialog(mIface, btnToCheck[it], this);
+            connect(dialog, &CheckItemDialog::checkerStarted, this, &SetupTab::checkerStarted);
+            connect(dialog, &CheckItemDialog::checkerFinished, this, &SetupTab::checkerFinished);
             dialog->setAttribute(Qt::WA_DeleteOnClose);
             dialog->show();
             dialog->set();

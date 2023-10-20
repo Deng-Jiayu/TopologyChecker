@@ -1,5 +1,5 @@
 /***************************************************************************
- *  qgsgeometrycheckerutils.cpp                                            *
+ *  CheckerUtils.cpp                                            *
  *  -------------------                                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
  *  email                : smani@sourcepole.ch                             *
@@ -29,7 +29,7 @@
 
 #include <qmath.h>
 
-QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const FeaturePool *pool,
+CheckerUtils::LayerFeature::LayerFeature( const FeaturePool *pool,
     const QgsFeature &feature,
     const CheckContext *context,
     bool useMapCrs )
@@ -52,44 +52,44 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const FeaturePool *pool,
   }
 }
 
-QgsFeature QgsGeometryCheckerUtils::LayerFeature::feature() const
+QgsFeature CheckerUtils::LayerFeature::feature() const
 {
   return mFeature;
 }
 
-QPointer<QgsVectorLayer> QgsGeometryCheckerUtils::LayerFeature::layer() const
+QPointer<QgsVectorLayer> CheckerUtils::LayerFeature::layer() const
 {
   return mFeaturePool->layerPtr();
 }
 
-QString QgsGeometryCheckerUtils::LayerFeature::layerId() const
+QString CheckerUtils::LayerFeature::layerId() const
 {
   return mFeaturePool->layerId();
 }
 
-QgsGeometry QgsGeometryCheckerUtils::LayerFeature::geometry() const
+QgsGeometry CheckerUtils::LayerFeature::geometry() const
 {
   return mGeometry;
 }
 
-QString QgsGeometryCheckerUtils::LayerFeature::id() const
+QString CheckerUtils::LayerFeature::id() const
 {
   return QStringLiteral( "%1:%2" ).arg( mFeaturePool->layerName() ).arg( mFeature.id() );
 }
 
-bool QgsGeometryCheckerUtils::LayerFeature::operator==( const LayerFeature &other ) const
+bool CheckerUtils::LayerFeature::operator==( const LayerFeature &other ) const
 {
   return layerId() == other.layerId() && mFeature.id() == other.mFeature.id();
 }
 
-bool QgsGeometryCheckerUtils::LayerFeature::operator!=( const LayerFeature &other ) const
+bool CheckerUtils::LayerFeature::operator!=( const LayerFeature &other ) const
 {
   return layerId() != other.layerId() || mFeature.id() != other.mFeature.id();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QStringList::const_iterator &layerIt, const LayerFeatures *parent )
+CheckerUtils::LayerFeatures::iterator::iterator( const QStringList::const_iterator &layerIt, const LayerFeatures *parent )
   : mLayerIt( layerIt )
   , mFeatureIt( QgsFeatureIds::const_iterator() )
   , mParent( parent )
@@ -97,7 +97,7 @@ QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QStringList::c
   nextLayerFeature( true );
 }
 
-QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QgsGeometryCheckerUtils::LayerFeatures::iterator &rh )
+CheckerUtils::LayerFeatures::iterator::iterator( const CheckerUtils::LayerFeatures::iterator &rh )
 {
   mLayerIt = rh.mLayerIt;
   mFeatureIt = rh.mFeatureIt;
@@ -105,38 +105,38 @@ QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QgsGeometryChe
   mCurrentFeature = qgis::make_unique<LayerFeature>( *rh.mCurrentFeature.get() );
 }
 
-bool QgsGeometryCheckerUtils::LayerFeature::useMapCrs() const
+bool CheckerUtils::LayerFeature::useMapCrs() const
 {
   return mMapCrs;
 }
-QgsGeometryCheckerUtils::LayerFeatures::iterator::~iterator()
+CheckerUtils::LayerFeatures::iterator::~iterator()
 {
 }
 
-QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerFeatures::iterator::operator++( int )
+CheckerUtils::LayerFeatures::iterator CheckerUtils::LayerFeatures::iterator::operator++( int )
 {
   iterator tmp( *this );
   ++*this;
   return tmp;
 }
 
-const QgsGeometryCheckerUtils::LayerFeature &QgsGeometryCheckerUtils::LayerFeatures::iterator::operator*() const
+const CheckerUtils::LayerFeature &CheckerUtils::LayerFeatures::iterator::operator*() const
 {
   Q_ASSERT( mCurrentFeature );
   return *mCurrentFeature;
 }
 
-bool QgsGeometryCheckerUtils::LayerFeatures::iterator::operator!=( const QgsGeometryCheckerUtils::LayerFeatures::iterator &other )
+bool CheckerUtils::LayerFeatures::iterator::operator!=( const CheckerUtils::LayerFeatures::iterator &other )
 {
   return mLayerIt != other.mLayerIt || mFeatureIt != other.mFeatureIt;
 }
 
-const QgsGeometryCheckerUtils::LayerFeatures::iterator &QgsGeometryCheckerUtils::LayerFeatures::iterator::operator++()
+const CheckerUtils::LayerFeatures::iterator &CheckerUtils::LayerFeatures::iterator::operator++()
 {
   nextLayerFeature( false );
   return *this;
 }
-bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextLayerFeature( bool begin )
+bool CheckerUtils::LayerFeatures::iterator::nextLayerFeature( bool begin )
 {
   if ( !begin && nextFeature( false ) )
   {
@@ -156,7 +156,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextLayerFeature( bool be
   return false;
 }
 
-bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextLayer( bool begin )
+bool CheckerUtils::LayerFeatures::iterator::nextLayer( bool begin )
 {
   if ( !begin )
   {
@@ -178,7 +178,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextLayer( bool begin )
   return false;
 }
 
-bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
+bool CheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
 {
   FeaturePool *featurePool = mParent->mFeaturePools[*mLayerIt];
   const QgsFeatureIds &featureIds = mParent->mFeatureIds[*mLayerIt];
@@ -207,7 +207,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
 
 /////////////////////////////////////////////////////////////////////////////
 
-QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, FeaturePool *> &featurePools,
+CheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, FeaturePool *> &featurePools,
     const QMap<QString, QgsFeatureIds> &featureIds,
     const QList<QgsWkbTypes::GeometryType> &geometryTypes,
     QgsFeedback *feedback,
@@ -222,7 +222,7 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, Featu
   , mUseMapCrs( useMapCrs )
 {}
 
-QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, FeaturePool *> &featurePools,
+CheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, FeaturePool *> &featurePools,
     const QList<QString> &layerIds, const QgsRectangle &extent,
     const QList<QgsWkbTypes::GeometryType> &geometryTypes,
     const CheckContext *context )
@@ -248,24 +248,24 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, Featu
   }
 }
 
-QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerFeatures::begin() const
+CheckerUtils::LayerFeatures::iterator CheckerUtils::LayerFeatures::begin() const
 {
   return iterator( mLayerIds.constBegin(), this );
 }
 
-QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerFeatures::end() const
+CheckerUtils::LayerFeatures::iterator CheckerUtils::LayerFeatures::end() const
 {
   return iterator( mLayerIds.end(), this );
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-std::unique_ptr<QgsGeometryEngine> QgsGeometryCheckerUtils::createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance )
+std::unique_ptr<QgsGeometryEngine> CheckerUtils::createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance )
 {
   return qgis::make_unique<QgsGeos>( geometry, tolerance );
 }
 
-QgsAbstractGeometry *QgsGeometryCheckerUtils::getGeomPart( QgsAbstractGeometry *geom, int partIdx )
+QgsAbstractGeometry *CheckerUtils::getGeomPart( QgsAbstractGeometry *geom, int partIdx )
 {
   if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
   {
@@ -274,7 +274,7 @@ QgsAbstractGeometry *QgsGeometryCheckerUtils::getGeomPart( QgsAbstractGeometry *
   return geom;
 }
 
-const QgsAbstractGeometry *QgsGeometryCheckerUtils::getGeomPart( const QgsAbstractGeometry *geom, int partIdx )
+const QgsAbstractGeometry *CheckerUtils::getGeomPart( const QgsAbstractGeometry *geom, int partIdx )
 {
   if ( dynamic_cast<const QgsGeometryCollection *>( geom ) )
   {
@@ -283,7 +283,7 @@ const QgsAbstractGeometry *QgsGeometryCheckerUtils::getGeomPart( const QgsAbstra
   return geom;
 }
 
-QList<const QgsLineString *> QgsGeometryCheckerUtils::polygonRings( const QgsPolygon *polygon )
+QList<const QgsLineString *> CheckerUtils::polygonRings( const QgsPolygon *polygon )
 {
   QList<const QgsLineString *> rings;
   if ( const QgsLineString *exterior = dynamic_cast<const QgsLineString *>( polygon->exteriorRing() ) )
@@ -300,7 +300,7 @@ QList<const QgsLineString *> QgsGeometryCheckerUtils::polygonRings( const QgsPol
   return rings;
 }
 
-void QgsGeometryCheckerUtils::filter1DTypes( QgsAbstractGeometry *geom )
+void CheckerUtils::filter1DTypes( QgsAbstractGeometry *geom )
 {
   if ( qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
   {
@@ -323,7 +323,7 @@ double pointLineDist( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q 
   return nom / std::sqrt( dx * dx + dy * dy );
 }
 
-bool QgsGeometryCheckerUtils::pointOnLine( const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities )
+bool CheckerUtils::pointOnLine( const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities )
 {
   int nVerts = line->vertexCount();
   for ( int i = 0 + excludeExtremities; i < nVerts - 1 - excludeExtremities; ++i )
@@ -339,7 +339,7 @@ bool QgsGeometryCheckerUtils::pointOnLine( const QgsPoint &p, const QgsLineStrin
   return false;
 }
 
-QList<QgsPoint> QgsGeometryCheckerUtils::lineIntersections( const QgsLineString *line1, const QgsLineString *line2, double tol )
+QList<QgsPoint> CheckerUtils::lineIntersections( const QgsLineString *line1, const QgsLineString *line2, double tol )
 {
   QList<QgsPoint> intersections;
   QgsPoint inter;
@@ -361,7 +361,7 @@ QList<QgsPoint> QgsGeometryCheckerUtils::lineIntersections( const QgsLineString 
   return intersections;
 }
 
-double QgsGeometryCheckerUtils::sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol )
+double CheckerUtils::sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol )
 {
   double len = 0;
 

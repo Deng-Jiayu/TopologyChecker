@@ -64,7 +64,7 @@ class CheckError
      * additional information.
      */
     CheckError( const Check *check,
-                           const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+                           const CheckerUtils::LayerFeature &layerFeature,
                            const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),

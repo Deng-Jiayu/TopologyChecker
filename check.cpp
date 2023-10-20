@@ -144,7 +144,7 @@ void Check::deleteFeatureGeometryRing( const QMap<QString, FeaturePool *> &featu
 {
   FeaturePool *featurePool = featurePools[layerId];
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry *partGeom = QgsGeometryCheckerUtils::getGeomPart( featureGeom.get(), partIdx );
+  QgsAbstractGeometry *partGeom = CheckerUtils::getGeomPart( featureGeom.get(), partIdx );
   if ( dynamic_cast<QgsCurvePolygon *>( partGeom ) )
   {
     // If we delete the exterior ring of a polygon, it makes no sense to keep the interiors

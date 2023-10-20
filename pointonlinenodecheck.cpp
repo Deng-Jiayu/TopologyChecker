@@ -9,15 +9,15 @@ void PointOnLineNodeCheck::collectErrors( const QMap<QString, FeaturePool *> &fe
     Q_UNUSED( messages )
 
     QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-    QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
-    for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
+    CheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
+    for ( const CheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
         if (std::find(pointLayers.begin(), pointLayers.end(), layerFeature.layer()) == pointLayers.end())
             continue;
         const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
         for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
         {
-            const QgsPoint *point = dynamic_cast<const QgsPoint *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
+            const QgsPoint *point = dynamic_cast<const QgsPoint *>( CheckerUtils::getGeomPart( geom, iPart ) );
             if ( !point )
             {
                 // Should not happen
@@ -27,15 +27,15 @@ void PointOnLineNodeCheck::collectErrors( const QMap<QString, FeaturePool *> &fe
             bool touches = false;
             QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
                               point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-            QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::LineGeometry}, mContext );
-            for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
+            CheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::LineGeometry}, mContext );
+            for ( const CheckerUtils::LayerFeature &checkFeature : checkFeatures )
             {
                 if (std::find(lineLayers.begin(), lineLayers.end(), checkFeature.layer()) == lineLayers.end())
                     continue;
                 const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
                 for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
                 {
-                    const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart ) );
+                    const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( CheckerUtils::getGeomPart( testGeom, jPart ) );
                     if ( !testLine || testLine->numPoints() <= 2)
                     {
                         continue;
@@ -85,20 +85,20 @@ void PointOnLineNodeCheck::fixError( const QMap<QString, FeaturePool *> &feature
     }
 
     // Check if error still applies
-    const QgsPoint *point = dynamic_cast<const QgsPoint *>( QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part ) );
+    const QgsPoint *point = dynamic_cast<const QgsPoint *>( CheckerUtils::getGeomPart( geom, vidx.part ) );
     bool touches = false;
     QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
                       point->x() + mContext->tolerance, point->y() + mContext->tolerance );
     QMap<QString, QgsFeatureIds> featureIds = allLayerFeatureIds(featurePools);
-    QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::LineGeometry}, mContext );
-    for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
+    CheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::LineGeometry}, mContext );
+    for ( const CheckerUtils::LayerFeature &checkFeature : checkFeatures )
     {
         if (std::find(lineLayers.begin(), lineLayers.end(), checkFeature.layer()) == lineLayers.end())
             continue;
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
         for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
         {
-            const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart ) );
+            const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( CheckerUtils::getGeomPart( testGeom, jPart ) );
             if ( !testLine || testLine->numPoints() <= 2)
             {
                 continue;

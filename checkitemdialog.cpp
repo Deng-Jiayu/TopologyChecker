@@ -21,6 +21,7 @@ CheckItemDialog::CheckItemDialog(QgisInterface *iface, CheckItem *item, QWidget 
 
     initTable();
     initParaTable();
+    initConnection();
 }
 
 CheckItemDialog::~CheckItemDialog()
@@ -113,6 +114,22 @@ void CheckItemDialog::initParaTable()
 
 }
 
+void CheckItemDialog::initConnection()
+{
+    QList<QPushButton*> list = ui->scrollArea->findChildren<QPushButton*>();
+    for (int i = 0; i < list.size(); i++)
+    {
+        QPushButton* btn = list.at(i);
+        connect(btn, &QPushButton::clicked, this, [&](){
+            QPushButton *p = qobject_cast<QPushButton *>(sender());
+            if(mCheckSet) delete mCheckSet;
+            mCheckSet = new CheckSet(p->text());
+            setParaUi(p);
+            setText(p);
+        });
+    }
+}
+
 void CheckItemDialog::setBtnText(QPushButton* btn, QVector<QgsVectorLayer*> vec)
 {
     if (vec.empty()) {
@@ -127,6 +144,36 @@ void CheckItemDialog::setBtnText(QPushButton* btn, QVector<QgsVectorLayer*> vec)
     }
     str.remove(str.length() - 2, 2);
     btn->setText(str);
+}
+
+void CheckItemDialog::setParaUi(QPushButton *btn)
+{
+    for (int i = 0; i < ui->tableWidgetPara->rowCount(); ++i)
+        ui->tableWidgetPara->showRow(i);
+    if(btn == ui->btnPointOnLine || btn == ui->btnPointOnLineEnd || btn == ui->btnPointOnLineNode) {
+        ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
+        ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线图层"));
+        setBtnText(layerA, mCheckSet->layersA);
+        setBtnText(layerB, mCheckSet->layersB);
+
+        ui->tableWidgetPara->hideRow(2);
+        ui->tableWidgetPara->hideRow(3);
+        ui->tableWidgetPara->hideRow(4);
+        ui->tableWidgetPara->hideRow(5);
+        ui->tableWidgetPara->hideRow(6);
+        ui->tableWidgetPara->hideRow(7);
+    }else if(btn == ui->btnPointDuplicate){
+        ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
+        setBtnText(layerA, mCheckSet->layersA);
+
+        ui->tableWidgetPara->hideRow(1);
+        ui->tableWidgetPara->hideRow(2);
+        ui->tableWidgetPara->hideRow(3);
+        ui->tableWidgetPara->hideRow(4);
+        ui->tableWidgetPara->hideRow(5);
+        ui->tableWidgetPara->hideRow(6);
+        ui->tableWidgetPara->hideRow(7);
+    }
 }
 
 void CheckItemDialog::setText(QPushButton *btn)
@@ -152,14 +199,17 @@ void CheckItemDialog::onSelectionChanged(const QItemSelection &, const QItemSele
     mCheckSet->fromPoint(mCheckMap[row]);
 
     if (mCheckSet->name == ui->btnPointOnLine->text()) {
-        initPointOnLineUi();
+        setParaUi(ui->btnPointOnLine);
         setText(ui->btnPointOnLine);
     }else if(mCheckSet->name == ui->btnPointOnLineEnd->text()){
-        initPointOnLineUi();
+        setParaUi(ui->btnPointOnLineEnd);
         setText(ui->btnPointOnLineEnd);
     }else if(mCheckSet->name == ui->btnPointOnLineNode->text()){
-        initPointOnLineUi();
+        setParaUi(ui->btnPointOnLineEnd);
         setText(ui->btnPointOnLineNode);
+    }else if(mCheckSet->name == ui->btnPointDuplicate->text()){
+        setParaUi(ui->btnPointDuplicate);
+        setText(ui->btnPointDuplicate);
     }
 }
 
@@ -267,12 +317,11 @@ void CheckItemDialog::run()
 
     CheckContext *context = new CheckContext( ui->spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext(), QgsProject::instance() );
 
-    QList<Check *> checks;
-    // TODO, set check
-
-
+    QList<Check *> checks = getChecks(context);
 
     Checker *checker = new Checker( checks, context, featurePools );
+
+    emit checkerStarted( checker );
 
     // Run
     ui->progressBar->setRange( 0, 0 );
@@ -300,13 +349,15 @@ void CheckItemDialog::run()
     ui->btnCancel->hide();
     ui->btnRun->setEnabled( true );
 
-    // TODO Show result
-
+    // Show result
+    emit checkerFinished( !futureWatcher.isCanceled() );
+    this->hide();
 }
 
 #include "pointonlinecheck.h"
 #include "pointonlineendcheck.h"
 #include "pointonlinenodecheck.h"
+#include "pointduplicatecheck.h"
 QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
 {
     QList<Check *> checks;
@@ -336,26 +387,14 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
             var.setValue(checkset.layersB);
             configuration.insert("layersB", var);
             checks.append(new PointOnLineNodeCheck(context, configuration));
+        }else if(checkset.name == ui->btnPointDuplicate->text()){
+            QVariantMap configuration;
+            QVariant var;
+            var.setValue(checkset.layersA);
+            configuration.insert("layersA", var);
+            checks.append(new PointDuplicateCheck(context, configuration));
         }
     }
 
     return checks;
-}
-
-void CheckItemDialog::initPointOnLineUi()
-{
-    for (int i = 0; i < ui->tableWidgetPara->rowCount(); ++i)
-        ui->tableWidgetPara->showRow(i);
-
-    ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
-    ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线图层"));
-    setBtnText(layerA, mCheckSet->layersA);
-    setBtnText(layerB, mCheckSet->layersB);
-
-    ui->tableWidgetPara->hideRow(2);
-    ui->tableWidgetPara->hideRow(3);
-    ui->tableWidgetPara->hideRow(4);
-    ui->tableWidgetPara->hideRow(5);
-    ui->tableWidgetPara->hideRow(6);
-    ui->tableWidgetPara->hideRow(7);
 }

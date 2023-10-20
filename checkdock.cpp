@@ -10,15 +10,35 @@ CheckDock::CheckDock(QgisInterface *iface, QWidget *parent)
     ui->setupUi(this);
 
     mTabWidget = new QTabWidget();
-    mButtonBox = new QDialogButtonBox(QDialogButtonBox::Close | QDialogButtonBox::Help, Qt::Horizontal);
-
     ui->verticalLayout->addWidget(mTabWidget);
 
-    mTabWidget->addTab(new SetupTab(mIface, this, this), QStringLiteral("检查方案列表"));
-    mTabWidget->addTab(new ResultTab(this), QStringLiteral("检查结果列表"));
+    mTabWidget->addTab( new SetupTab(mIface, this, this), QStringLiteral("检查方案列表") );
+    mTabWidget->addTab( new QWidget(), QStringLiteral("检查结果列表") );
+    mTabWidget->setTabEnabled( 1, false );
+
+    connect( dynamic_cast< SetupTab * >( mTabWidget->widget( 0 ) ), &SetupTab::checkerStarted, this, &CheckDock::onCheckerStarted );
+    connect( dynamic_cast< SetupTab * >( mTabWidget->widget( 0 ) ), &SetupTab::checkerFinished, this, &CheckDock::onCheckerFinished );
 }
 
 CheckDock::~CheckDock()
 {
     delete ui;
+}
+
+void CheckDock::onCheckerStarted( Checker *checker )
+{
+    delete mTabWidget->widget( 1 );
+    mTabWidget->removeTab( 1 );
+    mTabWidget->addTab( new ResultTab( mIface, checker, mTabWidget ), QStringLiteral("检查结果列表") );
+    mTabWidget->setTabEnabled( 1, false );
+}
+
+void CheckDock::onCheckerFinished( bool successful )
+{
+    if ( successful )
+    {
+        mTabWidget->setTabEnabled( 1, true );
+        mTabWidget->setCurrentIndex( 1 );
+        //static_cast<ResultTab *>( mTabWidget->widget( 1 ) )->finalize();
+    }
 }

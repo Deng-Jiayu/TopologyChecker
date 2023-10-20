@@ -14,6 +14,103 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
+   <item row="5" column="0">
+    <widget class="QGroupBox" name="groupBoxRowSelectionBehavior">
+     <property name="title">
+      <string>选中某一行时，将画布移至</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="radioButtonFeature">
+        <property name="text">
+         <string>要素</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="radioButtonError">
+        <property name="text">
+         <string>错误</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QRadioButton" name="radioButtonDontMove">
+        <property name="text">
+         <string>不移动</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="QCheckBox" name="checkBoxHighlight">
+        <property name="text">
+         <string>高亮选中要素</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QWidget" name="openWidge" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="btnOpenAttributeTable">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/images/themes/default/mActionFromSelectedFeature.svg</normaloff>:/images/themes/default/mActionFromSelectedFeature.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelOpenAttributeTable">
+        <property name="text">
+         <string>在属性表中打开所选要素</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QTableWidget" name="tableWidgetErrors">
      <property name="editTriggers">
@@ -39,124 +136,43 @@
      </attribute>
      <column>
       <property name="text">
-       <string>Layer</string>
+       <string>图层</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Object ID</string>
+       <string>序号</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Error</string>
+       <string>错误原因</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Coordinates</string>
+       <string>坐标</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Value</string>
+       <string>对象信息</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Resolution</string>
+       <string>修复</string>
       </property>
      </column>
     </widget>
    </item>
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_4">
-     <item row="1" column="0">
-      <widget class="QPushButton" name="btnErrorResolutionSettings">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="btnFixWithDefault">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>select fix method</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="labelErrorResolutionSettings">
-       <property name="text">
-        <string>Error resolution settings</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="btnFix">
-       <property name="text">
-        <string>fix</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="mComboBox">
-       <property name="whatsThis">
-        <string>select fix method</string>
-       </property>
-       <property name="currentText">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="btnExport">
         <property name="text">
-         <string>Export</string>
+         <string>导出</string>
         </property>
        </widget>
       </item>
@@ -176,7 +192,7 @@
       <item>
        <widget class="QLabel" name="labelErrorCount">
         <property name="text">
-         <string>Total errors: 0</string>
+         <string>错误数目： 0</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -186,28 +202,44 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QWidget" name="widgetFix" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btnOpenAttributeTable">
+   <item row="2" column="0">
+    <widget class="QWidget" name="fixWidget" native="true">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="1" column="2">
+       <widget class="QLabel" name="labelErrorResolutionSettings">
+        <property name="text">
+         <string>设置修复方法</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>修复方法</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="btnErrorResolutionSettings">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>设置修复方法</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="btnFixWithDefault">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -215,80 +247,36 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>修复</string>
+        </property>
         <property name="icon">
          <iconset>
-          <normaloff>:/images/themes/default/mActionFromSelectedFeature.svg</normaloff>:/images/themes/default/mActionFromSelectedFeature.svg</iconset>
+          <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" colspan="2">
-       <widget class="QLabel" name="labelOpenAttributeTable">
+      <item row="0" column="6">
+       <widget class="QPushButton" name="btnFix">
         <property name="text">
-         <string>Show selected features in attribute table</string>
+         <string>修复</string>
         </property>
        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QGroupBox" name="groupBoxRowSelectionBehavior">
-     <property name="title">
-      <string>When a row is selected, move canvas to</string>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="spacing">
-       <number>4</number>
-      </property>
-      <item row="0" column="1">
-       <widget class="QRadioButton" name="radioButtonFeature">
-        <property name="text">
-         <string>Feature</string>
+      <item row="1" column="4" colspan="3">
+       <widget class="QProgressBar" name="progressBarFixErrors">
+        <property name="value">
+         <number>0</number>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="radioButtonError">
-        <property name="text">
-         <string>Error</string>
+      <item row="0" column="2" colspan="4">
+       <widget class="QComboBox" name="mComboBox">
+        <property name="whatsThis">
+         <string>select fix method</string>
         </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QRadioButton" name="radioButtonDontMove">
-        <property name="text">
-         <string>Don't &amp;move</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="QCheckBox" name="checkBoxHighlight">
-        <property name="text">
-         <string>Highlight contour of selected features</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+        <property name="currentText">
+         <string/>
         </property>
        </widget>
       </item>

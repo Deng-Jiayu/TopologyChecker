@@ -8,6 +8,7 @@
 #include "collapsiblegroupbox.h"
 #include "pushbutton.h"
 #include "checkset.h"
+#include "checker.h"
 
 namespace Ui {
 class SetupTab;
@@ -20,6 +21,10 @@ class SetupTab : public QWidget
 public:
     SetupTab( QgisInterface *iface, QDockWidget *checkDock, QWidget *parent = nullptr );
     ~SetupTab() override;
+
+signals:
+    void checkerStarted( Checker *checker );
+    void checkerFinished( bool );
 
 private:
     Ui::SetupTab *ui;

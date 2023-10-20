@@ -8,8 +8,7 @@
 #include <QCheckBox>
 #include "layerselectiondialog.h"
 
-#include "check.h"
-
+#include "checker.h"
 #include "checkset.h"
 
 namespace Ui {
@@ -26,6 +25,10 @@ public:
 
     void set();
 
+signals:
+    void checkerStarted( Checker *checker );
+    void checkerFinished( bool );
+
 private:
     Ui::CheckItemDialog *ui;
     QgisInterface *iface = nullptr;
@@ -37,7 +40,9 @@ private:
 
     void initTable();
     void initParaTable();
+    void initConnection();
     void setBtnText(QPushButton* btn, QVector<QgsVectorLayer*> vec);
+    void setParaUi(QPushButton *btn);
     void setText(QPushButton* btn);
 
     QPushButton *layerA;
@@ -60,6 +65,7 @@ private slots:
 private:
     QList<Check *> getChecks(CheckContext *context);
     void initPointOnLineUi();
+    void initPointDuplicateUi();
 
 };
 

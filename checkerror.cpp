@@ -38,7 +38,7 @@ CheckError::CheckError( const Check *check,
 }
 
 CheckError::CheckError( const Check *check,
-    const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+    const CheckerUtils::LayerFeature &layerFeature,
     const QgsPointXY &errorLocation,
     QgsVertexId vidx,
     const QVariant &value,
@@ -55,7 +55,7 @@ CheckError::CheckError( const Check *check,
   if ( vidx.part != -1 )
   {
     const QgsGeometry geom = layerFeature.geometry();
-    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom.constGet(), vidx.part )->clone() );
+    mGeometry = QgsGeometry( CheckerUtils::getGeomPart( geom.constGet(), vidx.part )->clone() );
   }
   else
   {

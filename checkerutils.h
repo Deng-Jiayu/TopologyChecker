@@ -1,5 +1,5 @@
 /***************************************************************************
- *  qgsgeometrycheckerutils.h                                              *
+ *  CheckerUtils.h                                              *
  *  -------------------                                                    *
  *  copyright            : (C) 2014 by Sandro Mani / Sourcepole AG         *
  *  email                : smani@sourcepole.ch                             *
@@ -36,7 +36,7 @@ class QgsFeedback;
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
-class QgsGeometryCheckerUtils
+class CheckerUtils
 {
   public:
 
@@ -87,8 +87,8 @@ class QgsGeometryCheckerUtils
          * Returns a combination of the layerId and the feature id.
          */
         QString id() const;
-        bool operator==( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
-        bool operator!=( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
+        bool operator==( const CheckerUtils::LayerFeature &other ) const;
+        bool operator!=( const CheckerUtils::LayerFeature &other ) const;
 
         /**
          * Returns if the geometry is reprojected to the map CRS or not.
@@ -135,7 +135,7 @@ class QgsGeometryCheckerUtils
         /**
          * \ingroup analysis
          *
-         * An iterator over all features in a QgsGeometryCheckerUtils::LayerFeatures.
+         * An iterator over all features in a CheckerUtils::LayerFeatures.
          *
          * \since QGIS 3.4
          */
@@ -169,7 +169,7 @@ class QgsGeometryCheckerUtils
             /**
              * Dereferences the item at the current iterator location.
              */
-            const QgsGeometryCheckerUtils::LayerFeature &operator*() const;
+            const CheckerUtils::LayerFeature &operator*() const;
             bool operator!=( const iterator &other );
 
           private:
@@ -179,7 +179,7 @@ class QgsGeometryCheckerUtils
             QList<QString>::const_iterator mLayerIt;
             QgsFeatureIds::const_iterator mFeatureIt;
             const LayerFeatures *mParent = nullptr;
-            std::unique_ptr<QgsGeometryCheckerUtils::LayerFeature> mCurrentFeature;
+            std::unique_ptr<CheckerUtils::LayerFeature> mCurrentFeature;
 
             iterator &operator= ( const iterator & ) = delete;
         };
@@ -275,6 +275,6 @@ class QgsGeometryCheckerUtils
 
 #endif
 
-}; // QgsGeometryCheckerUtils
+}; // CheckerUtils
 
 #endif // CHECKERUTILS_H

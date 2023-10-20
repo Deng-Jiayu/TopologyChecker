@@ -31,6 +31,7 @@ HEADERS += \
     collapsiblegroupbox.h \
     featurepool.h \
     layerselectiondialog.h \
+    pointduplicatecheck.h \
     pointonlinecheck.h \
     pointonlineendcheck.h \
     pointonlinenodecheck.h \
@@ -55,6 +56,7 @@ SOURCES += \
     collapsiblegroupbox.cpp \
     featurepool.cpp \
     layerselectiondialog.cpp \
+    pointduplicatecheck.cpp \
     pointonlinecheck.cpp \
     pointonlineendcheck.cpp \
     pointonlinenodecheck.cpp \
