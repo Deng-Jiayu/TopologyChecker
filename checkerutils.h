@@ -23,6 +23,7 @@
 #include "qgspoint.h"
 #include "checkcontext.h"
 #include <qmath.h>
+#include "linesegment.h"
 
 class QgsGeometryEngine;
 class FeaturePool;
@@ -245,9 +246,36 @@ class CheckerUtils
       }
     }
 
+    static bool cmp(LineSegment &a, LineSegment &b) { return a.angle < b.angle; }
+
+    static bool ok(double a, double b, double tol) {
+      if (a > b)
+        return a - b <= tol;
+      else
+        return b - a <= tol;
+    }
+
+    static bool pointOnLine(const QgsPointXY &M, const QgsPointXY &A, const QgsPointXY &B, double tol);
+
+    static QgsPolylineXY lineOverlay(LineSegment &a, LineSegment &b, double tol);
+
+    static QVector<QgsGeometry> lineOverlay(QVector<LineSegment> &linesA, QVector<LineSegment> &linesB, double tol);
+
+    //static QVector<QgsGeometry> lineSelfOverlay(QVector<LineSegment> &lines, double tol);
+
+
     static bool pointOnLine( const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities = false );
 
-    static QList<QgsPoint> lineIntersections( const QgsLineString *line1, const QgsLineString *line2, double tol );
+    struct SelfIntersection
+    {
+      int segment1;
+      int segment2;
+      QgsPoint point;
+    };
+
+    static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance,bool acceptImproperIntersection = false );
+
+    static QList<QgsPoint> lineIntersections( const QgsLineString *line1, const QgsLineString *line2, double tol, bool acceptImproperIntersection = false);
 
     static double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol );
 

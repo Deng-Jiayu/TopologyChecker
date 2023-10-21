@@ -315,6 +315,114 @@ void CheckerUtils::filter1DTypes( QgsAbstractGeometry *geom )
   }
 }
 
+bool CheckerUtils::pointOnLine(const QgsPointXY &M, const QgsPointXY &A, const QgsPointXY &B, double tol)
+{
+  if (M.distance(A) < tol || M.distance(B) < tol)
+    return true;
+
+  if (abs(A.x() - B.x()) < tol && abs(A.x() - M.x()) < tol)
+  {
+    if ((A.y() - M.y()) * (M.y() - B.y()) > 0)
+      return true;
+    return false;
+  }
+  else if (abs(A.y() - B.y()) < tol && abs(A.y() - M.y()) < tol)
+  {
+    if ((A.x() - M.x()) * (M.x() - B.x()) > 0)
+      return true;
+    return false;
+  }
+  else
+  {
+    if (abs((A.y() - M.y()) / (A.x() - M.x()) -
+            (M.y() - B.y()) / (M.x() - B.x())) < tol)
+    {
+      if ((A.y() - M.y()) * (M.y() - B.y()) > 0 &&
+          (A.x() - M.x()) * (M.x() - B.x()) > 0)
+        return true;
+    }
+
+    return false;
+  }
+}
+
+
+QgsPolylineXY CheckerUtils::lineOverlay(LineSegment &a, LineSegment &b, double tol)
+{
+  QgsPointXY A = a.start(), B = a.end(), C = b.start(), D = b.end();
+  bool onLineA, onLineB, onLineC, onLineD;
+  onLineA = pointOnLine(A, C, D, tol);
+  onLineB = pointOnLine(B, C, D, tol);
+  onLineC = pointOnLine(C, A, B, tol);
+  onLineD = pointOnLine(D, A, B, tol);
+
+  QgsPolylineXY overlapLine;
+  // coincide01
+  if (onLineA && onLineB)
+  {
+    overlapLine.push_back(A);
+    overlapLine.push_back(B);
+  }
+  else if (onLineC && onLineD)
+  {
+    overlapLine.push_back(C);
+    overlapLine.push_back(D);
+  }
+
+  // coincide02
+  if (onLineA && onLineC && (A != C))
+  {
+    overlapLine.push_back(A);
+    overlapLine.push_back(C);
+  }
+  else if (onLineA && onLineD && (A != D))
+  {
+    overlapLine.push_back(A);
+    overlapLine.push_back(D);
+  }
+  else if (onLineB && onLineC && (B != C))
+  {
+    overlapLine.push_back(B);
+    overlapLine.push_back(C);
+  }
+  else if (onLineB && onLineD && (B != D))
+  {
+    overlapLine.push_back(B);
+    overlapLine.push_back(D);
+  }
+
+  return overlapLine;
+}
+
+QVector<QgsGeometry> CheckerUtils::lineOverlay(QVector<LineSegment> &linesA, QVector<LineSegment> &linesB, double tol)
+{
+  QVector<QgsGeometry> ans;
+  auto i = linesA.begin();
+  auto j = linesB.begin();
+  for (; i < linesA.end() && j < linesB.end(); ++i)
+  {
+    while (j < linesB.end() && j->angle + tol < i->angle)
+      ++j;
+    if (j >= linesB.end())
+      break;
+    if (j->angle > i->angle + tol)
+      continue;
+
+    auto k = j;
+    while (k < linesB.end() && ok(i->angle, k->angle, tol))
+    {
+      QgsPolylineXY line = lineOverlay(*i, *k, tol);
+      if (!line.isEmpty())
+      {
+        ans.push_back(QgsGeometry::fromPolylineXY(line));
+      }
+
+      ++k;
+    }
+  }
+  return ans;
+}
+
 double pointLineDist( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q )
 {
   double nom = std::fabs( ( p2.y() - p1.y() ) * q.x() - ( p2.x() - p1.x() ) * q.y() + p2.x() * p1.y() - p2.y() * p1.x() );
@@ -339,12 +447,74 @@ bool CheckerUtils::pointOnLine( const QgsPoint &p, const QgsLineString *line, do
   return false;
 }
 
-QList<QgsPoint> CheckerUtils::lineIntersections( const QgsLineString *line1, const QgsLineString *line2, double tol )
+QVector<CheckerUtils::SelfIntersection> CheckerUtils::selfIntersections(const QgsAbstractGeometry *geom, int part, int ring, double tolerance, bool acceptImproperIntersection)
+{
+  QVector<SelfIntersection> intersections;
+
+  int n = geom->vertexCount( part, ring );
+  bool isClosed = geom->vertexAt( QgsVertexId( part, ring, 0 ) ) == geom->vertexAt( QgsVertexId( part, ring, n - 1 ) );
+  int existI = -2, existJ = -2;
+  // Check every pair of segments for intersections
+  for ( int i = 0, j = 1; j < n; i = j++ )
+  {
+    QgsPoint pi = geom->vertexAt( QgsVertexId( part, ring, i ) );
+    QgsPoint pj = geom->vertexAt( QgsVertexId( part, ring, j ) );
+    if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < tolerance * tolerance ) continue;
+
+    // Don't test neighboring edges
+    int start = j + 1;
+    int end = i == 0 && isClosed ? n - 1 : n;
+    for ( int k = start, l = start + 1; l < end; k = l++ )
+    {
+      QgsPoint pk = geom->vertexAt( QgsVertexId( part, ring, k ) );
+      QgsPoint pl = geom->vertexAt( QgsVertexId( part, ring, l ) );
+
+      QgsPoint inter;
+      bool intersection = false;
+      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, intersection, tolerance, acceptImproperIntersection ) ) continue;
+
+      if (inter.distance(pi) <= tolerance && existI == i) {
+        continue;
+      } else if (inter.distance(pk) <= tolerance && existJ == k) {
+        continue;
+      } else if (inter.distance(pj) <= tolerance || inter.distance(pl) <= tolerance) {
+        SelfIntersection s;
+        s.segment1 = i;
+        s.segment2 = k;
+        if ( s.segment1 > s.segment2 )
+        {
+            std::swap( s.segment1, s.segment2 );
+        }
+        s.point = inter;
+        intersections.append( s );
+        if (inter.distance(pj) <= tolerance)
+            existI = i + 1;
+        if (inter.distance(pl) <= tolerance)
+            existJ = k + 1;
+      } else {
+        SelfIntersection s;
+        s.segment1 = i;
+        s.segment2 = k;
+        if ( s.segment1 > s.segment2 )
+        {
+            std::swap( s.segment1, s.segment2 );
+        }
+        s.point = inter;
+        intersections.append( s );
+      }
+    }
+  }
+  return intersections;
+
+}
+
+QList<QgsPoint> CheckerUtils::lineIntersections( const QgsLineString *line1, const QgsLineString *line2, double tol, bool acceptImproperIntersection )
 {
   QList<QgsPoint> intersections;
   QgsPoint inter;
   bool intersection = false;
-  for ( int i = 0, n = line1->vertexCount() - 1; i < n; ++i )
+  int existI = -2, existJ = -2;
+  for (int i = 0, n = line1->vertexCount() - 1; i < n; ++i)
   {
     for ( int j = 0, m = line2->vertexCount() - 1; j < m; ++j )
     {
@@ -352,9 +522,21 @@ QList<QgsPoint> CheckerUtils::lineIntersections( const QgsLineString *line1, con
       QgsPoint p2 = line1->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
       QgsPoint q1 = line2->vertexAt( QgsVertexId( 0, 0, j ) );
       QgsPoint q2 = line2->vertexAt( QgsVertexId( 0, 0, j + 1 ) );
-      if ( QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, inter, intersection, tol ) )
+      if ( QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, inter, intersection, tol, acceptImproperIntersection ) )
       {
-        intersections.append( inter );
+        if (inter.distance(p1) <= tol && existI == i) {
+            continue;
+        } else if (inter.distance(q1) <= tol && existJ == j) {
+            continue;
+        } else if (inter.distance(p2) <= tol || inter.distance(q2) <= tol) {
+            intersections.append(inter);
+            if (inter.distance(p2) <= tol)
+                existI = i + 1;
+            if (inter.distance(q2) <= tol)
+                existJ = j + 1;
+        } else {
+            intersections.append(inter);
+        }
       }
     }
   }

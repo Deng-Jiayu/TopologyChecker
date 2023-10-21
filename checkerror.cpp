@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsgeometrycheckerror.cpp
+                         Checkerror.cpp
                          --------
     begin                : September 2018
     copyright            : (C) 2018 by Denis Rouzaud
@@ -218,4 +218,67 @@ void CheckError::update( const CheckError *other )
 Check::LayerFeatureIds::LayerFeatureIds( const QMap<QString, QgsFeatureIds> &idsIn )
   : ids( idsIn )
 {
+}
+
+
+void SingleCheckError::update( const SingleCheckError *other )
+{
+  Q_ASSERT( mCheck == other->mCheck );
+  mErrorLocation = other->mErrorLocation;
+  mVertexId = other->mVertexId;
+  mGeometry = other->mGeometry;
+}
+
+bool SingleCheckError::isEqual( const SingleCheckError *other ) const
+{
+  return mGeometry.equals( other->mGeometry )
+         && mCheck == other->mCheck
+         && mErrorLocation.equals( other->mErrorLocation )
+         && mVertexId == other->mVertexId;
+}
+
+bool SingleCheckError::handleChanges( const QList<Check::Change> &changes )
+{
+  Q_UNUSED( changes )
+  return true;
+}
+
+QString SingleCheckError::description() const
+{
+  return mCheck->description();
+}
+
+const Check *SingleCheckError::check() const
+{
+  return mCheck;
+}
+
+QgsGeometry SingleCheckError::errorLocation() const
+{
+  return mErrorLocation;
+}
+
+QgsVertexId SingleCheckError::vertexId() const
+{
+  return mVertexId;
+}
+
+CheckErrorSingle::CheckErrorSingle( SingleCheckError *error, const CheckerUtils::LayerFeature &layerFeature )
+    : CheckError( error->check(), layerFeature, QgsPointXY( error->errorLocation().constGet()->centroid() ), error->vertexId() ) // TODO: should send geometry to CheckError
+    , mError( error )
+{
+
+}
+
+SingleCheckError *CheckErrorSingle::singleError() const
+{
+  return mError;
+}
+
+bool CheckErrorSingle::handleChanges( const Check::Changes &changes )
+{
+  if ( !CheckError::handleChanges( changes ) )
+    return false;
+
+  return mError->handleChanges( changes.value( layerId() ).value( featureId() ) );
 }

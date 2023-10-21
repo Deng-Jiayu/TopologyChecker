@@ -1,13 +1,13 @@
-﻿#ifndef POINTONBOUNDARYCHECK_H
-#define POINTONBOUNDARYCHECK_H
+﻿#ifndef POINTINPOLYGONCHECK_H
+#define POINTINPOLYGONCHECK_H
 
 #include "check.h"
 
-class PointOnBoundaryCheck : public Check
+class PointInPolygonCheck : public Check
 {
-    Q_DECLARE_TR_FUNCTIONS(PointOnBoundaryCheck)
+    Q_DECLARE_TR_FUNCTIONS(PointInPolygonCheck)
 public:
-    PointOnBoundaryCheck(CheckContext *context, const QVariantMap &configuration)
+    PointInPolygonCheck(CheckContext *context, const QVariantMap &configuration)
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
@@ -21,9 +21,9 @@ public:
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
     void fixError(const QMap<QString, FeaturePool *> &featurePools, CheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
-    static QString factoryDescription() { return QStringLiteral("点不在面边界上"); }
+    static QString factoryDescription() { return QStringLiteral("点不在面内部"); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral("PointOnBoundaryCheck"); }
+    static QString factoryId() { return QStringLiteral("PointInPolygonCheck"); }
     QString id() const override { return factoryId(); }
     Check::CheckType checkType() const override { return factoryCheckType(); }
     static Check::CheckType factoryCheckType() SIP_SKIP;
@@ -37,4 +37,4 @@ public:
     QVector<QgsVectorLayer *> polygonLayers;
 };
 
-#endif // POINTONBOUNDARYCHECK_H
+#endif // POINTINPOLYGONCHECK_H

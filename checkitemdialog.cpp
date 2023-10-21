@@ -151,7 +151,9 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
 {
     for (int i = 0; i < ui->tableWidgetPara->rowCount(); ++i)
         ui->tableWidgetPara->showRow(i);
-    if(btn == ui->btnPointOnLine || btn == ui->btnPointOnLineEnd || btn == ui->btnPointOnLineNode || btn == ui->btnPointOnBoundary) {
+    if(btn == ui->btnPointOnLine || btn == ui->btnPointOnLineEnd || btn == ui->btnPointOnLineNode
+        || btn == ui->btnPointOnBoundary || btn == ui->btnPointInPolygon || btn == ui->btnLineLayerIntersection
+        || btn == ui->btnLineLayerOverlap) {
         ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
         ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线图层"));
         setBtnText(layerA, mCheckSet->layersA);
@@ -163,9 +165,20 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
         ui->tableWidgetPara->hideRow(5);
         ui->tableWidgetPara->hideRow(6);
         ui->tableWidgetPara->hideRow(7);
-        if(btn == ui->btnPointOnBoundary) ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("面图层"));
+        if(btn == ui->btnPointOnBoundary || btn == ui->btnPointInPolygon) ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("面图层"));
+        else if(btn == ui->btnLineLayerIntersection) {
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线层1"));
+            ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线层2"));
+            ui->tableWidgetPara->showRow(7);
+            excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
+        }else if(btn == ui->btnLineLayerOverlap){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线层1"));
+            ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线层2"));
+        }
     }
-    else if(btn == ui->btnPointDuplicate || btn == ui->btnLineDuplicate || btn == ui->btnPolygonDuplicate){
+    else if(btn == ui->btnPointDuplicate || btn == ui->btnLineDuplicate || btn == ui->btnPolygonDuplicate
+               || btn == ui->btnLineIntersection || btn == ui->btnLineSelfIntersection)
+    {
         ui->tableWidgetPara->hideRow(1);
         ui->tableWidgetPara->hideRow(2);
         ui->tableWidgetPara->hideRow(3);
@@ -177,8 +190,13 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
         else if(btn == ui->btnLineDuplicate)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
-        else
+        else if(btn == ui->btnPolygonDuplicate)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
+        else if(btn == ui->btnLineIntersection || btn == ui->btnLineSelfIntersection){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
+            ui->tableWidgetPara->showRow(7);
+            excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
+        }
         setBtnText(layerA, mCheckSet->layersA);
     }
 }
@@ -357,6 +375,11 @@ void CheckItemDialog::run()
 #include "pointonlinenodecheck.h"
 #include "duplicatecheck.h"
 #include "pointonboundarycheck.h"
+#include "pointinpolygoncheck.h"
+#include "linelayerintersectioncheck.h"
+#include "lineintersectioncheck.h"
+#include "lineselfintersectioncheck.h"
+#include "linelayeroverlapcheck.h"
 QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
 {
     QList<Check *> checks;
@@ -387,8 +410,20 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
             configuration.insert("type", var);
             checks.append(new DuplicateCheck(context, configuration));
         }else if(checkset.name == ui->btnPointOnBoundary->text()){
-            qDebug()<<"390";
             checks.append(new PointOnBoundaryCheck(context, configuration));
+        }else if(checkset.name == ui->btnPointInPolygon->text()){
+            checks.append(new PointInPolygonCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineLayerIntersection->text()){
+            configuration.insert( "excludeEndpoint", excludeEndpoint->isChecked() );
+            checks.append(new LineLayerIntersectionCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineIntersection->text()){
+            configuration.insert( "excludeEndpoint", excludeEndpoint->isChecked() );
+            checks.append(new LineIntersectionCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineSelfIntersection->text()){
+            configuration.insert( "excludeEndpoint", excludeEndpoint->isChecked() );
+            checks.append(new LineSelfIntersectionCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineLayerOverlap->text()){
+            checks.append(new LineLayerOverlapCheck(context, configuration));
         }
     }
 

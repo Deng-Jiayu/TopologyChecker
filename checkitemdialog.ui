@@ -244,7 +244,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-449</y>
+            <y>0</y>
             <width>278</width>
             <height>1059</height>
            </rect>
@@ -582,7 +582,7 @@
               <item>
                <widget class="QPushButton" name="btnLineLayerIntersection">
                 <property name="toolTip">
-                 <string>检查线数据集中是否存在与参考线数据集的线相交的线对象，即两个线数据集中的所有线对象必须相互分离。</string>
+                 <string>检查线数据集中是否存在与参考线数据集的线相交的线对象，即两个线数据集中的所有线对象必须相互分离。(排除端点：若有端点和线内部接触及端点和端点接触的情况，则被视为正确的拓扑关系。）</string>
                 </property>
                 <property name="text">
                  <string>线与线无相交</string>
@@ -592,7 +592,7 @@
               <item>
                <widget class="QPushButton" name="btnLineIntersection">
                 <property name="toolTip">
-                 <string>检查一个线数据集中是否存在两个（或两个以上）相交且共享交点，但并未从交点处打断的线对象。</string>
+                 <string>检查一个线数据集中是否存在两个（或两个以上）相交且共享交点，但并未从交点处打断的线对象。（排除端点：若有端点和线内部接触及端点和端点接触的情况，则被视为正确的拓扑关系。）</string>
                 </property>
                 <property name="text">
                  <string>线内无相交</string>
@@ -602,7 +602,7 @@
               <item>
                <widget class="QPushButton" name="btnLineSelfIntersection">
                 <property name="toolTip">
-                 <string>检查一个线数据集中是否存在与自身相交的线对象，即线对象中不能有重叠（坐标相同）的节点。</string>
+                 <string>检查一个线数据集中是否存在与自身相交的线对象，即线对象中不能有重叠（坐标相同）的节点。（排除端点：若有端点和线内部接触及端点和端点接触的情况，则被视为正确的拓扑关系。）</string>
                 </property>
                 <property name="text">
                  <string>线内无自相交</string>

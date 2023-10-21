@@ -243,4 +243,95 @@ class CheckError
 
 Q_DECLARE_METATYPE( CheckError * )
 
+class SingleCheckError
+{
+public:
+
+    /**
+     * Creates a new single geometry check error.
+     */
+    SingleCheckError( const Check *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QgsVertexId &vertexId = QgsVertexId() )
+        : mCheck( check )
+        , mGeometry( geometry )
+        , mErrorLocation( errorLocation )
+        , mVertexId( vertexId )
+    {}
+
+    virtual ~SingleCheckError() = default;
+
+    /**
+     * Update this error with the information from \a other.
+     * Will be used to update existing errors whenever they are re-checked.
+     */
+    virtual void update( const SingleCheckError *other );
+
+    /**
+     * Check if this error is equal to \a other.
+     * Is reimplemented by subclasses with additional information, comparison
+     * of base information is done in parent class.
+     */
+    virtual bool isEqual( const SingleCheckError *other ) const;
+
+    /**
+     * Apply a list of \a changes.
+     */
+    virtual bool handleChanges( const QList<Check::Change> &changes ) SIP_SKIP;
+
+    /**
+     * A human readable description of this error.
+     */
+    virtual QString description() const;
+
+    /**
+     * The check that created this error.
+     *
+     * \since QGIS 3.4
+     */
+    const Check *check() const;
+
+    /**
+     * The exact location of the error.
+     *
+     * \since QGIS 3.4
+     */
+    QgsGeometry errorLocation() const;
+
+    /**
+     * The vertex id of the error. May be invalid depending on the check.
+     *
+     * \since QGIS 3.4
+     */
+    QgsVertexId vertexId() const;
+
+protected:
+    const Check *mCheck = nullptr;
+    QgsGeometry mGeometry;
+    QgsGeometry mErrorLocation;
+    QgsVertexId mVertexId;
+};
+
+class CheckErrorSingle : public CheckError
+{
+public:
+
+    /**
+     * Creates a new error for a QgsSingleGeometryCheck.
+     */
+    CheckErrorSingle( SingleCheckError *singleError, const CheckerUtils::LayerFeature &layerFeature );
+
+    /**
+     * The underlying single error.
+     */
+    SingleCheckError *singleError() const;
+
+    bool handleChanges( const Check::Changes &changes ) override SIP_SKIP;
+
+private:
+#ifdef SIP_RUN
+    const CheckErrorSingle &operator=( const CheckErrorSingle & );
+#endif
+
+    SingleCheckError *mError = nullptr;
+};
+
 #endif // CHECKERROR_H

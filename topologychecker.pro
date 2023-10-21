@@ -32,7 +32,13 @@ HEADERS += \
     duplicatecheck.h \
     featurepool.h \
     layerselectiondialog.h \
+    lineintersectioncheck.h \
+    linelayerintersectioncheck.h \
+    linelayeroverlapcheck.h \
+    linesegment.h \
+    lineselfintersectioncheck.h \
     pointduplicatecheck.h \
+    pointinpolygoncheck.h \
     pointonboundarycheck.h \
     pointonlinecheck.h \
     pointonlineendcheck.h \
@@ -59,7 +65,13 @@ SOURCES += \
     duplicatecheck.cpp \
     featurepool.cpp \
     layerselectiondialog.cpp \
+    lineintersectioncheck.cpp \
+    linelayerintersectioncheck.cpp \
+    linelayeroverlapcheck.cpp \
+    linesegment.cpp \
+    lineselfintersectioncheck.cpp \
     pointduplicatecheck.cpp \
+    pointinpolygoncheck.cpp \
     pointonboundarycheck.cpp \
     pointonlinecheck.cpp \
     pointonlineendcheck.cpp \
