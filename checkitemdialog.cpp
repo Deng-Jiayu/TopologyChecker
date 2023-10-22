@@ -153,7 +153,9 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
         ui->tableWidgetPara->showRow(i);
     if(btn == ui->btnPointOnLine || btn == ui->btnPointOnLineEnd || btn == ui->btnPointOnLineNode
         || btn == ui->btnPointOnBoundary || btn == ui->btnPointInPolygon || btn == ui->btnLineLayerIntersection
-        || btn == ui->btnLineLayerOverlap) {
+        || btn == ui->btnLineLayerOverlap || btn == ui->btnLineCoveredByLine || btn == ui->btnLineCoveredByBoundary
+        || btn == ui->btnLineEndOnPoint || btn == ui->btnLineInPolygon || btn == ui->btnPolygonLayerOverlap
+        || btn == ui->btnPolygonCoveredByPolygon || btn == ui->btnPolygonInPolygon) {
         ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
         ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线图层"));
         setBtnText(layerA, mCheckSet->layersA);
@@ -170,14 +172,34 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线层1"));
             ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线层2"));
             ui->tableWidgetPara->showRow(7);
+            ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("排除端点"));
             excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
-        }else if(btn == ui->btnLineLayerOverlap){
+        }else if(btn == ui->btnLineLayerOverlap || btn == ui->btnLineCoveredByLine){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线层1"));
             ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("线层2"));
+        }else if(btn == ui->btnLineCoveredByBoundary || btn == ui->btnLineInPolygon){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
+            ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("面图层"));
+        }else if(btn == ui->btnLineEndOnPoint){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
+            ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("点图层"));
+        }else if(btn == ui->btnPolygonLayerOverlap){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面层1"));
+            ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("面层2"));
+            ui->tableWidgetPara->showRow(3);
+            ui->tableWidgetPara->item(3 ,0)->setText(QStringLiteral("面积上限 (map units sqr.)"));
+            doubleSpinBoxMax->setValue(mCheckSet->upperLimit);
+        }else if(btn == ui->btnPolygonCoveredByPolygon || btn == ui->btnPolygonInPolygon){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面层1"));
+            ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("面层2"));
         }
     }
     else if(btn == ui->btnPointDuplicate || btn == ui->btnLineDuplicate || btn == ui->btnPolygonDuplicate
-               || btn == ui->btnLineIntersection || btn == ui->btnLineSelfIntersection)
+               || btn == ui->btnLineIntersection || btn == ui->btnLineSelfIntersection || btn == ui->btnLineOverlap
+               || btn == ui->btnLineSelfOverlap || btn == ui->btnDangle || btn == ui->btnTurnback
+               || btn == ui->btnSegmentLength || btn == ui->btnLength || btn == ui->btnPolygonOverlap
+               || btn == ui->btnGap || btn == ui->btnHole || btn == ui->btnConvexhull
+               || btn == ui->btnArea)
     {
         ui->tableWidgetPara->hideRow(1);
         ui->tableWidgetPara->hideRow(2);
@@ -188,14 +210,53 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
         ui->tableWidgetPara->hideRow(7);
         if(btn == ui->btnPointDuplicate)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
-        else if(btn == ui->btnLineDuplicate)
+        else if(btn == ui->btnLineDuplicate || btn == ui->btnLineOverlap || btn == ui->btnDangle)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
-        else if(btn == ui->btnPolygonDuplicate)
+        else if(btn == ui->btnPolygonDuplicate || btn == ui->btnHole || btn == ui->btnConvexhull)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
         else if(btn == ui->btnLineIntersection || btn == ui->btnLineSelfIntersection){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
             ui->tableWidgetPara->showRow(7);
+            ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("排除端点"));
             excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
+        }else if(btn == ui->btnLineSelfOverlap){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
+            ui->tableWidgetPara->showRow(7);
+            ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("多部份要素"));
+            excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
+        }else if(btn == ui->btnTurnback){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
+            ui->tableWidgetPara->showRow(6);
+            doubleSpinBoxAngle->setValue(mCheckSet->angle);
+            excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
+        }else if(btn == ui->btnSegmentLength || btn == ui->btnLength){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
+            ui->tableWidgetPara->showRow(3);
+            ui->tableWidgetPara->item(3 ,0)->setText(QStringLiteral("长度上限 (map units)"));
+            doubleSpinBoxMax->setValue(mCheckSet->upperLimit);
+            ui->tableWidgetPara->showRow(4);
+            ui->tableWidgetPara->item(4 ,0)->setText(QStringLiteral("长度下限 (map units)"));
+            doubleSpinBoxMin->setValue(mCheckSet->lowerLimit);
+        }else if(btn == ui->btnPolygonOverlap){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
+            ui->tableWidgetPara->showRow(3);
+            ui->tableWidgetPara->item(3 ,0)->setText(QStringLiteral("面积上限 (map units sqr.)"));
+            doubleSpinBoxMax->setValue(mCheckSet->upperLimit);
+        }else if(btn == ui->btnGap){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
+            ui->tableWidgetPara->showRow(3);
+            ui->tableWidgetPara->item(3 ,0)->setText(QStringLiteral("空隙面积上限 (map units sqr.)"));
+            doubleSpinBoxMax->setValue(mCheckSet->upperLimit);
+            ui->tableWidgetPara->showRow(4);
+            ui->tableWidgetPara->item(4 ,0)->setText(QStringLiteral("空隙面积下限 (map units sqr.)"));
+            doubleSpinBoxMin->setValue(mCheckSet->lowerLimit);
+        }else if(btn == ui->btnArea){
+            ui->tableWidgetPara->showRow(3);
+            ui->tableWidgetPara->item(3 ,0)->setText(QStringLiteral("面积上限 (map units sqr.)"));
+            doubleSpinBoxMax->setValue(mCheckSet->upperLimit);
+            ui->tableWidgetPara->showRow(4);
+            ui->tableWidgetPara->item(4 ,0)->setText(QStringLiteral("面积下限 (map units sqr.)"));
+            doubleSpinBoxMin->setValue(mCheckSet->lowerLimit);
         }
         setBtnText(layerA, mCheckSet->layersA);
     }
@@ -380,6 +441,24 @@ void CheckItemDialog::run()
 #include "lineintersectioncheck.h"
 #include "lineselfintersectioncheck.h"
 #include "linelayeroverlapcheck.h"
+#include "lineoverlapcheck.h"
+#include "lineselfoverlapcheck.h"
+#include "danglecheck.h"
+#include "linecoveredbylinecheck.h"
+#include "linecoveredbyboundarycheck.h"
+#include "lineendonpointcheck.h"
+#include "lineinpolygoncheck.h"
+#include "turnbackcheck.h"
+#include "segmentlengthcheck.h"
+#include "lengthcheck.h"
+#include "polygonoverlapcheck.h"
+#include "gapcheck.h"
+#include "polygonlayeroverlapcheck.h"
+#include "polygoncoveredbypolygoncheck.h"
+#include "polygoninpolygoncheck.h"
+#include "holecheck.h"
+#include "convexhullcheck.h"
+#include "areacheck.h"
 QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
 {
     QList<Check *> checks;
@@ -424,6 +503,54 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
             checks.append(new LineSelfIntersectionCheck(context, configuration));
         }else if(checkset.name == ui->btnLineLayerOverlap->text()){
             checks.append(new LineLayerOverlapCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineOverlap->text()){
+            checks.append(new LineOverlapCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineSelfOverlap->text()){
+            configuration.insert( "excludeEndpoint", excludeEndpoint->isChecked() );
+            checks.append(new LineSelfOverlapCheck(context, configuration));
+        }else if(checkset.name == ui->btnDangle->text()){
+            checks.append(new DangleCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineCoveredByLine->text()){
+            checks.append(new LineCoveredByLineCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineCoveredByBoundary->text()){
+            checks.append(new LineCoveredByBoundaryCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineEndOnPoint->text()){
+            checks.append(new LineEndOnPointCheck(context, configuration));
+        }else if(checkset.name == ui->btnLineInPolygon->text()){
+            checks.append(new LineInPolygonCheck(context, configuration));
+        }else if(checkset.name == ui->btnTurnback->text()){
+            configuration.insert( "minAngle", doubleSpinBoxAngle->value() );
+            checks.append(new TurnbackCheck(context, configuration));
+        }else if(checkset.name == ui->btnSegmentLength->text()){
+            configuration.insert( "lengthMax", doubleSpinBoxMax->value() );
+            configuration.insert( "lengthMin", doubleSpinBoxMin->value() );
+            checks.append(new SegmentLengthCheck(context, configuration));
+        }else if(checkset.name == ui->btnLength->text()){
+            configuration.insert( "lengthMax", doubleSpinBoxMax->value() );
+            configuration.insert( "lengthMin", doubleSpinBoxMin->value() );
+            checks.append(new LengthCheck(context, configuration));
+        }else if(checkset.name == ui->btnPolygonOverlap->text()){
+            configuration.insert( "areaMax", doubleSpinBoxMax->value() );
+            checks.append(new PolygonOverlapCheck(context, configuration));
+        }else if(checkset.name == ui->btnGap->text()){
+            configuration.insert( "areaMax", doubleSpinBoxMax->value() );
+            configuration.insert( "areaMin", doubleSpinBoxMin->value() );
+            checks.append(new GapCheck(context, configuration));
+        }else if(checkset.name == ui->btnPolygonLayerOverlap->text()){
+            configuration.insert( "areaMax", doubleSpinBoxMax->value() );
+            checks.append(new PolygonLayerOverlapCheck(context, configuration));
+        }else if(checkset.name == ui->btnPolygonCoveredByPolygon->text()){
+            checks.append(new PolygonCoveredByPolygonCheck(context, configuration));
+        }else if(checkset.name == ui->btnPolygonInPolygon->text()){
+            checks.append(new PolygonInPolygonCheck(context, configuration));
+        }else if(checkset.name == ui->btnHole->text()){
+            checks.append(new HoleCheck(context, configuration));
+        }else if(checkset.name == ui->btnConvexhull->text()){
+            checks.append(new ConvexHullCheck(context, configuration));
+        }else if(checkset.name == ui->btnArea->text()){
+            configuration.insert( "areaMax", doubleSpinBoxMax->value() );
+            configuration.insert( "areaMin", doubleSpinBoxMin->value() );
+            checks.append(new AreaCheck(context, configuration));
         }
     }
 

@@ -261,7 +261,7 @@ class CheckerUtils
 
     static QVector<QgsGeometry> lineOverlay(QVector<LineSegment> &linesA, QVector<LineSegment> &linesB, double tol);
 
-    //static QVector<QgsGeometry> lineSelfOverlay(QVector<LineSegment> &lines, double tol);
+    static QVector<QgsGeometry> lineSelfOverlay(QVector<LineSegment> &lines, double tol);
 
 
     static bool pointOnLine( const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities = false );

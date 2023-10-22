@@ -632,7 +632,7 @@
               <item>
                <widget class="QPushButton" name="btnLineSelfOverlap">
                 <property name="toolTip">
-                 <string>检查一个线数据集中是否存在与自身重叠的线对象，即一个线对象本身不能有重叠部分。</string>
+                 <string>检查一个线数据集中是否存在与自身重叠的线对象，即一个线对象本身不能有重叠部分。（多部份要素：不勾选则将不同部分当作独立检测单元，勾选则将多部份当作一部分检测。）</string>
                 </property>
                 <property name="text">
                  <string>线内无自交叠</string>

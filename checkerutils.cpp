@@ -423,6 +423,23 @@ QVector<QgsGeometry> CheckerUtils::lineOverlay(QVector<LineSegment> &linesA, QVe
   return ans;
 }
 
+QVector<QgsGeometry> CheckerUtils::lineSelfOverlay(QVector<LineSegment> &lines, double tol)
+{
+  QVector<QgsGeometry> ans;
+  for (auto i = lines.begin(); i < lines.end(); ++i) {
+    auto j = i + 1;
+    while (j < lines.end() && ok(i->angle, j->angle, tol)) {
+      QgsPolylineXY line = lineOverlay(*i, *j, tol);
+      if (!line.isEmpty()) {
+        ans.push_back(QgsGeometry::fromPolylineXY(line));
+      }
+
+      ++j;
+    }
+  }
+  return ans;
+}
+
 double pointLineDist( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q )
 {
   double nom = std::fabs( ( p2.y() - p1.y() ) * q.x() - ( p2.x() - p1.x() ) * q.y() + p2.x() * p1.y() - p2.y() * p1.x() );

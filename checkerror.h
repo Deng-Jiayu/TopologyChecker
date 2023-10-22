@@ -70,6 +70,23 @@ class CheckError
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
 
+    /**
+     * Create a new geometry check error with the parent \a check and for the
+     * layer with \a layerId and \a featureId.
+     * The \a geometry of the error and the \a errorLocation need to be
+     * specified in map coordinates.
+     * Optionally the vertex can be specified via \a vixd and a \a value with
+     * its \a value Type for additional information.
+     */
+    CheckError( const Check *check,
+               const QString &layerId,
+               QgsFeatureId featureId,
+               const QgsGeometry &geometry,
+               const QgsPointXY &errorLocation,
+               QgsVertexId vidx = QgsVertexId(),
+               const QVariant &value = QVariant(),
+               ValueType valueType = ValueOther );
+
     virtual ~CheckError() = default;
 
     const CheckError &operator=( const CheckError & ) = delete;
@@ -205,23 +222,6 @@ class CheckError
      */
     virtual QIcon icon() const;
   protected:
-
-    /**
-     * Create a new geometry check error with the parent \a check and for the
-     * layer with \a layerId and \a featureId.
-     * The \a geometry of the error and the \a errorLocation need to be
-     * specified in map coordinates.
-     * Optionally the vertex can be specified via \a vixd and a \a value with
-     * its \a value Type for additional information.
-     */
-    CheckError( const Check *check,
-                           const QString &layerId,
-                           QgsFeatureId featureId,
-                           const QgsGeometry &geometry,
-                           const QgsPointXY &errorLocation,
-                           QgsVertexId vidx = QgsVertexId(),
-                           const QVariant &value = QVariant(),
-                           ValueType valueType = ValueOther );
 
     const Check *mCheck = nullptr;
     QString mLayerId;
