@@ -17,7 +17,7 @@ void LineInPolygonCheck::collectErrors(const QMap<QString, FeaturePool *> &featu
         QVector<QgsGeometry> geomsA = layerFeatureA.geometry().asGeometryCollection();
         for (int iPart = 0; iPart < geomsA.size(); ++iPart)
         {
-            QgsGeometry line = geomsA[iPart];
+            QgsGeometry &line = geomsA[iPart];
 
             if (line.isEmpty())
                 continue;
@@ -63,7 +63,7 @@ void LineInPolygonCheck::fixError(const QMap<QString, FeaturePool *> &featurePoo
 
     // Check if error still applies
     QVector<QgsGeometry> geomsA = feature.geometry().asGeometryCollection();
-    QgsGeometry line = geomsA[vidx.part];
+    QgsGeometry &line = geomsA[vidx.part];
     if (line.isEmpty()) {
         error->setObsolete();
         return;

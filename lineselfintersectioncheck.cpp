@@ -67,7 +67,7 @@ void LineSelfIntersectionCheck::collectErrors(const QMap<QString, FeaturePool *>
                 for (const CheckerUtils::SelfIntersection &inter : (CheckerUtils::selfIntersections(geom, iPart, iRing, mContext->tolerance, !excludeEndpoint)))
                 {
                     SingleCheckError *error = new LineSelfIntersectionCheckError(this, geometry, QgsGeometry(inter.point.clone()), QgsVertexId(iPart, iRing), inter);
-                    errors.append(convertToGeometryCheckError(error, layerFeature));
+                    errors.append(convertToCheckError(error, layerFeature));
                 }
             }
         }
@@ -99,7 +99,7 @@ Check::CheckType LineSelfIntersectionCheck::factoryCheckType()
     return Check::FeatureNodeCheck;
 }
 
-CheckErrorSingle *LineSelfIntersectionCheck::convertToGeometryCheckError(SingleCheckError *singleCheckError, const CheckerUtils::LayerFeature &layerFeature) const
+CheckErrorSingle *LineSelfIntersectionCheck::convertToCheckError(SingleCheckError *singleCheckError, const CheckerUtils::LayerFeature &layerFeature) const
 {
     return new CheckErrorSingle(singleCheckError, layerFeature);
 }

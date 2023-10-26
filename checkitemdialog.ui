@@ -244,9 +244,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-445</y>
             <width>278</width>
-            <height>1059</height>
+            <height>1055</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -398,16 +398,6 @@
                 </property>
                </widget>
               </item>
-              <item row="40" column="0">
-               <widget class="QPushButton" name="btnClockwise">
-                <property name="toolTip">
-                 <string>查询地物的方向性。</string>
-                </property>
-                <property name="text">
-                 <string>时针方向</string>
-                </property>
-               </widget>
-              </item>
               <item row="34" column="0">
                <widget class="QPushButton" name="btnHole">
                 <property name="toolTip">
@@ -503,12 +493,22 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="btnUniqueCode">
+               <widget class="QPushButton" name="btnUniqueAttr">
                 <property name="toolTip">
                  <string>检查地物的唯一标识码。</string>
                 </property>
                 <property name="text">
                  <string>检查唯一标识码</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnClockwise">
+                <property name="toolTip">
+                 <string>查询地物是否为顺时针。</string>
+                </property>
+                <property name="text">
+                 <string>时针方向</string>
                 </property>
                </widget>
               </item>
@@ -533,7 +533,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="btnCollinear">
                 <property name="toolTip">
                  <string>检查线或面数据集自身的线对象或面边界是否存在冗余节点，即两节点之间不能存在其他共线节点，这些共线节点为冗余节点。</string>
                 </property>

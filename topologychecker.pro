@@ -19,7 +19,9 @@ include( $$SDK_PATH/include/qgisconfig.pri )
 include( $$SDK_PATH/include/translations.pri )
 
 HEADERS += \
+    anglecheck.h \
     areacheck.h \
+    attrvalidcheck.h \
     check.h \
     checkcontext.h \
     checkdock.h \
@@ -29,13 +31,17 @@ HEADERS += \
     checkitemdialog.h \
     checkresolutionmethod.h \
     checkset.h \
+    clockwisecheck.h \
     collapsiblegroupbox.h \
+    collinearcheck.h \
     convexhullcheck.h \
     danglecheck.h \
     duplicatecheck.h \
+    duplicatenodecheck.h \
     featurepool.h \
     gapcheck.h \
     holecheck.h \
+    isvalidcheck.h \
     layerselectiondialog.h \
     lengthcheck.h \
     linecoveredbyboundarycheck.h \
@@ -62,16 +68,20 @@ HEADERS += \
     pseudoscheck.h \
     pushbutton.h \
     resulttab.h \
+    samecheck.h \
     segmentlengthcheck.h \
     setuptab.h \
     topologychecker.h \
     turnbackcheck.h \
+    uniqueattrcheck.h \
     vectordataproviderfeaturepool.h \
     vectorlayerfeaturepool.h \
     widget.h
 
 SOURCES += \
+    anglecheck.cpp \
     areacheck.cpp \
+    attrvalidcheck.cpp \
     check.cpp \
     checkcontext.cpp \
     checkdock.cpp \
@@ -81,13 +91,17 @@ SOURCES += \
     checkitemdialog.cpp \
     checkresolutionmethod.cpp \
     checkset.cpp \
+    clockwisecheck.cpp \
     collapsiblegroupbox.cpp \
+    collinearcheck.cpp \
     convexhullcheck.cpp \
     danglecheck.cpp \
     duplicatecheck.cpp \
+    duplicatenodecheck.cpp \
     featurepool.cpp \
     gapcheck.cpp \
     holecheck.cpp \
+    isvalidcheck.cpp \
     layerselectiondialog.cpp \
     lengthcheck.cpp \
     linecoveredbyboundarycheck.cpp \
@@ -114,10 +128,12 @@ SOURCES += \
     pseudoscheck.cpp \
     pushbutton.cpp \
     resulttab.cpp \
+    samecheck.cpp \
     segmentlengthcheck.cpp \
     setuptab.cpp \
     topologychecker.cpp \
     turnbackcheck.cpp \
+    uniqueattrcheck.cpp \
     vectordataproviderfeaturepool.cpp \
     vectorlayerfeaturepool.cpp \
     widget.cpp

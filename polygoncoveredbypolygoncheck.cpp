@@ -21,7 +21,7 @@ void PolygonCoveredByPolygonCheck::collectErrors(const QMap<QString, FeaturePool
         QVector<QgsGeometry> geomsA = layerFeatureA.geometry().asGeometryCollection();
         for (int iPart = 0; iPart < geomsA.size(); ++iPart)
         {
-            QgsGeometry polygon = geomsA[iPart];
+            QgsGeometry &polygon = geomsA[iPart];
 
             QgsGeometry boundarys;
             featureIds = allLayerFeatureIds(featurePools);
@@ -34,7 +34,7 @@ void PolygonCoveredByPolygonCheck::collectErrors(const QMap<QString, FeaturePool
 
                 for (int jPart = 0; jPart < geomsB.size(); ++jPart)
                 {
-                    QgsGeometry boundary = geomsB[jPart];
+                    QgsGeometry &boundary = geomsB[jPart];
                     if (boundarys.isEmpty())
                     {
                         boundarys = boundary;

@@ -50,7 +50,7 @@ public:
     Check::CheckType checkType() const override { return factoryCheckType(); }
     static Check::CheckType factoryCheckType() SIP_SKIP;
 
-    CheckErrorSingle *convertToGeometryCheckError(SingleCheckError *singleCheckError, const CheckerUtils::LayerFeature &layerFeature) const;
+    CheckErrorSingle *convertToCheckError(SingleCheckError *singleCheckError, const CheckerUtils::LayerFeature &layerFeature) const;
 
     enum ResolutionMethod
     {

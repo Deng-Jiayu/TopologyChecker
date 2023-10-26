@@ -249,10 +249,12 @@ class CheckerUtils
     static bool cmp(LineSegment &a, LineSegment &b) { return a.angle < b.angle; }
 
     static bool ok(double a, double b, double tol) {
-      if (a > b)
+      if (a > b){
         return a - b <= tol;
-      else
+      }
+      else{
         return b - a <= tol;
+      }
     }
 
     static bool pointOnLine(const QgsPointXY &M, const QgsPointXY &A, const QgsPointXY &B, double tol);

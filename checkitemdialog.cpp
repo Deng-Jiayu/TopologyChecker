@@ -61,7 +61,7 @@ void CheckItemDialog::initParaTable()
     while (ui->tableWidgetPara->rowCount() > 0)
         ui->tableWidgetPara->removeRow(0);
 
-    ui->tableWidgetPara->setRowCount(8);
+    ui->tableWidgetPara->setRowCount(9);
 
     ui->tableWidgetPara->setItem(0, 0, new QTableWidgetItem(QStringLiteral("点图层")));
     layerA = new QPushButton(QStringLiteral("..."), this);
@@ -90,10 +90,10 @@ void CheckItemDialog::initParaTable()
 
     ui->tableWidgetPara->setItem(5, 0, new QTableWidgetItem(QStringLiteral("图层对应模式")));
     comboBoxLayerMode = new QComboBox(this);
-    comboBoxLayerMode->addItem(QStringLiteral("一对一"));
     comboBoxLayerMode->addItem(QStringLiteral("一对多"));
+    comboBoxLayerMode->addItem(QStringLiteral("一对一"));
     ui->tableWidgetPara->setCellWidget(5, 1, comboBoxLayerMode);
-    //connect(comboBoxLayerMode, &QComboBox::currentTextChanged, this, &CheckItemDialog::setLayerMode);
+    connect(comboBoxLayerMode, &QComboBox::currentTextChanged, this, &CheckItemDialog::setLayerMode);
 
     ui->tableWidgetPara->setItem(6, 0, new QTableWidgetItem(QStringLiteral("角度")));
     doubleSpinBoxAngle = new QgsDoubleSpinBox(this);
@@ -106,6 +106,11 @@ void CheckItemDialog::initParaTable()
     excludeEndpoint = new QCheckBox(this);
     excludeEndpoint->setObjectName(QString::fromUtf8("excludeEndpoint"));
     ui->tableWidgetPara->setCellWidget(7, 1, excludeEndpoint);
+
+    ui->tableWidgetPara->setItem(8, 0, new QTableWidgetItem(QStringLiteral("字段名称")));
+    attr = new QLineEdit(this);
+    attr->setObjectName(QString::fromUtf8("attr"));
+    ui->tableWidgetPara->setCellWidget(8, 1, attr);
 
     for (int i = 0; i < ui->tableWidgetPara->rowCount(); ++i)
     {
@@ -147,6 +152,19 @@ void CheckItemDialog::setBtnText(QPushButton* btn, QVector<QgsVectorLayer*> vec)
     btn->setText(str);
 }
 
+void CheckItemDialog::setLayerModeText()
+{
+    if (mCheckSet->oneToOne == false)
+        comboBoxLayerMode->setCurrentIndex(0);
+    else
+        comboBoxLayerMode->setCurrentIndex(1);
+}
+
+void CheckItemDialog::setAttrText()
+{
+    attr->setText(mCheckSet->attr);
+}
+
 void CheckItemDialog::setParaUi(QPushButton *btn)
 {
     for (int i = 0; i < ui->tableWidgetPara->rowCount(); ++i)
@@ -167,6 +185,7 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
         ui->tableWidgetPara->hideRow(5);
         ui->tableWidgetPara->hideRow(6);
         ui->tableWidgetPara->hideRow(7);
+        ui->tableWidgetPara->hideRow(8);
         if(btn == ui->btnPointOnBoundary || btn == ui->btnPointInPolygon) ui->tableWidgetPara->item(1, 0)->setText(QStringLiteral("面图层"));
         else if(btn == ui->btnLineLayerIntersection) {
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线层1"));
@@ -199,7 +218,9 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
                || btn == ui->btnLineSelfOverlap || btn == ui->btnDangle || btn == ui->btnTurnback
                || btn == ui->btnSegmentLength || btn == ui->btnLength || btn == ui->btnPolygonOverlap
                || btn == ui->btnGap || btn == ui->btnHole || btn == ui->btnConvexhull
-               || btn == ui->btnArea)
+               || btn == ui->btnArea || btn == ui->btnClockwise || btn == ui->btnAngle
+               || btn == ui->btnInvalid || btn == ui->btnDuplicate || btn == ui->btnCollinear
+               || btn == ui->btnDuplicateNode || btn == ui->btnInvalidAttr)
     {
         ui->tableWidgetPara->hideRow(1);
         ui->tableWidgetPara->hideRow(2);
@@ -208,27 +229,29 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
         ui->tableWidgetPara->hideRow(5);
         ui->tableWidgetPara->hideRow(6);
         ui->tableWidgetPara->hideRow(7);
+        ui->tableWidgetPara->hideRow(8);
         if(btn == ui->btnPointDuplicate)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
         else if(btn == ui->btnLineDuplicate || btn == ui->btnLineOverlap || btn == ui->btnDangle)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
-        else if(btn == ui->btnPolygonDuplicate || btn == ui->btnHole || btn == ui->btnConvexhull)
+        else if(btn == ui->btnPolygonDuplicate || btn == ui->btnHole)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
         else if(btn == ui->btnLineIntersection || btn == ui->btnLineSelfIntersection){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
             ui->tableWidgetPara->showRow(7);
             ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("排除端点"));
-            excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
         }else if(btn == ui->btnLineSelfOverlap){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
             ui->tableWidgetPara->showRow(7);
             ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("多部份要素"));
-            excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
         }else if(btn == ui->btnTurnback){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
             ui->tableWidgetPara->showRow(6);
             doubleSpinBoxAngle->setValue(mCheckSet->angle);
-            excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
+        }else if(btn == ui->btnAngle){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
+            ui->tableWidgetPara->showRow(6);
+            doubleSpinBoxAngle->setValue(mCheckSet->angle);
         }else if(btn == ui->btnSegmentLength || btn == ui->btnLength){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
             ui->tableWidgetPara->showRow(3);
@@ -257,8 +280,33 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
             ui->tableWidgetPara->showRow(4);
             ui->tableWidgetPara->item(4 ,0)->setText(QStringLiteral("面积下限 (map units sqr.)"));
             doubleSpinBoxMin->setValue(mCheckSet->lowerLimit);
+        }else if(btn == ui->btnClockwise){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线/面图层"));
+            ui->tableWidgetPara->showRow(7);
+            ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("反向检查"));
+        }else if(btn == ui->btnInvalid || btn == ui->btnCollinear || btn == ui->btnDuplicateNode){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线/面图层"));
+        }else if(btn == ui->btnDuplicate){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("图层"));
+            ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("只检查同层地物"));
+            ui->tableWidgetPara->showRow(7);
+            ui->tableWidgetPara->item(5, 0)->setText(QStringLiteral("检查类型"));
+            comboBoxLayerMode->setItemText(0, QStringLiteral("图形一致"));
+            comboBoxLayerMode->setItemText(1, QStringLiteral("节点一致"));
+            ui->tableWidgetPara->showRow(5);
+        }else if(btn == ui->btnConvexhull){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
+            ui->tableWidgetPara->showRow(7);
+            ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("反向检查"));
+            excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
+        }else if(btn == ui->btnInvalidAttr){
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("图层"));
+            ui->tableWidgetPara->showRow(8);
+            setAttrText();
         }
         setBtnText(layerA, mCheckSet->layersA);
+        setLayerModeText();
+        excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
     }
 }
 
@@ -277,7 +325,6 @@ void CheckItemDialog::onSelectionChanged(const QItemSelection &, const QItemSele
     int row = ui->tableWidget->currentRow();
     if (!mCheckMap[row])
         return;
-
     if (mCheckSet != nullptr) {
         delete mCheckSet;
     }
@@ -312,6 +359,16 @@ void CheckItemDialog::selectLayerB()
     layerSelectDialog->show();
 }
 
+void CheckItemDialog::setLayerMode()
+{
+    if (!mCheckSet)
+        return;
+    if (comboBoxLayerMode->currentIndex() == 0)
+        mCheckSet->oneToOne = false;
+    else
+        mCheckSet->oneToOne = true;
+}
+
 void CheckItemDialog::saveEdit()
 {
     if (!mCheckSet)
@@ -321,6 +378,8 @@ void CheckItemDialog::saveEdit()
     mCheckSet->lowerLimit = doubleSpinBoxMin->value();
     mCheckSet->upperLimit = doubleSpinBoxMax->value();
     mCheckSet->excludeEndpoint = excludeEndpoint->isChecked();
+    mCheckSet->oneToOne = (comboBoxLayerMode->currentIndex() == 1);
+    mCheckSet->attr = attr->text();
     for (int i = 0; i < mcheckItem->sets.size(); ++i)
     {
         if (mcheckItem->sets[i].name == mCheckSet->name)
@@ -459,6 +518,13 @@ void CheckItemDialog::run()
 #include "holecheck.h"
 #include "convexhullcheck.h"
 #include "areacheck.h"
+#include "clockwisecheck.h"
+#include "anglecheck.h"
+#include "isvalidcheck.h"
+#include "samecheck.h"
+#include "collinearcheck.h"
+#include "duplicatenodecheck.h"
+#include "attrvalidcheck.h"
 QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
 {
     QList<Check *> checks;
@@ -470,6 +536,7 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
         configuration.insert("layersA", var);
         var.setValue(checkset.layersB);
         configuration.insert("layersB", var);
+        configuration.insert( "excludeEndpoint", checkset.excludeEndpoint );
         if (checkset.name == ui->btnPointOnLine->text()) {
             checks.append(new PointOnLineCheck(context, configuration));
         }else if(checkset.name == ui->btnPointOnLineEnd->text()){
@@ -493,20 +560,16 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
         }else if(checkset.name == ui->btnPointInPolygon->text()){
             checks.append(new PointInPolygonCheck(context, configuration));
         }else if(checkset.name == ui->btnLineLayerIntersection->text()){
-            configuration.insert( "excludeEndpoint", excludeEndpoint->isChecked() );
             checks.append(new LineLayerIntersectionCheck(context, configuration));
         }else if(checkset.name == ui->btnLineIntersection->text()){
-            configuration.insert( "excludeEndpoint", excludeEndpoint->isChecked() );
             checks.append(new LineIntersectionCheck(context, configuration));
         }else if(checkset.name == ui->btnLineSelfIntersection->text()){
-            configuration.insert( "excludeEndpoint", excludeEndpoint->isChecked() );
             checks.append(new LineSelfIntersectionCheck(context, configuration));
         }else if(checkset.name == ui->btnLineLayerOverlap->text()){
             checks.append(new LineLayerOverlapCheck(context, configuration));
         }else if(checkset.name == ui->btnLineOverlap->text()){
             checks.append(new LineOverlapCheck(context, configuration));
         }else if(checkset.name == ui->btnLineSelfOverlap->text()){
-            configuration.insert( "excludeEndpoint", excludeEndpoint->isChecked() );
             checks.append(new LineSelfOverlapCheck(context, configuration));
         }else if(checkset.name == ui->btnDangle->text()){
             checks.append(new DangleCheck(context, configuration));
@@ -519,25 +582,25 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
         }else if(checkset.name == ui->btnLineInPolygon->text()){
             checks.append(new LineInPolygonCheck(context, configuration));
         }else if(checkset.name == ui->btnTurnback->text()){
-            configuration.insert( "minAngle", doubleSpinBoxAngle->value() );
+            configuration.insert( "minAngle", checkset.angle );
             checks.append(new TurnbackCheck(context, configuration));
         }else if(checkset.name == ui->btnSegmentLength->text()){
-            configuration.insert( "lengthMax", doubleSpinBoxMax->value() );
-            configuration.insert( "lengthMin", doubleSpinBoxMin->value() );
+            configuration.insert( "lengthMax", checkset.upperLimit );
+            configuration.insert( "lengthMin", checkset.lowerLimit );
             checks.append(new SegmentLengthCheck(context, configuration));
         }else if(checkset.name == ui->btnLength->text()){
-            configuration.insert( "lengthMax", doubleSpinBoxMax->value() );
-            configuration.insert( "lengthMin", doubleSpinBoxMin->value() );
+            configuration.insert( "lengthMax", checkset.upperLimit );
+            configuration.insert( "lengthMin", checkset.lowerLimit );
             checks.append(new LengthCheck(context, configuration));
         }else if(checkset.name == ui->btnPolygonOverlap->text()){
-            configuration.insert( "areaMax", doubleSpinBoxMax->value() );
+            configuration.insert( "areaMax", checkset.upperLimit );
             checks.append(new PolygonOverlapCheck(context, configuration));
         }else if(checkset.name == ui->btnGap->text()){
-            configuration.insert( "areaMax", doubleSpinBoxMax->value() );
-            configuration.insert( "areaMin", doubleSpinBoxMin->value() );
+            configuration.insert( "areaMax", checkset.upperLimit );
+            configuration.insert( "areaMin", checkset.lowerLimit );
             checks.append(new GapCheck(context, configuration));
         }else if(checkset.name == ui->btnPolygonLayerOverlap->text()){
-            configuration.insert( "areaMax", doubleSpinBoxMax->value() );
+            configuration.insert( "areaMax", checkset.upperLimit );
             checks.append(new PolygonLayerOverlapCheck(context, configuration));
         }else if(checkset.name == ui->btnPolygonCoveredByPolygon->text()){
             checks.append(new PolygonCoveredByPolygonCheck(context, configuration));
@@ -548,9 +611,28 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
         }else if(checkset.name == ui->btnConvexhull->text()){
             checks.append(new ConvexHullCheck(context, configuration));
         }else if(checkset.name == ui->btnArea->text()){
-            configuration.insert( "areaMax", doubleSpinBoxMax->value() );
-            configuration.insert( "areaMin", doubleSpinBoxMin->value() );
+            configuration.insert( "areaMax", checkset.upperLimit );
+            configuration.insert( "areaMin", checkset.lowerLimit );
             checks.append(new AreaCheck(context, configuration));
+        }else if(checkset.name == ui->btnClockwise->text()){
+            checks.append(new ClockwiseCheck(context, configuration));
+        }else if(checkset.name == ui->btnAngle->text()){
+            configuration.insert( "minAngle", checkset.angle );
+            checks.append(new AngleCheck(context, configuration));
+        }else if(checkset.name == ui->btnInvalid->text()){
+            checks.append(new IsValidCheck(context, configuration));
+        }else if(checkset.name == ui->btnDuplicate->text()){
+            configuration.insert( "sameNode", checkset.oneToOne );
+            checks.append(new SameCheck(context, configuration));
+        }else if(checkset.name == ui->btnCollinear->text()){
+            checks.append(new CollinearCheck(context, configuration));
+        }else if(checkset.name == ui->btnDuplicateNode->text()){
+            checks.append(new DuplicateNodeCheck(context, configuration));
+        }else if(checkset.name == ui->btnInvalidAttr->text()){
+            configuration.insert( "attr", checkset.attr );
+            checks.append(new AttrValidCheck(context, configuration));
+        }else if(checkset.name == ui->btnUniqueAttr->text()){
+
         }
     }
 

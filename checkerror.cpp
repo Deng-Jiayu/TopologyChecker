@@ -267,7 +267,6 @@ CheckErrorSingle::CheckErrorSingle( SingleCheckError *error, const CheckerUtils:
     : CheckError( error->check(), layerFeature, QgsPointXY( error->errorLocation().constGet()->centroid() ), error->vertexId() ) // TODO: should send geometry to CheckError
     , mError( error )
 {
-
 }
 
 SingleCheckError *CheckErrorSingle::singleError() const

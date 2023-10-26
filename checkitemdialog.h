@@ -6,6 +6,7 @@
 #include <qgsdoublespinbox.h>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QLineEdit>
 #include "layerselectiondialog.h"
 
 #include "checker.h"
@@ -43,6 +44,8 @@ private:
     void initParaTable();
     void initConnection();
     void setBtnText(QPushButton* btn, QVector<QgsVectorLayer*> vec);
+    void setLayerModeText();
+    void setAttrText();
     void setParaUi(QPushButton *btn);
     void setText(QPushButton* btn);
 
@@ -54,11 +57,14 @@ private:
     QComboBox *comboBoxLayerMode;
     QgsDoubleSpinBox *doubleSpinBoxAngle;
     QCheckBox *excludeEndpoint;
+    QLineEdit *attr;
+
 
 private slots:
     void onSelectionChanged(const QItemSelection& newSel, const QItemSelection& /*oldSel*/);
     void selectLayerA();
     void selectLayerB();
+    void setLayerMode();
     void saveEdit();
     void deleteCheck();
     void run();

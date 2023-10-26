@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <qgsproject.h>
 
 SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent)
     : QWidget(parent), ui(new Ui::SetupTab), mIface(iface), mCheckDock(checkDock)

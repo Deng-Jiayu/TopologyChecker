@@ -17,7 +17,7 @@ void LineCoveredByLineCheck::collectErrors(const QMap<QString, FeaturePool *> &f
         QVector<QgsGeometry> geomsA = layerFeatureA.geometry().asGeometryCollection();
         for (int iPart = 0; iPart < geomsA.size(); ++iPart)
         {
-            QgsGeometry line = geomsA[iPart];
+            QgsGeometry &line = geomsA[iPart];
 
             if (line.isEmpty())
                 continue;
@@ -33,11 +33,7 @@ void LineCoveredByLineCheck::collectErrors(const QMap<QString, FeaturePool *> &f
 
                 for (int jPart = 0; jPart < geomsB.size(); ++jPart)
                 {
-                    QgsPolyline tmpLine;
-                    for (auto it = geomsB[jPart].vertices_begin(); it != geomsB[jPart].vertices_end(); ++it)
-                        tmpLine.push_back(*it);
-
-                    QgsGeometry boundary = QgsGeometry::fromPolyline(tmpLine);
+                    QgsGeometry &boundary = geomsB[jPart];
                     boundary = boundary.buffer(mContext->tolerance, 5, QgsGeometry::CapRound, QgsGeometry::JoinStyleRound, 2);
                     if (boundarys.isEmpty())
                     {
@@ -96,11 +92,7 @@ void LineCoveredByLineCheck::fixError(const QMap<QString, FeaturePool *> &featur
 
         for (int jPart = 0; jPart < geomsB.size(); ++jPart)
         {
-            QgsPolyline tmpLine;
-            for (auto it = geomsB[jPart].vertices_begin(); it != geomsB[jPart].vertices_end(); ++it)
-                tmpLine.push_back(*it);
-
-            QgsGeometry boundary = QgsGeometry::fromPolyline(tmpLine);
+            QgsGeometry &boundary = geomsB[jPart];
             boundary = boundary.buffer(mContext->tolerance, 5, QgsGeometry::CapRound, QgsGeometry::JoinStyleRound, 2);
             if (boundarys.isEmpty())
                 boundarys = boundary;

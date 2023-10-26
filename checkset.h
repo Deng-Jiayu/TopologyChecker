@@ -2,7 +2,7 @@
 
 #include <QString>
 #include <qgsvectorlayer.h>
-#include <QVector>>
+#include <QVector>
 using namespace std;
 
 class CheckSet
@@ -24,6 +24,8 @@ public:
         upperLimit = set->upperLimit;
         lowerLimit = set->lowerLimit;
         excludeEndpoint = set->excludeEndpoint;
+        oneToOne = set->oneToOne;
+        attr = set->attr;
         tolerance = set->tolerance;
     }
 
@@ -38,6 +40,8 @@ public:
     double upperLimit = 0.00;
     double lowerLimit = 0.00;
     bool excludeEndpoint = false;
+    bool oneToOne = false;
+    QString attr = "";
     double tolerance;
 };
 

@@ -17,7 +17,7 @@ void LineCoveredByBoundaryCheck::collectErrors(const QMap<QString, FeaturePool *
         QVector<QgsGeometry> geomsA = layerFeatureA.geometry().asGeometryCollection();
         for (int iPart = 0; iPart < geomsA.size(); ++iPart)
         {
-            QgsGeometry line = geomsA[iPart];
+            QgsGeometry &line = geomsA[iPart];
 
             if (line.isEmpty())
                 continue;
