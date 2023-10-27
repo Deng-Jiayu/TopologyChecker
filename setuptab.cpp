@@ -34,10 +34,10 @@ SetupTab::~SetupTab()
 
 void SetupTab::initLists()
 {
-    CheckSet pointOnLineCheckSet(QStringLiteral("点必须在线上"),QStringLiteral("点必须在线对象上，包括在线内、线节点和线端点上，但是不能在线外。"));
-    CheckSet pointOnEndpointCheckSet(QStringLiteral("点必须被线端点覆盖"),QStringLiteral("点只能在线对象的端点上，而不能在线的节点上、线内其它位置和线外。"));
-    CheckSet pointOnLineNodeCheckSet(QStringLiteral("点必须被线节点覆盖"),QStringLiteral("点只能在线对象的节点上，而不能在线的端点上、线内其它位置和线外。"));
-    CheckSet pointDuplicateCheckSet(QStringLiteral("无重复点"),QStringLiteral("检查是否存在重复的点对象。"));
+    CheckSet pointOnLineCheckSet(QStringLiteral("点必须在线上"));
+    CheckSet pointOnEndpointCheckSet(QStringLiteral("点必须被线端点覆盖"));
+    CheckSet pointOnLineNodeCheckSet(QStringLiteral("点必须被线节点覆盖"));
+    CheckSet pointDuplicateCheckSet(QStringLiteral("无重复点"));
 
     CheckItem pointLineItem(QStringLiteral("点线矛盾检查"));
     pointLineItem.sets.push_back(pointOnLineCheckSet);
@@ -50,18 +50,18 @@ void SetupTab::initLists()
     pointGroup.items.push_back(pointLineItem);
     pointGroup.items.push_back(duplicateNodeItem);
 
-    CheckSet turnbackCheckSet(QStringLiteral("线内无打折"),QStringLiteral("检查线数据集中是否存在连续四个节点构成的两个夹角的角度都小于所给的角度值（单位为度），若两个夹角都小于角度值，则认为线对象在中间两个节点处打折。"));
-    CheckSet angleCheckSet(QStringLiteral("最小锐角"),QStringLiteral("用来检查矢量地物上节点之间的角度是否小于设定值。"));
-    CheckSet lineEndCoveredByPointCheckSet(QStringLiteral("线端点必须有井"),QStringLiteral("检查线数据集中是否存在线端点未被参考点数据集的点覆盖的线对象。"));
-    CheckSet lineIntersectionCheckSet(QStringLiteral("线内无相交"),QStringLiteral("检查一个线数据集中是否存在两个（或两个以上）相交且共享交点，但并未从交点处打断的线对象。"));
-    CheckSet lineLayerIntersectionCheckSet(QStringLiteral("线与线无相交"),QStringLiteral("检查线数据集中是否存在与参考线数据集的线相交的线对象，即两个线数据集中的所有线对象必须相互分离。"));
-    CheckSet lineSelfIntersectionCheckSet(QStringLiteral("线内无自相交"),QStringLiteral("检查一个线数据集中是否存在与自身相交的线对象，即线对象中不能有重叠（坐标相同）的节点。"));
-    CheckSet lineSelfOverlapCheckSet(QStringLiteral("线内无自交叠"),QStringLiteral("检查一个线数据集中是否存在与自身重叠的线对象，即一个线对象本身不能有重叠部分。"));
-    CheckSet lineOverlapCheckSet(QStringLiteral("线内无重叠"),QStringLiteral("检查一个线数据集中是否存在两个（或两个以上）线对象之间有相互重叠的部分。"));
-    CheckSet lineLayerOverlapCheckSet(QStringLiteral("线与线无重叠"),QStringLiteral("检查线数据集中是否存在与参考线数据集的线重叠的线对象，即两个线数据集之间的线对象不能有重合的部分。"));
-    CheckSet lineCoveredByBoundaryCheckSet(QStringLiteral("线被面边界覆盖"),QStringLiteral("检查线数据集中是否存在没有被参考面数据集的面边界（可以是一个或多个面边界）覆盖的线对象。"));
-    CheckSet lineCoveredByLineCheckSet(QStringLiteral("线被多条线完全覆盖"),QStringLiteral("检查线数据集中是否存在没有被参考线数据集的一条或多条线覆盖的线对象。"));
-    CheckSet lineDuplicateCheckSet(QStringLiteral("线与线不重复"),QStringLiteral("检查是否存在重复的线对象。"));
+    CheckSet turnbackCheckSet(QStringLiteral("线内无打折"));
+    CheckSet angleCheckSet(QStringLiteral("最小锐角"));
+    CheckSet lineEndCoveredByPointCheckSet(QStringLiteral("线端点必须有井"));
+    CheckSet lineIntersectionCheckSet(QStringLiteral("线内无相交"));
+    CheckSet lineLayerIntersectionCheckSet(QStringLiteral("线与线无相交"));
+    CheckSet lineSelfIntersectionCheckSet(QStringLiteral("线内无自相交"));
+    CheckSet lineSelfOverlapCheckSet(QStringLiteral("线内无自交叠"));
+    CheckSet lineOverlapCheckSet(QStringLiteral("线内无重叠"));
+    CheckSet lineLayerOverlapCheckSet(QStringLiteral("线与线无重叠"));
+    CheckSet lineCoveredByBoundaryCheckSet(QStringLiteral("线被面边界覆盖"));
+    CheckSet lineCoveredByLineCheckSet(QStringLiteral("线被多条线完全覆盖"));
+    CheckSet lineDuplicateCheckSet(QStringLiteral("线与线不重复"));
 
     CheckItem turnbackItem(QStringLiteral("折角检查"));
     turnbackItem.sets.push_back(turnbackCheckSet);
@@ -87,14 +87,14 @@ void SetupTab::initLists()
     lineGroup.items.push_back(lineCoveredByItem);
 
 
-    CheckSet holeCheckSet(QStringLiteral("面内无岛"),QStringLiteral("面对象内部不能出现被挖空（岛洞多边形）的情况。"));
-    CheckSet gapCheckSet(QStringLiteral("面内无缝隙"),QStringLiteral("检查相邻面对象之间是否存在空隙，即相邻面对象之间的边界必须重合。"));
-    CheckSet polygonDuplicateCheckSet(QStringLiteral("面不重复"),QStringLiteral("检查是否存在重复的面对象。"));
-    CheckSet convexhullCheckSet(QStringLiteral("凸包图斑"),QStringLiteral("检查面对象是否为凸包。"));
-    CheckSet notWithinCheckSet(QStringLiteral("面不相互包含"),QStringLiteral("检查是否存在被面对象包含的面对象。"));
-    CheckSet withinCheckSet(QStringLiteral("面被面包含"),QStringLiteral("检查是否存在被面对象包含的面对象。"));
-    CheckSet polygonOverlapCheck(QStringLiteral("面内无重叠"),QStringLiteral("检查一个面数据集中是否存在两个（或两个以上）相互重叠的面对象，包括部分重叠和完全重叠。"));
-    CheckSet polygonLayerOverlapCheck(QStringLiteral("面与面无重叠"),QStringLiteral("检查面数据集中是否存在与参考面数据集的面重叠的面对象，包括部分重叠和完全重叠，即两个面数据集内的面对象之间不能存在交集。"));
+    CheckSet holeCheckSet(QStringLiteral("面内无岛"));
+    CheckSet gapCheckSet(QStringLiteral("面内无缝隙"));
+    CheckSet polygonDuplicateCheckSet(QStringLiteral("面不重复"));
+    CheckSet convexhullCheckSet(QStringLiteral("凸包图斑"));
+    CheckSet notWithinCheckSet(QStringLiteral("面不相互包含"));
+    CheckSet withinCheckSet(QStringLiteral("面被面包含"));
+    CheckSet polygonOverlapCheck(QStringLiteral("面内无重叠"));
+    CheckSet polygonLayerOverlapCheck(QStringLiteral("面与面无重叠"));
 
     CheckItem withinItem(QStringLiteral("包含检查"));
     withinItem.sets.push_back(withinCheckSet);
@@ -178,6 +178,7 @@ void SetupTab::initUi()
             connect(btn, &PushButton::addItem, this, &SetupTab::addItem);
             connect(btn, &PushButton::addGroup, this, &SetupTab::addGroup);
             connect(btn, &PushButton::run, this, &SetupTab::runItem);
+            connect(btn, &PushButton::runAll, this, &SetupTab::run);
 
             btnToCheck[btn] = &curList->groups[i].items[j];
 
@@ -246,7 +247,15 @@ void SetupTab::save()
 
                 CheckSet set = item.sets[k];
 
-                QJsonObject object({ { "name", set.name }, { "description", set.description} });
+                QJsonObject object({{ "name", set.name }});
+                object.insert("layersA",QJsonArray::fromStringList(set.layersAStr));
+                object.insert("layersB",QJsonArray::fromStringList(set.layersBStr));
+                object.insert("angle", set.angle);
+                object.insert("upperLimit", set.upperLimit);
+                object.insert("lowerLimit", set.lowerLimit);
+                object.insert("excludeEndpoint", set.excludeEndpoint);
+                object.insert("oneToOne", set.oneToOne);
+                object.insert("attr", set.attr);
                 setArray.append(object);
             }
 
@@ -306,7 +315,25 @@ void SetupTab::read()
                 val = sets[k];
                 obj = val.toObject();
 
-                CheckSet set(obj["name"].toString(),obj["description"].toString());
+                //CheckSet set(obj["name"].toString(),obj["description"].toString());
+                CheckSet set(obj["name"].toString());
+                QStringList list;
+                QJsonArray array = obj["layersA"].toArray();
+                for (auto it : as_const(array))
+                  list.append(it.toString());
+                set.layersAStr = list;
+                list.clear();
+                array = obj["layersB"].toArray();
+                for (auto it : as_const(array))
+                  list.append(it.toString());
+                set.layersBStr = list;
+                set.angle = obj["angle"].toDouble();
+                set.upperLimit = obj["upperLimit"].toDouble();
+                set.lowerLimit = obj["lowerLimit"].toDouble();
+                set.excludeEndpoint = obj["excludeEndpoint"].toBool();
+                set.oneToOne = obj["oneToOne"].toBool();
+                set.attr = obj["attr"].toString();
+
                 item.sets.push_back(set);
             }
 
@@ -526,8 +553,10 @@ void SetupTab::rename()
         }
         if(group == nullptr) return;
 
-        for (int i = 0; i < group->items.size(); ++i) {
-            if (group->items[i].name == text) {
+        for (int i = 0; i < group->items.size(); ++i)
+        {
+            if (group->items[i].name == text)
+            {
                 QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("项已存在"));
                 return;
             }
@@ -549,4 +578,292 @@ void SetupTab::runItem()
     dialog->resize(600, 500);
     dialog->hideBtnList();
     dialog->show();
+}
+
+void SetupTab::run()
+{
+    // Collect layers
+    for ( QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>() )
+    {
+        if(!layer || !layer->isValid()) continue;
+
+        if(layer->geometryType() == QgsWkbTypes::PointGeometry ||
+            layer->geometryType() == QgsWkbTypes::LineGeometry ||
+            layer->geometryType() == QgsWkbTypes::PolygonGeometry){
+
+        }
+    }
+
+  // Get selected layer
+  const QList<QgsVectorLayer *> layers = getSelectedLayers();
+  if ( layers.isEmpty() )
+    return;
+
+  if ( ui.radioButtonOutputNew->isChecked() )
+  {
+    for ( QgsVectorLayer *layer : layers )
+    {
+      if ( layer->dataProvider()->dataSourceUri().startsWith( ui.lineEditOutputDirectory->text() ) )
+      {
+        QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The chosen output directory contains one or more input layers." ) );
+        return;
+      }
+    }
+  }
+  QgsVectorLayer *lineLayerCheckLayer = ui.comboLineLayerIntersection->isEnabled() ? QgsProject::instance()->mapLayer<QgsVectorLayer *>( ui.comboLineLayerIntersection->currentData().toString() ) : nullptr;
+  QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? QgsProject::instance()->mapLayer<QgsVectorLayer *>( ui.comboBoxFollowBoundaries->currentData().toString() ) : nullptr;
+  if ( layers.contains( lineLayerCheckLayer ) || layers.contains( followBoundaryCheckLayer ) )
+  {
+    QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The selected input layers cannot contain a layer also selected for a topology check." ) );
+    return;
+  }
+
+  for ( QgsVectorLayer *layer : layers )
+  {
+    if ( layer->isEditable() )
+    {
+      QMessageBox::critical( this, tr( "Check Geometries" ), tr( "Input layer '%1' is not allowed to be in editing mode." ).arg( layer->name() ) );
+      return;
+    }
+  }
+  bool selectedOnly = ui.checkBoxInputSelectedOnly->isChecked();
+
+  // Set window busy
+  setCursor( Qt::WaitCursor );
+  mRunButton->setEnabled( false );
+  ui.labelStatus->setText( tr( "<b>Preparing output…</b>" ) );
+  ui.labelStatus->show();
+  QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
+
+  QList<QgsVectorLayer *> processLayers;
+  if ( ui.radioButtonOutputNew->isChecked() )
+  {
+    // Get output directory and file extension
+    QDir outputDir = QDir( ui.lineEditOutputDirectory->text() );
+    QString outputDriverName = ui.comboBoxOutputFormat->currentData().toString();
+    QgsVectorFileWriter::MetaData metadata;
+    if ( !QgsVectorFileWriter::driverMetadata( outputDriverName, metadata ) )
+    {
+      QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The specified output format cannot be recognized." ) );
+      mRunButton->setEnabled( true );
+      ui.labelStatus->hide();
+      unsetCursor();
+      return;
+    }
+    QString outputExtension = metadata.ext;
+
+    // List over input layers, check which existing project layers need to be removed and create output layers
+    QString filenamePrefix = ui.lineEditFilenamePrefix->text();
+    QSettings().setValue( "/geometry_checker/previous_values/filename_prefix", filenamePrefix );
+    QStringList toRemove;
+    QStringList createErrors;
+    for ( QgsVectorLayer *layer : layers )
+    {
+      QString outputPath = outputDir.absoluteFilePath( filenamePrefix + layer->name() + "." + outputExtension );
+
+      // Remove existing layer with same uri from project
+      for ( QgsVectorLayer *projectLayer : QgsProject::instance()->layers<QgsVectorLayer *>() )
+      {
+        if ( projectLayer->dataProvider()->dataSourceUri().startsWith( outputPath ) )
+        {
+          toRemove.append( projectLayer->id() );
+        }
+      }
+
+      // Create output layer
+      QString errMsg;
+      QgsVectorFileWriter::SaveVectorOptions saveOptions;
+      saveOptions.fileEncoding = layer->dataProvider()->encoding();
+      saveOptions.driverName = outputDriverName;
+      saveOptions.onlySelectedFeatures = selectedOnly;
+      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormatV2( layer, outputPath, layer->transformContext(), saveOptions, nullptr, nullptr, &errMsg );
+      if ( err != QgsVectorFileWriter::NoError )
+      {
+        createErrors.append( errMsg );
+        continue;
+      }
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ), options );
+      if ( selectedOnly )
+      {
+        QgsFeature feature;
+
+        // Get features to select (only selected features were written up to this point)
+        QgsFeatureIds selectedFeatures = newlayer->allFeatureIds();
+
+        // Write non-selected feature ids
+        QgsFeatureList features;
+        QgsFeatureIterator it = layer->getFeatures();
+        while ( it.nextFeature( feature ) )
+        {
+          if ( !layer->selectedFeatureIds().contains( feature.id() ) )
+          {
+            features.append( feature );
+          }
+        }
+        newlayer->dataProvider()->addFeatures( features );
+
+        // Set selected features
+        newlayer->selectByIds( selectedFeatures );
+      }
+      processLayers.append( newlayer );
+    }
+
+    //  Remove layers from project
+    if ( !toRemove.isEmpty() )
+    {
+      QgsProject::instance()->removeMapLayers( toRemove );
+    }
+
+    // Error if an output layer could not be created
+    if ( !createErrors.isEmpty() )
+    {
+      QMessageBox::critical( this, tr( "Check Geometries" ), tr( "Failed to create one or more output layers:\n%1" ).arg( createErrors.join( "\n" ) ) );
+      mRunButton->setEnabled( true );
+      ui.labelStatus->hide();
+      unsetCursor();
+      return;
+    }
+  }
+  else
+  {
+    processLayers = layers;
+  }
+
+  // Check if output layers are editable
+  QList<QgsVectorLayer *> nonEditableLayers;
+  for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+  {
+    if ( ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
+    {
+      nonEditableLayers.append( layer );
+    }
+  }
+  if ( !nonEditableLayers.isEmpty() )
+  {
+    QStringList nonEditableLayerNames;
+    for ( QgsVectorLayer *layer : nonEditableLayers )
+    {
+      nonEditableLayerNames.append( layer->name() );
+    }
+    if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Check Geometries" ), tr( "The following output layers are in a format that does not support editing features:\n%1\n\nThe geometry check can be performed, but it will not be possible to fix any errors. Do you want to continue?" ).arg( nonEditableLayerNames.join( "\n" ) ), QMessageBox::Yes, QMessageBox::No ) )
+    {
+      if ( ui.radioButtonOutputNew->isChecked() )
+      {
+        for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+        {
+          QString layerPath = layer->dataProvider()->dataSourceUri();
+          delete layer;
+          if ( ui.comboBoxOutputFormat->currentText() == QLatin1String( "ESRI Shapefile" ) )
+          {
+            QgsVectorFileWriter::deleteShapeFile( layerPath );
+          }
+          else
+          {
+            QFile( layerPath ).remove();
+          }
+        }
+        mRunButton->setEnabled( true );
+        ui.labelStatus->hide();
+        unsetCursor();
+      }
+      return;
+    }
+  }
+
+  // Setup checker
+  ui.labelStatus->setText( tr( "<b>Building spatial index…</b>" ) );
+  QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
+  QMap<QString, QgsFeaturePool *> featurePools;
+  for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+  {
+    featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
+  }
+  // LineLayerIntersection check is enabled, make sure there is also a feature pool for that layer
+  if ( ui.checkLineLayerIntersection->isChecked() && !featurePools.keys().contains( ui.comboLineLayerIntersection->currentData().toString() ) )
+  {
+    QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( ui.comboLineLayerIntersection->currentData().toString() );
+    Q_ASSERT( layer );
+    featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
+  }
+
+  QgsGeometryCheckContext *context = new QgsGeometryCheckContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext(), QgsProject::instance() );
+
+  QList<QgsGeometryCheck *> checks;
+  for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+  {
+    QgsGeometryCheck *check = factory->createInstance( context, ui );
+    if ( check )
+    {
+      checks.append( check );
+    }
+  }
+  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, context, featurePools );
+
+  emit checkerStarted( checker );
+
+  if ( ui.radioButtonOutputNew->isChecked() )
+  {
+    QList<QgsMapLayer *> addLayers;
+    for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+    {
+      addLayers.append( layer );
+    }
+    QgsProject::instance()->addMapLayers( addLayers );
+  }
+
+  // Run
+  ui.buttonBox->addButton( mAbortButton, QDialogButtonBox::ActionRole );
+  mRunButton->hide();
+  ui.progressBar->setRange( 0, 0 );
+  ui.labelStatus->hide();
+  ui.progressBar->show();
+  ui.widgetInputs->setEnabled( false );
+  QEventLoop evLoop;
+  QFutureWatcher<void> futureWatcher;
+  connect( checker, &QgsGeometryChecker::progressValue, ui.progressBar, &QProgressBar::setValue );
+  connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
+  connect( mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
+  connect( mAbortButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::showCancelFeedback );
+
+  mIsRunningInBackground = true;
+
+  int maxSteps = 0;
+  futureWatcher.setFuture( checker->execute( &maxSteps ) );
+  ui.progressBar->setRange( 0, maxSteps );
+  evLoop.exec();
+
+  mIsRunningInBackground = false;
+
+  // Restore window
+  unsetCursor();
+  mAbortButton->setEnabled( true );
+  ui.buttonBox->removeButton( mAbortButton );
+  mRunButton->setEnabled( true );
+  mRunButton->show();
+  ui.progressBar->hide();
+  ui.labelStatus->hide();
+  ui.widgetInputs->setEnabled( true );
+
+  // Show result
+  emit checkerFinished( !futureWatcher.isCanceled() );
+
+}
+
+QList<Check *> SetupTab::getChecks(CheckContext *context)
+{
+    for(int i = 0;i<curList->groups.size();++i)
+    {
+        CheckGroup &group = curList->groups[i];
+        for(int j = 0;j<group.items.size();++j)
+        {
+            CheckItem &item = group.items[j];
+            for(int k =0;k<item.sets.size();++k)
+            {
+                CheckSet &set = item.sets[k];
+
+            }
+        }
+    }
+
 }

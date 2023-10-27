@@ -349,6 +349,7 @@ void CheckItemDialog::selectLayerA()
     connect(layerSelectDialog, &LayerSelectionDialog::finish, this, [&]() {
         setBtnText(layerA, layerSelectDialog->getSelectedLayers());
         mCheckSet->layersA = layerSelectDialog->getSelectedLayers();
+        mCheckSet->setlayersStr();
     });
     layerSelectDialog->selectLayer(mCheckSet->layersA);
     layerSelectDialog->show();
@@ -360,6 +361,7 @@ void CheckItemDialog::selectLayerB()
     connect(layerSelectDialog, &LayerSelectionDialog::finish, this, [&]() {
         setBtnText(layerB, layerSelectDialog->getSelectedLayers());
         mCheckSet->layersB = layerSelectDialog->getSelectedLayers();
+        mCheckSet->setlayersStr();
     });
     layerSelectDialog->selectLayer(mCheckSet->layersB);
     layerSelectDialog->show();

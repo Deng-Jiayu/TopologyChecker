@@ -11,7 +11,6 @@ class CheckSet
 public:
     CheckSet() = default;
     CheckSet(QString name) : name(name) {}
-    CheckSet(QString name, QString description) : name(name), description(description) {}
 
     void fromPoint(CheckSet *set) {
         if (!set)
@@ -32,9 +31,10 @@ public:
     virtual ~CheckSet() = default;
 
     QString name;
-    QString description;
     QVector<QgsVectorLayer *> layersA;
+    QStringList layersAStr;
     QVector<QgsVectorLayer *> layersB;
+    QStringList layersBStr;
     QVector<QgsVectorLayer *> excludedLayers;
     double angle = 0.00;
     double upperLimit = 0.00;
@@ -43,6 +43,16 @@ public:
     bool oneToOne = false;
     QString attr = "";
     double tolerance;
+
+    void setlayersStr()
+    {
+        layersAStr.clear();
+        layersBStr.clear();
+        for (auto it : as_const(layersA))
+            layersAStr.append(it->name());
+        for (auto it : as_const(layersB))
+            layersBStr.append(it->name());
+    }
 };
 
 class CheckItem

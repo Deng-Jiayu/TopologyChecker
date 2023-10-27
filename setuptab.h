@@ -40,6 +40,7 @@ private:
     QVector<CollapsibleGroupBox*> groupBoxs;
     QVector<PushButton*> btns;
 
+
     void initLists();
     void initUi();
     void initConnection();
@@ -54,6 +55,10 @@ private slots:
     void remove();
     void rename();
     void runItem();
+    void run();
+
+private:
+    QList<Check *> getChecks(CheckContext *context);
 };
 
 #endif // SETUPTAB_H

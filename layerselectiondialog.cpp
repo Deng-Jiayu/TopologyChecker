@@ -26,11 +26,14 @@ LayerSelectionDialog::LayerSelectionDialog(QWidget* parent)
 }
 
 LayerSelectionDialog::~LayerSelectionDialog()
-{}
+{
+    qDebug() << "LayerSelectionDialog::~LayerSelectionDialog()";
+}
 
 void LayerSelectionDialog::initList()
 {
     ui.listWidget->clear();
+    mLayers.clear();
     itemLayerMap.clear();
     ui.checkBoxPoint->setChecked(true);
     ui.checkBoxLine->setChecked(true);
@@ -67,6 +70,7 @@ void LayerSelectionDialog::initList()
             item->setCheckState(Qt::Unchecked);
             item->setFlags(item->flags() & ~(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable));
         }
+        mLayers.append(layer);
         itemLayerMap[item] = layer;
         ui.listWidget->addItem(item);
     }
@@ -123,6 +127,7 @@ void LayerSelectionDialog::addFile(QString path)
         item->setFlags(item->flags() & ~(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable));
     }
 
+    mLayers.append(layer);
     itemLayerMap[item] = layer;
     ui.listWidget->addItem(item);
 }

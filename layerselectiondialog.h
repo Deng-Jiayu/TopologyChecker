@@ -16,6 +16,8 @@ public:
     QVector<QgsVectorLayer*> getSelectedLayers();
     void selectLayer(QVector<QgsVectorLayer*> vec);
 
+    QVector<QgsVectorLayer*> mLayers;
+
 signals:
     void finish();
 
