@@ -11,7 +11,6 @@ public:
 
 signals:
     void run();
-    void runSelected();
     void rename();
     void remove();
     void addGroup();

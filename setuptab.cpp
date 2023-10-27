@@ -177,6 +177,7 @@ void SetupTab::initUi()
             connect(btn, &PushButton::remove, this, &SetupTab::remove);
             connect(btn, &PushButton::addItem, this, &SetupTab::addItem);
             connect(btn, &PushButton::addGroup, this, &SetupTab::addGroup);
+            connect(btn, &PushButton::run, this, &SetupTab::runItem);
 
             btnToCheck[btn] = &curList->groups[i].items[j];
 
@@ -535,4 +536,17 @@ void SetupTab::rename()
         item->name = text;
         initUi();
     }
+}
+
+void SetupTab::runItem()
+{
+    PushButton *p = qobject_cast<PushButton *>(sender());
+    CheckItemDialog *dialog = new CheckItemDialog(mIface, btnToCheck[p], this);
+    dialog->setWindowTitle(QStringLiteral("执行检查"));
+    connect(dialog, &CheckItemDialog::checkerStarted, this, &SetupTab::checkerStarted);
+    connect(dialog, &CheckItemDialog::checkerFinished, this, &SetupTab::checkerFinished);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->resize(600, 500);
+    dialog->hideBtnList();
+    dialog->show();
 }

@@ -450,6 +450,9 @@
               </item>
               <item row="27" column="0">
                <widget class="QPushButton" name="btnPolygonDuplicate">
+                <property name="toolTip">
+                 <string>检查是否存在重复的面对象。</string>
+                </property>
                 <property name="text">
                  <string>面斑不重复</string>
                 </property>

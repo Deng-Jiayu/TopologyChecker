@@ -52,7 +52,7 @@ class CheckerUtils
     class LayerFeature
     {
       public:
-
+        LayerFeature() = default;
         /**
          * Create a new layer/feature combination.
          * The layer is defined by \a pool, \a feature needs to be from this layer.

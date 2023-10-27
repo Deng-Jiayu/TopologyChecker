@@ -25,6 +25,7 @@ public:
     ~CheckItemDialog();
 
     void set();
+    void hideBtnList();
 
 signals:
     void checkerStarted( Checker *checker );

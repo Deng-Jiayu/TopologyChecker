@@ -53,6 +53,7 @@ private slots:
     void addItem();
     void remove();
     void rename();
+    void runItem();
 };
 
 #endif // SETUPTAB_H

@@ -1,74 +1,88 @@
-#include "uniqueattrcheck.h"
+﻿#include "uniqueattrcheck.h"
 #include "checkcontext.h"
 #include "featurepool.h"
 #include "checkerror.h"
 
-void UniqueAttrCheck::collectErrors( const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void UniqueAttrCheck::collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids) const
 {
-    Q_UNUSED( messages )
+    Q_UNUSED(messages)
 
-    QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-    CheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
+    QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds(featurePools) : ids.toMap();
+    CheckerUtils::LayerFeatures layerFeatures(featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext);
 
-    for ( const CheckerUtils::LayerFeature &layerFeatureA : layerFeatures )
+    for (const CheckerUtils::LayerFeature &layerFeature : layerFeatures)
     {
-        QString attr = "id";
-        QgsFeature f = layerFeatureA.feature();
+        if (std::find(layers.begin(), layers.end(), layerFeature.layer()) == layers.end())
+            continue;
+        QgsFeature f = layerFeature.feature();
+        if (!f.attribute(attr).isValid())
+            continue;
 
-        if(f.attribute(attr).isValid() && f.attribute(attr).isNull()){
-            errors.append(new CheckError(this, layerFeatureA, layerFeatureA.geometry().centroid().asPoint(), QgsVertexId(), attr + QStringLiteral("缺失")));
+        if (f.attribute(attr).isNull())
+        {
+            errors.append(new CheckError(this, layerFeature, layerFeature.geometry().centroid().asPoint(), QgsVertexId(), attr + QStringLiteral("属性缺失")));
             continue;
         }
 
         QVariant var = f.attribute(attr);
         QList<QgsFeatureId> duplicates;
 
-        QgsGeometry geomA = layerFeatureA.geometry();
-        QgsRectangle bboxA = geomA.boundingBox();
-        QgsWkbTypes::GeometryType geomType = geomA.type();
-        CheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>()<<layerFeatureA.layer()->id(), bboxA, {geomType}, mContext );
-        for ( const CheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
+        QgsVectorLayer *layer = layerFeature.layer();
+        QgsFeatureIterator featureIt = layer->getFeatures();
+        featureIt.rewind();
+        QgsFeature checkF;
+        while (featureIt.nextFeature(checkF))
         {
-            if ( layerFeatureB.feature().id() >= layerFeatureA.feature().id() )
-            {
+            if (checkF.id() >= f.id())
                 continue;
-            }
-
-
-
-
+            if (checkF.attribute(attr) == var)
+                duplicates.append(checkF.id());
         }
-        if ( !duplicates.isEmpty() )
+
+        if (!duplicates.isEmpty())
         {
-            errors.append( new AttrDuplicateError( this, layerFeatureA, geomA.constGet()->centroid(), featurePools, duplicates ) );
+            errors.append(new AttrDuplicateError(this, layerFeature, layerFeature.geometry().centroid().asPoint(), attr, duplicates));
         }
     }
 }
 
-void UniqueAttrCheck::fixError( const QMap<QString, FeaturePool *> &featurePools, CheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void UniqueAttrCheck::fixError(const QMap<QString, FeaturePool *> &featurePools, CheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes) const
 {
-    FeaturePool *featurePool = featurePools[ error->layerId() ];
+    FeaturePool *featurePool = featurePools[error->layerId()];
     QgsFeature feature;
-    if ( !featurePool->getFeature( error->featureId(), feature ) )
+    if (!featurePool->getFeature(error->featureId(), feature))
     {
         error->setObsolete();
         return;
     }
 
-
     // Fix error
-    if ( method == NoChange )
+    if (method == NoChange)
     {
-        error->setFixed( method );
+        error->setFixed(method);
     }
     else
     {
-        error->setFixFailed( tr( "Unknown method" ) );
+        error->setFixFailed(tr("Unknown method"));
     }
 }
 
 QStringList UniqueAttrCheck::resolutionMethods() const
 {
-    static QStringList methods = QStringList() << QStringLiteral( "无" );
+    static QStringList methods = QStringList() << QStringLiteral("无");
     return methods;
+}
+
+QString AttrDuplicateError::duplicatesString(const QString &attr, const QList<QgsFeatureId> &duplicates)
+{
+
+    QString str = attr + QStringLiteral("属性重复：");
+    for (auto it = duplicates.constBegin(); it != duplicates.constEnd(); ++it)
+    {
+        QString ids;
+        ids.append(QString::number((*it)));
+        str += ids + ',';
+    }
+    str.remove(str.length() - 1, 1);
+    return str + "; ";
 }

@@ -18,6 +18,7 @@ CheckItemDialog::CheckItemDialog(QgisInterface *iface, CheckItem *item, QWidget 
     connect(ui->btnSaveEdit, &QPushButton::clicked, this, &CheckItemDialog::saveEdit);
     connect(ui->btnDeleteCheck, &QPushButton::clicked, this, &CheckItemDialog::deleteCheck);
     connect(ui->btnRun, &QPushButton::clicked, this, &CheckItemDialog::run);
+    connect(ui->btnClose, &QPushButton::clicked, this, [&](){this->close();});
 
     initTable();
     initParaTable();
@@ -36,6 +37,11 @@ void CheckItemDialog::set()
     ui->groupBoxLine->setCollapsed(true);
     ui->groupBoxPolygon->setCollapsed(true);
     ui->groupBoxProperties->setCollapsed(true);
+}
+
+void CheckItemDialog::hideBtnList()
+{
+    ui->scrollArea->hide();
 }
 
 void CheckItemDialog::initTable()
@@ -220,7 +226,7 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
                || btn == ui->btnGap || btn == ui->btnHole || btn == ui->btnConvexhull
                || btn == ui->btnArea || btn == ui->btnClockwise || btn == ui->btnAngle
                || btn == ui->btnInvalid || btn == ui->btnDuplicate || btn == ui->btnCollinear
-               || btn == ui->btnDuplicateNode || btn == ui->btnInvalidAttr)
+               || btn == ui->btnDuplicateNode || btn == ui->btnInvalidAttr || btn == ui->btnUniqueAttr)
     {
         ui->tableWidgetPara->hideRow(1);
         ui->tableWidgetPara->hideRow(2);
@@ -299,7 +305,7 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
             ui->tableWidgetPara->showRow(7);
             ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("反向检查"));
             excludeEndpoint->setChecked(mCheckSet->excludeEndpoint);
-        }else if(btn == ui->btnInvalidAttr){
+        }else if(btn == ui->btnInvalidAttr || btn == ui->btnUniqueAttr){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("图层"));
             ui->tableWidgetPara->showRow(8);
             setAttrText();
@@ -525,6 +531,7 @@ void CheckItemDialog::run()
 #include "collinearcheck.h"
 #include "duplicatenodecheck.h"
 #include "attrvalidcheck.h"
+#include "uniqueattrcheck.h"
 QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
 {
     QList<Check *> checks;
@@ -632,7 +639,8 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
             configuration.insert( "attr", checkset.attr );
             checks.append(new AttrValidCheck(context, configuration));
         }else if(checkset.name == ui->btnUniqueAttr->text()){
-
+            configuration.insert( "attr", checkset.attr );
+            checks.append(new UniqueAttrCheck(context, configuration));
         }
     }
 
