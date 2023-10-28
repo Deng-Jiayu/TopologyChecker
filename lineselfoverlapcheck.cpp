@@ -43,7 +43,6 @@ void LineSelfOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &fea
     {
         if (std::find(layers.begin(), layers.end(), layerFeature.layer()) == layers.end())
             continue;
-        qDebug() << layerFeature.id();
         QVector<LineSegment> totalLines;
         const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
         for (int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart)

@@ -55,6 +55,7 @@ HEADERS += \
     linesegment.h \
     lineselfintersectioncheck.h \
     lineselfoverlapcheck.h \
+    messagebox.h \
     pointduplicatecheck.h \
     pointinpolygoncheck.h \
     pointonboundarycheck.h \
@@ -115,6 +116,7 @@ SOURCES += \
     linesegment.cpp \
     lineselfintersectioncheck.cpp \
     lineselfoverlapcheck.cpp \
+    messagebox.cpp \
     pointduplicatecheck.cpp \
     pointinpolygoncheck.cpp \
     pointonboundarycheck.cpp \
@@ -145,6 +147,7 @@ FORMS += \
     checkdock.ui \
     checkitemdialog.ui \
     layerselectiondialog.ui \
+    messagebox.ui \
     resulttab.ui \
     setuptab.ui \
     topologycheckerguibase.ui

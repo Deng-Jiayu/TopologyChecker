@@ -44,7 +44,7 @@ private:
     void initTable();
     void initParaTable();
     void initConnection();
-    void setBtnText(QPushButton* btn, QVector<QgsVectorLayer*> vec);
+    void setBtnText(QPushButton* btn, QSet<QgsVectorLayer*> vec);
     void setLayerModeText();
     void setAttrText();
     void setParaUi(QPushButton *btn);
@@ -70,7 +70,7 @@ private slots:
     void deleteCheck();
     void run();
 
-private:
+public:
     QList<Check *> getChecks(CheckContext *context);
     void initPointOnLineUi();
     void initPointDuplicateUi();

@@ -9,6 +9,7 @@
 #include "pushbutton.h"
 #include "checkset.h"
 #include "checker.h"
+#include "messagebox.h"
 
 namespace Ui {
 class SetupTab;
@@ -30,6 +31,7 @@ private:
     Ui::SetupTab *ui;
     QgisInterface *mIface = nullptr;
     QDockWidget *mCheckDock;
+    MessageBox *mMessageBox = nullptr;
 
     CheckList *curList = nullptr;
     QVector<CheckList> mlists;
@@ -39,6 +41,9 @@ private:
     QVector<bool> boxCollapsed;
     QVector<CollapsibleGroupBox*> groupBoxs;
     QVector<PushButton*> btns;
+    QPushButton *mAbortButton = nullptr;
+
+    bool mIsRunningInBackground;
 
 
     void initLists();
@@ -55,10 +60,12 @@ private slots:
     void remove();
     void rename();
     void runItem();
+    void setPara();
     void run();
 
 private:
     QList<Check *> getChecks(CheckContext *context);
+    void getLayers(QSet<QgsVectorLayer*> &processLayers, QSet<QgsVectorLayer*> &layers, CheckSet &set);
 };
 
 #endif // SETUPTAB_H

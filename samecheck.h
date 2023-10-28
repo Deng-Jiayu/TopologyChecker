@@ -45,11 +45,10 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
         withinLayer = configuration.value(QStringLiteral("excludeEndpoint")).toBool();
         sameNode = configuration.value(QStringLiteral("sameNode")).toBool();
-        qDebug() << withinLayer;
-        qDebug() << sameNode;
+        qDebug() << "SameCheck";
     }
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
     void fixError(const QMap<QString, FeaturePool *> &featurePools, CheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes) const override;
@@ -72,7 +71,7 @@ public:
         RemoveDuplicates
     };
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
     bool withinLayer;
     bool sameNode;
 

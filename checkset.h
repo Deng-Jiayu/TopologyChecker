@@ -31,11 +31,11 @@ public:
     virtual ~CheckSet() = default;
 
     QString name;
-    QVector<QgsVectorLayer *> layersA;
+    QSet<QgsVectorLayer *> layersA;
     QStringList layersAStr;
-    QVector<QgsVectorLayer *> layersB;
+    QSet<QgsVectorLayer *> layersB;
     QStringList layersBStr;
-    QVector<QgsVectorLayer *> excludedLayers;
+    QSet<QgsVectorLayer *> excludedLayers;
     double angle = 0.00;
     double upperLimit = 0.00;
     double lowerLimit = 0.00;

@@ -13,8 +13,8 @@ public:
 	LayerSelectionDialog(QWidget *parent = nullptr);
 	~LayerSelectionDialog();
 
-    QVector<QgsVectorLayer*> getSelectedLayers();
-    void selectLayer(QVector<QgsVectorLayer*> vec);
+    QSet<QgsVectorLayer*> getSelectedLayers();
+    void selectLayer(QSet<QgsVectorLayer*> vec);
 
     QVector<QgsVectorLayer*> mLayers;
 
@@ -23,8 +23,6 @@ signals:
 
 private:
     Ui::LayerSelectionDialog ui;
-
-    QVector<QgsVectorLayer*> selectedLayers;
 
     QMap<QListWidgetItem*, QgsVectorLayer*> itemLayerMap;
 

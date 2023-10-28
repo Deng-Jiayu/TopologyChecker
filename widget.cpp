@@ -14,6 +14,5 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
 void Widget::ShowcustomContextMenu()
 {
-    //qDebug()<<"Widget";
     menu->exec(QCursor::pos());
 }

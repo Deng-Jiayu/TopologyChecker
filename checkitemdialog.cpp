@@ -142,7 +142,7 @@ void CheckItemDialog::initConnection()
     }
 }
 
-void CheckItemDialog::setBtnText(QPushButton* btn, QVector<QgsVectorLayer*> vec)
+void CheckItemDialog::setBtnText(QPushButton* btn, QSet<QgsVectorLayer*> vec)
 {
     if (vec.empty()) {
         btn->setText(QStringLiteral("..."));

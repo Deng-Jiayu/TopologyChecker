@@ -16,7 +16,6 @@ void PolygonCoveredByPolygonCheck::collectErrors(const QMap<QString, FeaturePool
             continue;
         if (feedback && feedback->isCanceled())
             break;
-        qDebug()<<layerFeatureA.id();
 
         QVector<QgsGeometry> geomsA = layerFeatureA.geometry().asGeometryCollection();
         for (int iPart = 0; iPart < geomsA.size(); ++iPart)

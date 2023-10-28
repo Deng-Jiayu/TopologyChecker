@@ -163,6 +163,7 @@ void ResultTab::updateComboBox()
 
 void ResultTab::addError(CheckError *error)
 {
+    qDebug() << "ResultTab::addError" << error->description();
     bool sortingWasEnabled = ui->tableWidgetErrors->isSortingEnabled();
     if ( sortingWasEnabled )
         ui->tableWidgetErrors->setSortingEnabled( false );

@@ -270,21 +270,21 @@ void LayerSelectionDialog::showPolygon()
     }
 }
 
-QVector<QgsVectorLayer*> LayerSelectionDialog::getSelectedLayers()
+QSet<QgsVectorLayer*> LayerSelectionDialog::getSelectedLayers()
 {
-    QVector<QgsVectorLayer*> vec;
+    QSet<QgsVectorLayer*> vec;
     for (int row = 0, nRows = ui.listWidget->count(); row < nRows; ++row)
     {
         QListWidgetItem* item = ui.listWidget->item(row);
         if (item->checkState() == Qt::Checked)
         {
-            vec.push_back(itemLayerMap[item]);
+            vec.insert(itemLayerMap[item]);
         }
     }
     return vec;
 }
 
-void LayerSelectionDialog::selectLayer(QVector<QgsVectorLayer*> vec)
+void LayerSelectionDialog::selectLayer(QSet<QgsVectorLayer*> vec)
 {
     for (int row = 0, nRows = ui.listWidget->count(); row < nRows; ++row)
     {
@@ -292,9 +292,8 @@ void LayerSelectionDialog::selectLayer(QVector<QgsVectorLayer*> vec)
         item->setCheckState(Qt::Unchecked);
     }
 
-    for (int i = 0; i < vec.size(); ++i)
+    for(auto layer : vec)
     {
-        QgsVectorLayer* layer = vec[i];
         for (int row = 0, nRows = ui.listWidget->count(); row < nRows; ++row)
         {
             QListWidgetItem* item = ui.listWidget->item(row);
