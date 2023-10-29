@@ -16,7 +16,7 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
         attr = configurationValue<QString>("attr");
     }
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -33,7 +33,7 @@ public:
     static QString factoryId() { return QStringLiteral("AttrValidCheck"); }
     static Check::CheckType factoryCheckType() { return Check::FeatureCheck; }
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
     QString attr;
 };
 

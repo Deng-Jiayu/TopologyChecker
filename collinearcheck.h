@@ -17,7 +17,7 @@ public:
         : Check( context, configuration )
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer*>>();
+        layers = var.value<QSet<QgsVectorLayer*>>();
     }
 
     void collectErrors( const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
@@ -35,7 +35,7 @@ public:
     static QString factoryId() SIP_SKIP;
     static Check::CheckType factoryCheckType() SIP_SKIP;
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
 };
 
 #endif // COLLINEARCHECK_H

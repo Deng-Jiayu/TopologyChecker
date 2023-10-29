@@ -12,6 +12,8 @@ void DuplicateNodeCheck::collectErrors(const QMap<QString, FeaturePool *> &featu
     CheckerUtils::LayerFeatures layerFeatures(featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext);
     for (const CheckerUtils::LayerFeature &layerFeature : layerFeatures)
     {
+        if (std::find(layers.begin(), layers.end(), layerFeature.layer()) == layers.end())
+            continue;
         const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
         for (int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart)
         {

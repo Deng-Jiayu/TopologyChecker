@@ -19,9 +19,9 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layersA = var.value<QVector<QgsVectorLayer *>>();
+        layersA = var.value<QSet<QgsVectorLayer *>>();
         var = configuration.value("layersB");
-        layersB = var.value<QVector<QgsVectorLayer *>>();
+        layersB = var.value<QSet<QgsVectorLayer *>>();
     }
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
@@ -37,8 +37,8 @@ public:
     static QString factoryId() { return QStringLiteral("PolygonInPolygonCheck"); }
     static Check::CheckType factoryCheckType() { return Check::FeatureCheck; }
 
-    QVector<QgsVectorLayer *> layersA;
-    QVector<QgsVectorLayer *> layersB;
+    QSet<QgsVectorLayer *> layersA;
+    QSet<QgsVectorLayer *> layersB;
 };
 
 #endif // POLYGONINPOLYGONCHECK_H

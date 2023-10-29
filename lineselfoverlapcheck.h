@@ -41,7 +41,7 @@ public:
         : Check(context, configuration), asTotal(configuration.value(QStringLiteral("excludeEndpoint")).toBool())
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
     }
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
@@ -57,7 +57,7 @@ public:
     static QString factoryId() { return QStringLiteral("QgsGeometryLineSelfOverlapCheck"); }
     static Check::CheckType factoryCheckType() { return Check::FeatureCheck; }
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
     bool asTotal;
 };
 

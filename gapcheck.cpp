@@ -19,7 +19,7 @@ GapCheck::GapCheck(const CheckContext *context, const QVariantMap &configuration
       mAreaMax(configuration.value(QStringLiteral("areaMax")).toDouble())
 {
     QVariant var = configuration.value("layersA");
-    layers = var.value<QVector<QgsVectorLayer *>>();
+    layers = var.value<QSet<QgsVectorLayer *>>();
 }
 
 void GapCheck::prepare(const CheckContext *context, const QVariantMap &configuration)

@@ -31,7 +31,7 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
     }
 
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
@@ -50,7 +50,7 @@ public:
     static Check::CheckType factoryCheckType() SIP_SKIP;
 
     CheckErrorSingle *convertToCheckError(SingleCheckError *error, const CheckerUtils::LayerFeature &layerFeature) const;
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
 };
 
 #endif // ISVALIDCHECK_H

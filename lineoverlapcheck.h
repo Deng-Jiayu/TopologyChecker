@@ -93,7 +93,7 @@ public:
     static bool factoryIsCompatible(QgsVectorLayer *layer) SIP_SKIP;
     static Check::CheckType factoryCheckType() SIP_SKIP;
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
 };
 
 

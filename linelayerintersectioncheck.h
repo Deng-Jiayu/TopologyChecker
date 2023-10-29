@@ -12,9 +12,9 @@ public:
         , excludeEndpoint( configuration.value( QStringLiteral( "excludeEndpoint" ) ).toBool() )
     {
         QVariant var = configuration.value("layersA");
-        layersA = var.value<QVector<QgsVectorLayer *>>();
+        layersA = var.value<QSet<QgsVectorLayer *>>();
         var = configuration.value("layersB");
-        layersB = var.value<QVector<QgsVectorLayer *>>();
+        layersB = var.value<QSet<QgsVectorLayer *>>();
     }
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() { return {QgsWkbTypes::LineGeometry}; }
     static bool factoryIsCompatible(QgsVectorLayer *layer) SIP_SKIP { return factoryCompatibleGeometryTypes().contains(layer->geometryType()); }
@@ -34,8 +34,8 @@ public:
         NoChange
     };
 
-    QVector<QgsVectorLayer *> layersA;
-    QVector<QgsVectorLayer *> layersB;
+    QSet<QgsVectorLayer *> layersA;
+    QSet<QgsVectorLayer *> layersB;
     bool excludeEndpoint;
 };
 

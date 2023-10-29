@@ -11,9 +11,9 @@ public:
         : Check( context, configuration )
     {
         QVariant var = configuration.value("layersA");
-        pointLayers = var.value<QVector<QgsVectorLayer*>>();
+        pointLayers = var.value<QSet<QgsVectorLayer*>>();
         var = configuration.value("layersB");
-        lineLayers = var.value<QVector<QgsVectorLayer*>>();
+        lineLayers = var.value<QSet<QgsVectorLayer*>>();
     }
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
@@ -30,8 +30,8 @@ public:
 
     enum ResolutionMethod { Delete, NoChange };
 
-    QVector<QgsVectorLayer *> pointLayers;
-    QVector<QgsVectorLayer *> lineLayers;
+    QSet<QgsVectorLayer *> pointLayers;
+    QSet<QgsVectorLayer *> lineLayers;
 };
 
 #endif // POINTONLINENODECHECK_H

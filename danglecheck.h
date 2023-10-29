@@ -11,7 +11,7 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
     }
     void fixError(const QMap<QString, FeaturePool *> &featurePools, CheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes) const override;
 
@@ -33,7 +33,7 @@ public:
         NoChange
     };
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
 };
 
 #endif // DANGLECHECK_H

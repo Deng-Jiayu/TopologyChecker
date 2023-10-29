@@ -41,6 +41,7 @@ private:
     QVector<bool> boxCollapsed;
     QVector<CollapsibleGroupBox*> groupBoxs;
     QVector<PushButton*> btns;
+    QSet<QgsVectorLayer*> layers;
     QPushButton *mAbortButton = nullptr;
 
     bool mIsRunningInBackground;
@@ -55,6 +56,7 @@ private:
     void deleteList();
 
 private slots:
+    void updateLayers();
     void addGroup();
     void addItem();
     void remove();
@@ -65,7 +67,8 @@ private slots:
 
 private:
     QList<Check *> getChecks(CheckContext *context);
-    void getLayers(QSet<QgsVectorLayer*> &processLayers, QSet<QgsVectorLayer*> &layers, CheckSet &set);
+    void initItemLayers();
+    void setupItemLayers();
 };
 
 #endif // SETUPTAB_H

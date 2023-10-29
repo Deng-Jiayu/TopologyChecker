@@ -8,7 +8,11 @@ class DuplicateNodeCheck : public Check
     Q_DECLARE_TR_FUNCTIONS(DuplicateNodeCheck)
 public:
     explicit DuplicateNodeCheck(CheckContext *context, const QVariantMap &configuration)
-        : Check(context, configuration) {}
+        : Check(context, configuration)
+    {
+        QVariant var = configuration.value("layersA");
+        layers = var.value<QSet<QgsVectorLayer *>>();
+    }
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() { return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
     static bool factoryIsCompatible(QgsVectorLayer *layer) SIP_SKIP { return factoryCompatibleGeometryTypes().contains(layer->geometryType()); }
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -27,6 +31,8 @@ public:
         RemoveDuplicates,
         NoChange
     };
+
+    QSet<QgsVectorLayer *> layers;
 };
 
 #endif // DUPLICATENODECHECK_H

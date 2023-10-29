@@ -11,7 +11,7 @@ public:
         : Check(context, configuration), mLengthMin(configuration.value("lengthMin").toDouble()), mLengthMax(configuration.value("lengthMax").toDouble())
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
     }
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() { return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
     static bool factoryIsCompatible(QgsVectorLayer *layer) SIP_SKIP { return factoryCompatibleGeometryTypes().contains(layer->geometryType()); }
@@ -31,7 +31,7 @@ public:
         NoChange
     };
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
     const double mLengthMin;
     const double mLengthMax;
 };

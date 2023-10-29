@@ -11,9 +11,9 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        pointLayers = var.value<QVector<QgsVectorLayer*>>();
+        pointLayers = var.value<QSet<QgsVectorLayer*>>();
         var = configuration.value("layersB");
-        polygonLayers = var.value<QVector<QgsVectorLayer*>>();
+        polygonLayers = var.value<QSet<QgsVectorLayer*>>();
     }
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() { return {QgsWkbTypes::PointGeometry}; }
     static bool factoryIsCompatible(QgsVectorLayer *layer) SIP_SKIP { return factoryCompatibleGeometryTypes().contains(layer->geometryType()); }
@@ -33,8 +33,8 @@ public:
         NoChange
     };
 
-    QVector<QgsVectorLayer *> pointLayers;
-    QVector<QgsVectorLayer *> polygonLayers;
+    QSet<QgsVectorLayer *> pointLayers;
+    QSet<QgsVectorLayer *> polygonLayers;
 };
 
 #endif // POINTINPOLYGONCHECK_H

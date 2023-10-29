@@ -98,7 +98,7 @@ void LayerSelectionDialog::addFile(QString path)
     if (!layer || !layer->isValid())
         return;
 
-    QListWidgetItem* item = new QListWidgetItem(path);
+    QListWidgetItem* item = new QListWidgetItem(layer->name());
     bool supportedGeometryType = true;
     if (layer->geometryType() == QgsWkbTypes::PointGeometry)
     {
@@ -127,6 +127,7 @@ void LayerSelectionDialog::addFile(QString path)
         item->setFlags(item->flags() & ~(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable));
     }
 
+    QgsProject::instance()->addMapLayer(layer);
     mLayers.append(layer);
     itemLayerMap[item] = layer;
     ui.listWidget->addItem(item);

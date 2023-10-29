@@ -99,7 +99,7 @@ public:
     static Check::CheckType factoryCheckType() SIP_SKIP;
 
     const double mOverlapThresholdMapUnits;
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
 };
 
 #endif // POLYGONOVERLAPCHECK_H

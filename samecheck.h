@@ -48,7 +48,6 @@ public:
         layers = var.value<QSet<QgsVectorLayer *>>();
         withinLayer = configuration.value(QStringLiteral("excludeEndpoint")).toBool();
         sameNode = configuration.value(QStringLiteral("sameNode")).toBool();
-        qDebug() << "SameCheck";
     }
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
     void fixError(const QMap<QString, FeaturePool *> &featurePools, CheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes) const override;

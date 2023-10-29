@@ -9,7 +9,7 @@ LineOverlapCheck::LineOverlapCheck(const CheckContext *context, const QVariantMa
     : Check(context, configuration)
 {
     QVariant var = configuration.value("layersA");
-    layers = var.value<QVector<QgsVectorLayer *>>();
+    layers = var.value<QSet<QgsVectorLayer *>>();
 }
 
 void LineOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids) const

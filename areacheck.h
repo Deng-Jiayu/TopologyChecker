@@ -23,7 +23,7 @@ public:
           mAreaMax(configurationValue<double>("areaMax"))
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
     }
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
@@ -39,7 +39,7 @@ public:
     static QString factoryId() { return QStringLiteral("AreaCheck"); }
     static Check::CheckType factoryCheckType() { return Check::FeatureCheck; }
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
 
 private:
     virtual bool checkThreshold(double layerToMapUnits, const QgsAbstractGeometry *geom, double &value) const;

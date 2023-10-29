@@ -20,7 +20,7 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
 {
     ui->setupUi(this);
     ui->widgetProgress->hide();
-    mAbortButton = new QPushButton( QStringLiteral( "取消" ), this );
+    mAbortButton = new QPushButton( QStringLiteral( "取消" ) );
     connect(ui->widgetInputs, &Widget::addGroup, this, &SetupTab::addGroup);
 
     initUi();
@@ -29,10 +29,15 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
     connect(ui->btnCreateList, &QPushButton::clicked, this, &SetupTab::createList);
     connect(ui->btnDeleteList, &QPushButton::clicked, this, &SetupTab::deleteList);
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, &SetupTab::initUi);
+    connect(QgsProject::instance(), &QgsProject::layersAdded, this, &SetupTab::updateLayers);
+    connect(QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersRemoved ), this, &SetupTab::updateLayers);
+
+    updateLayers();
 }
 
 SetupTab::~SetupTab()
 {
+    delete mAbortButton;
     delete ui;
 }
 
@@ -355,6 +360,10 @@ void SetupTab::read()
     mlists.push_back(list);
     ui->comboBox->addItem(mlists[i].name);
     ui->comboBox->setCurrentIndex(i);
+
+    initItemLayers();
+
+    qDebug() << curList->groups[0].items[0].sets[0].layersA.size();
 }
 
 void SetupTab::createList()
@@ -384,6 +393,24 @@ void SetupTab::deleteList()
     int i = ui->comboBox->currentIndex();
     mlists.remove(i);
     ui->comboBox->removeItem(i);
+}
+
+void SetupTab::updateLayers()
+{
+    layers.clear();
+    for ( QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>() )
+    {
+        if(!layer || !layer->isValid()) continue;
+
+        if(layer->geometryType() == QgsWkbTypes::PointGeometry ||
+            layer->geometryType() == QgsWkbTypes::LineGeometry ||
+            layer->geometryType() == QgsWkbTypes::PolygonGeometry)
+        {
+            layers.insert(layer);
+        }
+    }
+
+    initItemLayers();
 }
 
 void SetupTab::addGroup()
@@ -614,19 +641,7 @@ void SetupTab::run()
         return;
     }
 
-    // Collect layers
-    QSet<QgsVectorLayer*> layers;
-    for ( QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>() )
-    {
-        if(!layer || !layer->isValid()) continue;
-
-        if(layer->geometryType() == QgsWkbTypes::PointGeometry ||
-            layer->geometryType() == QgsWkbTypes::LineGeometry ||
-            layer->geometryType() == QgsWkbTypes::PolygonGeometry){
-            layers.insert(layer);
-        }
-    }
-
+    // Get process layer
     QSet<QgsVectorLayer *> processLayers;
     for (auto i : curList->groups)
     {
@@ -634,7 +649,9 @@ void SetupTab::run()
         {
             for (auto set : (j.sets))
             {
-                getLayers(processLayers, layers, set);
+                for (auto layer : as_const(set.layersA)) processLayers.insert(layer);
+                for (auto layer : as_const(set.layersB)) processLayers.insert(layer);
+                for (auto layer : as_const(set.excludedLayers)) processLayers.insert(layer);
             }
         }
     }
@@ -674,35 +691,35 @@ void SetupTab::run()
 
     emit checkerStarted( checker );
 
-  // Run
+    // Run
     ui->buttonBox->addButton( mAbortButton, QDialogButtonBox::ActionRole );
     ui->progressBar->setRange( 0, 0 );
     ui->labelStatus->hide();
     ui->progressBar->show();
-  QEventLoop evLoop;
-  QFutureWatcher<void> futureWatcher;
-  connect( checker, &Checker::progressValue, ui->progressBar, &QProgressBar::setValue );
-  connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
-  connect( mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
+    QEventLoop evLoop;
+    QFutureWatcher<void> futureWatcher;
+    connect( checker, &Checker::progressValue, ui->progressBar, &QProgressBar::setValue );
+    connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
+    connect( mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
 
-  mIsRunningInBackground = true;
+    mIsRunningInBackground = true;
 
-  int maxSteps = 0;
-  futureWatcher.setFuture( checker->execute( &maxSteps ) );
-  ui->progressBar->setRange( 0, maxSteps );
-  evLoop.exec();
+    int maxSteps = 0;
+    futureWatcher.setFuture( checker->execute( &maxSteps ) );
+    ui->progressBar->setRange( 0, maxSteps );
+    evLoop.exec();
 
-  mIsRunningInBackground = false;
+    mIsRunningInBackground = false;
 
-  // Restore window
-  unsetCursor();
-  mAbortButton->setEnabled( true );
-  ui->buttonBox->removeButton( mAbortButton );
-  ui->progressBar->hide();
-  ui->labelStatus->hide();
+    // Restore window
+    unsetCursor();
+    mAbortButton->setEnabled( true );
+    ui->buttonBox->removeButton( mAbortButton );
+    ui->progressBar->hide();
+    ui->labelStatus->hide();
 
-  // Show result
-  emit checkerFinished( !futureWatcher.isCanceled() );
+    // Show result
+    emit checkerFinished( !futureWatcher.isCanceled() );
 
 }
 
@@ -714,7 +731,6 @@ QList<Check *> SetupTab::getChecks(CheckContext *context)
         CheckGroup &group = curList->groups[i];
         for(int j = 0;j<group.items.size();++j)
         {
-
             CheckItem &item = group.items[j];
             CheckItemDialog *dialog = new CheckItemDialog(mIface, &item);
 
@@ -726,29 +742,55 @@ QList<Check *> SetupTab::getChecks(CheckContext *context)
     return checks;
 }
 
-void SetupTab::getLayers(QSet<QgsVectorLayer *> &processLayers, QSet<QgsVectorLayer *> &layers, CheckSet &set)
+void SetupTab::initItemLayers()
 {
-    for (auto layerName : set.layersAStr )
+    if(curList == nullptr) return;
+    for (auto &i : curList->groups)
     {
-        for (auto layer : layers)
+        for (auto &j : (i.items))
         {
-            if (layer->name() == layerName)
+            for (auto &set : (j.sets))
             {
-                processLayers.insert(layer);
-                set.layersA.insert(layer);
-                break;
+                set.layersA.clear();
+                set.layersB.clear();
+                for(auto layerName : set.layersAStr)
+                {
+                    for(auto layer : layers)
+                    {
+                        if(layer->name() == layerName)
+                        {
+                            set.layersA.insert(layer);
+                            break;
+                        }
+                    }
+                }
+                for(auto layerName : set.layersBStr)
+                {
+                    for(auto layer : layers)
+                    {
+                        if(layer->name() == layerName)
+                        {
+                            set.layersB.insert(layer);
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
-    for (auto layerName : set.layersBStr )
+}
+
+void SetupTab::setupItemLayers()
+{
+    if(curList == nullptr) return;
+    for (auto &i : curList->groups)
     {
-        for (auto layer : layers)
+        for (auto &j : (i.items))
         {
-            if (layer->name() == layerName)
+            for (auto &set : (j.sets))
             {
-                processLayers.insert(layer);
-                set.layersB.insert(layer);
-                break;
+                set.layersA.intersect(layers);
+                set.layersB.intersect(layers);
             }
         }
     }

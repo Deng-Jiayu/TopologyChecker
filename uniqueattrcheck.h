@@ -45,7 +45,7 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
         attr = configurationValue<QString>("attr");
     }
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() { return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
@@ -65,7 +65,7 @@ public:
     {
         NoChange
     };
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
     QString attr;
 };
 

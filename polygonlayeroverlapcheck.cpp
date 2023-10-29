@@ -10,9 +10,9 @@ PolygonLayerOverlapCheck::PolygonLayerOverlapCheck(const CheckContext *context, 
     : Check(context, configuration), mOverlapThresholdMapUnits(configurationValue<double>(QStringLiteral("areaMax")))
 {
     QVariant var = configuration.value("layersA");
-    layersA = var.value<QVector<QgsVectorLayer *>>();
+    layersA = var.value<QSet<QgsVectorLayer *>>();
     var = configuration.value("layersB");
-    layersB = var.value<QVector<QgsVectorLayer *>>();
+    layersB = var.value<QSet<QgsVectorLayer *>>();
 }
 
 void PolygonLayerOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids) const

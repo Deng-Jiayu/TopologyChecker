@@ -41,7 +41,7 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        pointLayers = var.value<QVector<QgsVectorLayer *>>();
+        pointLayers = var.value<QSet<QgsVectorLayer *>>();
     }
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
     void fixError(const QMap<QString, FeaturePool *> &featurePools, CheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes) const override;
@@ -64,7 +64,7 @@ public:
         RemoveDuplicates
     };
 
-    QVector<QgsVectorLayer *> pointLayers;
+    QSet<QgsVectorLayer *> pointLayers;
 };
 
 #endif // POINTDUPLICATECHECK_H

@@ -97,7 +97,6 @@ void SameCheck::collectErrors(const QMap<QString, FeaturePool *> &featurePools, 
         }
         if (!duplicates.isEmpty())
         {
-            qDebug() << "found Error";
             errors.append(new SameCheckError(this, layerFeatureA, geomA.constGet()->centroid(), featurePools, duplicates));
         }
     }

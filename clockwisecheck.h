@@ -16,7 +16,7 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
         reverse = configuration.value(QStringLiteral("excludeEndpoint")).toBool();
     }
 
@@ -35,7 +35,7 @@ public:
     static QString factoryId() SIP_SKIP;
     static Check::CheckType factoryCheckType() SIP_SKIP;
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
     static bool reverse;
 };
 

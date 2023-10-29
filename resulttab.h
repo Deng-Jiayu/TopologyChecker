@@ -20,6 +20,7 @@ public:
     ResultTab(QgisInterface *iface, Checker *checker, QTabWidget *tabWidget, QWidget *parent = nullptr);
     ~ResultTab();
     void finalize();
+    bool isCloseable() const { return mCloseable; }
 
     static QString sSettingsGroup;
 
@@ -35,6 +36,8 @@ private:
     int mErrorCount;
     int mFixedCount;
 
+    bool mCloseable = true;
+
     void setRowStatus( int row, const QColor &color, const QString &message, bool selectable );
     bool exportErrorsDo( const QString &file );
     void updateComboBox();
@@ -48,6 +51,9 @@ private slots:
     void checkRemovedLayer( const QStringList &ids );
     void exportErrors();
     void fixCurrentError();
+    void fixErrorsWithDefault();
+    void setDefaultResolutionMethods();
+    void storeDefaultResolutionMethod(int) const;
 };
 
 #endif // RESULTTAB_H

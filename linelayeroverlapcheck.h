@@ -101,8 +101,8 @@ public:
     static bool factoryIsCompatible(QgsVectorLayer *layer) SIP_SKIP;
     static Check::CheckType factoryCheckType() SIP_SKIP;
 
-    QVector<QgsVectorLayer *> layersA;
-    QVector<QgsVectorLayer *> layersB;
+    QSet<QgsVectorLayer *> layersA;
+    QSet<QgsVectorLayer *> layersB;
 };
 
 #endif // LINELAYEROVERLAPCHECK_H

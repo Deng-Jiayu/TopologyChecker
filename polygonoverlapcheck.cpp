@@ -10,7 +10,7 @@ PolygonOverlapCheck::PolygonOverlapCheck(const CheckContext *context, const QVar
     : Check(context, configuration), mOverlapThresholdMapUnits(configurationValue<double>(QStringLiteral("areaMax")))
 {
     QVariant var = configuration.value("layersA");
-    layers = var.value<QVector<QgsVectorLayer *>>();
+    layers = var.value<QSet<QgsVectorLayer *>>();
 }
 
 void PolygonOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids) const

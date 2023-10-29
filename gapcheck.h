@@ -110,7 +110,7 @@ private:
     std::unique_ptr<QgsVectorLayerFeatureSource> mAllowedGapsSource;
     double mAllowedGapsBuffer = 0;
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
     const double mAreaMin;
     const double mAreaMax;
 };

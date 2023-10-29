@@ -11,9 +11,9 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layersA = var.value<QVector<QgsVectorLayer *>>();
+        layersA = var.value<QSet<QgsVectorLayer *>>();
         var = configuration.value("layersB");
-        layersB = var.value<QVector<QgsVectorLayer *>>();
+        layersB = var.value<QSet<QgsVectorLayer *>>();
     }
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
     void fixError(const QMap<QString, FeaturePool *> &featurePools, CheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes) const override;
@@ -35,8 +35,8 @@ public:
         NoChange
     };
 
-    QVector<QgsVectorLayer *> layersA;
-    QVector<QgsVectorLayer *> layersB;
+    QSet<QgsVectorLayer *> layersA;
+    QSet<QgsVectorLayer *> layersB;
 };
 
 #endif // POLYGONCOVEREDBYPOLYGONCHECK_H

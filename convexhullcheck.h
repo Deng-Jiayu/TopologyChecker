@@ -19,7 +19,7 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        layers = var.value<QVector<QgsVectorLayer *>>();
+        layers = var.value<QSet<QgsVectorLayer *>>();
         reverse = configuration.value(QStringLiteral("excludeEndpoint")).toBool();
     }
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -40,7 +40,7 @@ public:
     static QString factoryId() { return QStringLiteral("ConvexHullCheck"); }
     static Check::CheckType factoryCheckType() { return Check::FeatureCheck; }
 
-    QVector<QgsVectorLayer *> layers;
+    QSet<QgsVectorLayer *> layers;
     static bool reverse;
 
 private:

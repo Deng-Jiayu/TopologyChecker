@@ -18,9 +18,9 @@ public:
         : Check(context, configuration)
     {
         QVariant var = configuration.value("layersA");
-        lineLayers = var.value<QVector<QgsVectorLayer *>>();
+        lineLayers = var.value<QSet<QgsVectorLayer *>>();
         var = configuration.value("layersB");
-        pointLayers = var.value<QVector<QgsVectorLayer *>>();
+        pointLayers = var.value<QSet<QgsVectorLayer *>>();
     }
 
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() { return {QgsWkbTypes::LineGeometry}; }
@@ -45,8 +45,8 @@ public:
     Check::CheckType checkType() const override { return factoryCheckType(); }
     static Check::CheckType factoryCheckType() { return Check::FeatureNodeCheck; }
 
-    QVector<QgsVectorLayer *> lineLayers;
-    QVector<QgsVectorLayer *> pointLayers;
+    QSet<QgsVectorLayer *> lineLayers;
+    QSet<QgsVectorLayer *> pointLayers;
 };
 
 #endif // LINEENDONPOINTCHECK_H
