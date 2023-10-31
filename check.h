@@ -339,6 +339,8 @@ class Check
      */
     void replaceFeatureGeometryPart( const QMap<QString, FeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
 
+    void replaceFeatureGeometry( const QMap<QString, FeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
+
     /**
      * Deletes a part of a feature geometry.
      *

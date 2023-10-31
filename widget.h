@@ -13,10 +13,12 @@ public:
 
 Q_SIGNALS:
     void addGroup();
+    void runAll();
 
 private:
     QMenu *menu;
     QAction *acAddGroup;
+    QAction *acRunAll;
 
 private slots:
     void ShowcustomContextMenu();

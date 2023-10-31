@@ -2,6 +2,7 @@
 #include <qgsproject.h>
 #include <qgsapplication.h>
 #include <qfiledialog.h>
+#include <qgsvectorfilewriter.h>
 
 LayerSelectionDialog::LayerSelectionDialog(QWidget* parent)
     : QDialog(parent)
@@ -78,7 +79,7 @@ void LayerSelectionDialog::initList()
 
 void LayerSelectionDialog::addFileDialog()
 {
-    const QStringList filenames = QFileDialog::getOpenFileNames(this, QStringLiteral("选择文件"), QDir::currentPath(), "Shapefiles (*.shp);;All files (*.*)");
+    const QStringList filenames = QFileDialog::getOpenFileNames(this, QStringLiteral("选择文件"), QDir::currentPath(), QgsVectorFileWriter::fileFilterString());
     if (filenames.empty())
         return;
 
@@ -93,6 +94,10 @@ void LayerSelectionDialog::addFile(QString path)
     if (path.isEmpty())
         return;
     QFileInfo fileInfo(path);
+
+    if (!QgsVectorFileWriter::fileFilterString().contains(fileInfo.suffix()))
+        return;
+
     QgsVectorLayer* layer = new QgsVectorLayer(path, fileInfo.baseName());
 
     if (!layer || !layer->isValid())
@@ -304,4 +309,29 @@ void LayerSelectionDialog::selectLayer(QSet<QgsVectorLayer*> vec)
             }
         }
     }
+}
+
+void LayerSelectionDialog::selectType(QString str)
+{
+    if (str == QStringLiteral("点图层")) {
+        ui.checkBoxPoint->setChecked(true);
+        ui.checkBoxLine->setChecked(false);
+        ui.checkBoxPolygon->setChecked(false);
+    } else if (str == QStringLiteral("线图层") || str == QStringLiteral("线层1") || str == QStringLiteral("线层2")) {
+        ui.checkBoxPoint->setChecked(false);
+        ui.checkBoxLine->setChecked(true);
+        ui.checkBoxPolygon->setChecked(false);
+    } else if (str == QStringLiteral("面图层") || str == QStringLiteral("面层1") || str == QStringLiteral("面层2")) {
+        ui.checkBoxPoint->setChecked(false);
+        ui.checkBoxLine->setChecked(false);
+        ui.checkBoxPolygon->setChecked(true);
+    } else if (str == QStringLiteral("图层")) {
+        ui.checkBoxPoint->setChecked(true);
+        ui.checkBoxLine->setChecked(true);
+        ui.checkBoxPolygon->setChecked(true);
+    } else if (str == "线/面图层") {
+        ui.checkBoxPoint->setChecked(false);
+        ui.checkBoxLine->setChecked(true);
+        ui.checkBoxPolygon->setChecked(true);
+    }else{}
 }

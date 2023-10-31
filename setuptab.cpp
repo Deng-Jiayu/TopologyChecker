@@ -14,6 +14,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <qgsproject.h>
+#include <qgsvectorfilewriter.h>
 
 SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent)
     : QWidget(parent), ui(new Ui::SetupTab), mIface(iface), mCheckDock(checkDock)
@@ -22,6 +23,11 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
     ui->widgetProgress->hide();
     mAbortButton = new QPushButton( QStringLiteral( "取消" ) );
     connect(ui->widgetInputs, &Widget::addGroup, this, &SetupTab::addGroup);
+
+    double x = 123123.1415926535231321;
+    qDebug() <<QString::number(x,'g',18);
+
+    qDebug() << QString::number(0.0000000012333214, 'g', 12);
 
     initUi();
     connect(ui->btnSave, &QPushButton::clicked, this, &SetupTab::save);
@@ -152,6 +158,7 @@ void SetupTab::initUi()
         delete ui->widgetInputs;
     ui->widgetInputs = new Widget(this);
     connect(ui->widgetInputs, &Widget::addGroup, this, &SetupTab::addGroup);
+    connect(ui->widgetInputs, &Widget::runAll, this, &SetupTab::setPara);
     ui->widgetInputs->setObjectName(QString::fromUtf8("widgetInputs"));
     ui->scrollArea->setWidget(ui->widgetInputs);
 
@@ -169,6 +176,7 @@ void SetupTab::initUi()
         connect(groupBox, &CollapsibleGroupBox::addGroup, this, &SetupTab::addGroup);
         connect(groupBox, &CollapsibleGroupBox::remove, this, &SetupTab::remove);
         connect(groupBox, &CollapsibleGroupBox::rename, this, &SetupTab::rename);
+        connect(groupBox, &CollapsibleGroupBox::runAll, this, &SetupTab::setPara);
         groupBox->setObjectName(QString::fromUtf8("groupBoxGeometryProperties"));
         boxToGroup[groupBox] = &curList->groups[i];
 
@@ -242,6 +250,7 @@ void SetupTab::initConnection()
 
 void SetupTab::save()
 {
+    if(curList == nullptr || mlists.size() <= 0) return;
     QJsonArray groupArray;
     for (int i = 0; i < curList->groups.size(); ++i) {
 
@@ -281,7 +290,6 @@ void SetupTab::save()
         groupArray.append(groupObj);
     }
 
-    qDebug()<<curList->name;
     QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("保存"), "./"+curList->name, "Json(*.json)");
 
     QJsonDocument doc(groupArray);
@@ -362,8 +370,6 @@ void SetupTab::read()
     ui->comboBox->setCurrentIndex(i);
 
     initItemLayers();
-
-    qDebug() << curList->groups[0].items[0].sets[0].layersA.size();
 }
 
 void SetupTab::createList()
@@ -384,6 +390,7 @@ void SetupTab::createList()
 
 void SetupTab::deleteList()
 {
+    if(mlists.size() <= 0) return;
     if (QMessageBox::No ==
         QMessageBox::question(this, QStringLiteral("拓扑检查"), QStringLiteral("删除后不可恢复，您确认删除？"),
             QMessageBox::Yes, QMessageBox::No)) {
@@ -490,6 +497,13 @@ void SetupTab::addItem()
     group->items.push_back(item);
 
     initUi();
+
+    CheckItemDialog *dialog = new CheckItemDialog(mIface, &group->items.back(), this);
+    connect(dialog, &CheckItemDialog::checkerStarted, this, &SetupTab::checkerStarted);
+    connect(dialog, &CheckItemDialog::checkerFinished, this, &SetupTab::checkerFinished);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->show();
+    dialog->set();
 }
 
 void SetupTab::remove()
@@ -614,6 +628,8 @@ void SetupTab::runItem()
 
 void SetupTab::setPara()
 {
+    if(curList == nullptr || mlists.size() <= 0)
+        return;
     if(mMessageBox == nullptr){
         mMessageBox = new MessageBox(this);
         connect(mMessageBox, &MessageBox::run, this, &SetupTab::run);

@@ -18,28 +18,22 @@ void IsValidCheck::collectErrors(const QMap<QString, FeaturePool *> &featurePool
     {
         if (std::find(layers.begin(), layers.end(), layerFeature.layer()) == layers.end())
             continue;
+
         QgsGeometry geometry = layerFeature.geometry();
-        QVector<QgsGeometry::Error> geometryErrors;
+        QVector<QgsGeometry::Error> geoErrors;
 
-        QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
-        if (QgsSettings().value(QStringLiteral("qgis/digitizing/validate_geometries"), 1).toInt() == 2)
-            method = QgsGeometry::ValidatorGeos;
+        if(GEOS)
+            QgsGeometryValidator::validateGeometry(geometry, geoErrors, QgsGeometry::ValidatorGeos);
+        else
+            QgsGeometryValidator::validateGeometry(geometry, geoErrors, QgsGeometry::ValidatorQgisInternal);
 
-        QgsGeometryValidator validator(geometry, &geometryErrors, method);
-
-        QObject::connect(&validator, &QgsGeometryValidator::errorFound, &validator, [&geometryErrors](const QgsGeometry::Error &error)
-                         { geometryErrors.append(error); });
-
-        // We are already on a thread here normally, no reason to start yet another one. Run synchronously.
-        validator.run();
-
-        for (const auto &error : qgis::as_const(geometryErrors))
+        for ( const auto &error : qgis::as_const( geoErrors ) )
         {
             QgsGeometry errorGeometry;
-            if (error.hasWhere())
-                errorGeometry = QgsGeometry(qgis::make_unique<QgsPoint>(error.where()));
+            if ( error.hasWhere() )
+                errorGeometry = QgsGeometry( qgis::make_unique<QgsPoint>( error.where() ) );
 
-            errors.append( new CheckError(this, layerFeature.layerId(), layerFeature.feature().id(), errorGeometry, errorGeometry.centroid().asPoint()));
+            errors.append(new CheckError(this,layerFeature.layerId(),layerFeature.feature().id(),errorGeometry,errorGeometry.asPoint(),QgsVertexId(),error.what()));
         }
     }
 }
@@ -53,23 +47,78 @@ void IsValidCheck::fixError(const QMap<QString, FeaturePool *> &featurePools, Ch
         error->setObsolete();
         return;
     }
-    QgsGeometry featureGeometry = feature.geometry();
-    QgsAbstractGeometry *geometry = featureGeometry.get();
-    QgsVertexId vidx = error->vidx();
+    QgsGeometry geometry = feature.geometry();
 
-    // Check if point still exists
-    if (!vidx.isValid(geometry))
+    // Check if error still applies
+    bool applies = false;
+    QVector<QgsGeometry::Error> geoErrors;
+    if(GEOS)
+        QgsGeometryValidator::validateGeometry(geometry, geoErrors, QgsGeometry::ValidatorGeos);
+    else
+        QgsGeometryValidator::validateGeometry(geometry, geoErrors, QgsGeometry::ValidatorQgisInternal);
+
+    for ( const auto &geoError : qgis::as_const( geoErrors ) )
+    {
+        if(geoError.what() == error->value() && geoError.where() == error->location())
+        {
+            applies = true;
+            break;
+        }
+    }
+    if(!applies)
     {
         error->setObsolete();
         return;
     }
 
-    // Check if error still applies
-
     // Fix error
     if (method == NoChange)
     {
         error->setFixed(method);
+    }
+    else if(method == MakeValid)
+    {
+        QgsGeometry outputGeometry = feature.geometry().makeValid();
+        if ( outputGeometry.isNull() || outputGeometry.equals(feature.geometry()) )
+        {
+            error->setFixFailed( QStringLiteral( "无法修复" ) );
+            return;
+        }
+
+        if ( outputGeometry.wkbType() == QgsWkbTypes::Unknown ||
+            QgsWkbTypes::flatType( outputGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
+        {
+            // keep only the parts of the geometry collection with correct type
+            const QVector< QgsGeometry > tmpGeometries = outputGeometry.asGeometryCollection();
+            QVector< QgsGeometry > matchingParts;
+            for ( const QgsGeometry &g : tmpGeometries )
+            {
+                if ( g.type() == feature.geometry().type() )
+                    matchingParts << g;
+            }
+            if ( !matchingParts.empty() )
+                outputGeometry = QgsGeometry::collectGeometry( matchingParts );
+            else
+                outputGeometry = QgsGeometry();
+        }
+
+        outputGeometry.convertToMultiType();
+        if ( QgsWkbTypes::geometryType( outputGeometry.wkbType() ) != QgsWkbTypes::geometryType( feature.geometry().wkbType() ) )
+        {
+            // don't keep geometries which have different types - e.g. lines converted to points
+            QString str = QStringLiteral("修复要素生成生成") + QgsWkbTypes::displayString( outputGeometry.wkbType() );
+            error->setFixFailed( str );
+        }
+        else
+        {
+            FeaturePool *featurePool = featurePools[error->layerId()];
+
+            feature.setGeometry( outputGeometry );
+            changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
+            featurePool->updateFeature( feature );
+
+            error->setFixed(method);
+        }
     }
     else
     {
@@ -79,7 +128,7 @@ void IsValidCheck::fixError(const QMap<QString, FeaturePool *> &featurePools, Ch
 
 QStringList IsValidCheck::resolutionMethods() const
 {
-    static QStringList methods = QStringList() << QStringLiteral("无");
+    static QStringList methods = QStringList() << QStringLiteral("修复") << QStringLiteral("无");
     return methods;
 }
 

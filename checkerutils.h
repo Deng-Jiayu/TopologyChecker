@@ -268,6 +268,8 @@ class CheckerUtils
 
     static bool pointOnLine( const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities = false );
 
+    static QgsPoint getFootOfPerpendicular( const QgsPoint &p, const QgsLineString *line, double tol );
+
     struct SelfIntersection
     {
       int segment1;

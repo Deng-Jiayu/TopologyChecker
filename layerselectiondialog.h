@@ -17,6 +17,7 @@ public:
     void selectLayer(QSet<QgsVectorLayer*> vec);
 
     QVector<QgsVectorLayer*> mLayers;
+    void selectType(QString str);
 
 signals:
     void finish();

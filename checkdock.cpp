@@ -22,7 +22,7 @@ CheckDock::CheckDock(QgisInterface *iface, QWidget *parent)
         if(this->isHidden()){
             delete mTabWidget->widget( 1 );
             mTabWidget->removeTab( 1 );
-            mTabWidget->addTab( new QWidget(), tr( "Result" ) );
+            mTabWidget->addTab( new QWidget(), QStringLiteral( "检查结果列表" ) );
             mTabWidget->setTabEnabled( 1, false );
         }
     });
@@ -47,6 +47,6 @@ void CheckDock::onCheckerFinished( bool successful )
     {
         mTabWidget->setTabEnabled( 1, true );
         mTabWidget->setCurrentIndex( 1 );
-        //static_cast<ResultTab *>( mTabWidget->widget( 1 ) )->finalize();
+        static_cast<ResultTab *>( mTabWidget->widget( 1 ) )->finalize();
     }
 }

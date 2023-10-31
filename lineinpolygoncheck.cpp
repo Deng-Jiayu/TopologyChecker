@@ -34,7 +34,8 @@ void LineInPolygonCheck::collectErrors(const QMap<QString, FeaturePool *> &featu
                 {
                     QgsGeometry g = line.intersection(geomsB[jPart]);
                     if(g.isEmpty()) continue;
-                    errors.append(new CheckError(this, layerFeatureA.layerId(), layerFeatureA.feature().id(), g, g.centroid().asPoint(), QgsVertexId(iPart)));
+                    QString str = layerFeatureB.layer()->name() + ": " + QString::number(layerFeatureB.feature().id());
+                    errors.append(new CheckError(this, layerFeatureA.layerId(), layerFeatureA.feature().id(), g, g.centroid().asPoint(), QgsVertexId(iPart), str));
                 }
             }
         }

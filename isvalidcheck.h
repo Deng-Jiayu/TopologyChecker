@@ -24,7 +24,7 @@ class IsValidCheck : public Check
 public:
     enum ResolutionMethod
     {
-        NoChange
+        MakeValid, NoChange
     };
 
     IsValidCheck(CheckContext *context, const QVariantMap &configuration)
@@ -32,6 +32,7 @@ public:
     {
         QVariant var = configuration.value("layersA");
         layers = var.value<QSet<QgsVectorLayer *>>();
+        GEOS = configuration.value(QStringLiteral("GEOS")).toBool();
     }
 
     void collectErrors(const QMap<QString, FeaturePool *> &featurePools, QList<CheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()) const override;
@@ -51,6 +52,7 @@ public:
 
     CheckErrorSingle *convertToCheckError(SingleCheckError *error, const CheckerUtils::LayerFeature &layerFeature) const;
     QSet<QgsVectorLayer *> layers;
+    bool GEOS;
 };
 
 #endif // ISVALIDCHECK_H

@@ -67,18 +67,18 @@ ResultTab::~ResultTab()
 
 void ResultTab::finalize()
 {
-    ui->tableWidgetErrors->setSortingEnabled( true );
-    if ( !mChecker->getMessages().isEmpty() )
+    ui->tableWidgetErrors->setSortingEnabled(true);
+    if (!mChecker->getMessages().isEmpty())
     {
         QDialog dialog;
-        dialog.setLayout( new QVBoxLayout() );
-        dialog.layout()->addWidget( new QLabel( QStringLiteral( "以下检查出现错误：" ) ) );
-        dialog.layout()->addWidget( new QPlainTextEdit( mChecker->getMessages().join( QLatin1Char( '\n' ) ) ) );
-        QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
-        dialog.layout()->addWidget( bbox );
-        connect( bbox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
-        connect( bbox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject );
-        dialog.setWindowTitle( tr( "Check Errors Occurred" ) );
+        dialog.setLayout(new QVBoxLayout());
+        dialog.layout()->addWidget(new QLabel(QStringLiteral("以下检查出现错误：")));
+        dialog.layout()->addWidget(new QPlainTextEdit(mChecker->getMessages().join(QLatin1Char('\n'))));
+        QDialogButtonBox *bbox = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal);
+        dialog.layout()->addWidget(bbox);
+        connect(bbox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+        connect(bbox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+        dialog.setWindowTitle(tr("Check Errors Occurred"));
         dialog.exec();
     }
 }
@@ -97,13 +97,16 @@ void ResultTab::setRowStatus(int row, const QColor &color, const QString &messag
     }
     ui->tableWidgetErrors->item(row, 5)->setText(message);
 }
-
+#include <qgspolygon.h>
 bool ResultTab::exportErrorsDo(const QString &file)
 {
     QList<QPair<QString, QString>> attributes;
-    attributes.append(qMakePair(QStringLiteral("Layer"), QStringLiteral("String;30;")));
-    attributes.append(qMakePair(QStringLiteral("FeatureID"), QStringLiteral("String;10;")));
-    attributes.append(qMakePair(QStringLiteral("ErrorDesc"), QStringLiteral("String;80;")));
+    attributes.append(qMakePair(QStringLiteral("layer"), QStringLiteral("String;30;")));
+    attributes.append(qMakePair(QStringLiteral("FeatureID"), QStringLiteral("String;20;")));
+    attributes.append(qMakePair(QStringLiteral("Error"), QStringLiteral("String;80;")));
+    attributes.append(qMakePair(QStringLiteral("coordinate"), QStringLiteral("String;80;")));
+    attributes.append(qMakePair(QStringLiteral("value"), QStringLiteral("String;80;")));
+    attributes.append(qMakePair(QStringLiteral("resolution"), QStringLiteral("String;80;")));
 
     QFileInfo fi(file);
     QString ext = fi.suffix();
@@ -124,9 +127,12 @@ bool ResultTab::exportErrorsDo(const QString &file)
         return false;
     }
 
-    int fieldLayer = layer->fields().lookupField(QStringLiteral("Layer"));
+    int fieldLayer = layer->fields().lookupField(QStringLiteral("layer"));
     int fieldFeatureId = layer->fields().lookupField(QStringLiteral("FeatureID"));
-    int fieldErrDesc = layer->fields().lookupField(QStringLiteral("ErrorDesc"));
+    int fieldErrDesc = layer->fields().lookupField(QStringLiteral("Error"));
+    int fieldErrPos = layer->fields().lookupField(QStringLiteral("coordinate"));
+    int fieldErrValue = layer->fields().lookupField(QStringLiteral("value"));
+    int fieldErrFix = layer->fields().lookupField(QStringLiteral("resolution"));
     for (int row = 0, nRows = ui->tableWidgetErrors->rowCount(); row < nRows; ++row)
     {
         CheckError *error = ui->tableWidgetErrors->item(row, 0)->data(Qt::UserRole).value<CheckError *>();
@@ -142,8 +148,21 @@ bool ResultTab::exportErrorsDo(const QString &file)
         f.setAttribute(fieldLayer, layerName);
         f.setAttribute(fieldFeatureId, error->featureId());
         f.setAttribute(fieldErrDesc, error->description());
-        QgsGeometry geom(new QgsPoint(error->location()));
-        f.setGeometry(geom);
+        int prec = 7 - std::floor(std::max(0., std::log10(std::max(error->location().x(), error->location().y()))));
+        QString posStr = QStringLiteral("%1, %2").arg(error->location().x(), 0, 'f', prec).arg(error->location().y(), 0, 'f', prec);
+        f.setAttribute(fieldErrPos, posStr);
+        f.setAttribute(fieldErrValue, error->value());
+        QString status;
+        if (error->status() == CheckError::StatusFixed)
+        {
+            status = QStringLiteral("修复：") + error->resolutionMessage();
+        }
+        else if (error->status() == CheckError::StatusFixFailed)
+        {
+            status = QStringLiteral("修复失败：") + error->resolutionMessage();
+        }
+        f.setAttribute(fieldErrFix, status);
+        f.setGeometry(QgsGeometry::fromPointXY(error->location()));
         layer->dataProvider()->addFeatures(QgsFeatureList() << f);
     }
 
@@ -444,10 +463,11 @@ void ResultTab::fixCurrentError()
 void ResultTab::fixErrorsWithDefault()
 {
     int sum = ui->tableWidgetErrors->rowCount();
-    QList<CheckError*> errors;
+    QList<CheckError *> errors;
 
-    for (int i = 0; i < sum; ++i) {
-        CheckError* error = ui->tableWidgetErrors->item(i, 0)->data(Qt::UserRole).value<CheckError*>();
+    for (int i = 0; i < sum; ++i)
+    {
+        CheckError *error = ui->tableWidgetErrors->item(i, 0)->data(Qt::UserRole).value<CheckError *>();
         if (error->status() < CheckError::StatusFixed)
         {
             errors.append(error);
@@ -470,33 +490,31 @@ void ResultTab::fixErrorsWithDefault()
     qDeleteAll(mCurrentRubberBands);
     mCurrentRubberBands.clear();
 
-
     //! Fix errors
     mCloseable = false;
 
     setCursor(Qt::WaitCursor);
-    ui->progressBarFixErrors->setVisible( true );
-    ui->progressBarFixErrors->setRange( 0, errors.size() );
+    ui->progressBarFixErrors->setVisible(true);
+    ui->progressBarFixErrors->setRange(0, errors.size());
 
-    for (CheckError* error : qgis::as_const(errors))
+    for (CheckError *error : qgis::as_const(errors))
     {
         int fixMethod = QgsSettings().value(sSettingsGroup + error->check()->id(), QVariant::fromValue<int>(0)).toInt();
 
         mChecker->fixError(error, fixMethod);
-        ui->progressBarFixErrors->setValue( ui->progressBarFixErrors->value() + 1 );
+        ui->progressBarFixErrors->setValue(ui->progressBarFixErrors->value() + 1);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 
     unsetCursor();
 
-    for (const QString& layerId : mChecker->featurePools().keys())
+    for (const QString &layerId : mChecker->featurePools().keys())
     {
         mChecker->featurePools()[layerId]->layer()->triggerRepaint();
     }
 
     mCloseable = true;
     ui->tableWidgetErrors->setSortingEnabled(true);
-
 }
 
 void ResultTab::setDefaultResolutionMethods()
@@ -504,31 +522,31 @@ void ResultTab::setDefaultResolutionMethods()
     QDialog dialog(this);
     dialog.setWindowTitle(QStringLiteral("设置修复函数"));
 
-    QVBoxLayout* layout = new QVBoxLayout(&dialog);
+    QVBoxLayout *layout = new QVBoxLayout(&dialog);
 
-    QgsVScrollArea* scrollArea = new QgsVScrollArea(&dialog);
+    QgsVScrollArea *scrollArea = new QgsVScrollArea(&dialog);
     layout->setContentsMargins(6, 6, 6, 6);
-    layout->addWidget(new QLabel(tr("Select default error resolutions:")));
+    layout->addWidget(new QLabel(QStringLiteral("选择修复方法：")));
     layout->addWidget(scrollArea);
 
-    QWidget* scrollAreaContents = new QWidget(scrollArea);
-    QVBoxLayout* scrollAreaLayout = new QVBoxLayout(scrollAreaContents);
+    QWidget *scrollAreaContents = new QWidget(scrollArea);
+    QVBoxLayout *scrollAreaLayout = new QVBoxLayout(scrollAreaContents);
 
-    for (const Check* check : mChecker->getChecks())
+    for (const Check *check : mChecker->getChecks())
     {
-        QGroupBox* groupBox = new QGroupBox(scrollAreaContents);
+        QGroupBox *groupBox = new QGroupBox(scrollAreaContents);
         groupBox->setTitle(check->description());
         groupBox->setFlat(true);
 
-        QVBoxLayout* groupBoxLayout = new QVBoxLayout(groupBox);
+        QVBoxLayout *groupBoxLayout = new QVBoxLayout(groupBox);
         groupBoxLayout->setContentsMargins(2, 0, 2, 2);
-        QButtonGroup* radioGroup = new QButtonGroup(groupBox);
+        QButtonGroup *radioGroup = new QButtonGroup(groupBox);
         radioGroup->setProperty("errorType", check->id());
         int checkedId = QgsSettings().value(sSettingsGroup + check->id(), QVariant::fromValue<int>(0)).toInt();
         const QList<CheckResolutionMethod> resolutionMethods = check->availableResolutionMethods();
-        for (const CheckResolutionMethod& method : resolutionMethods)
+        for (const CheckResolutionMethod &method : resolutionMethods)
         {
-            QRadioButton* radio = new QRadioButton(method.name(), groupBox);
+            QRadioButton *radio = new QRadioButton(method.name(), groupBox);
             radio->setChecked(method.id() == checkedId);
             groupBoxLayout->addWidget(radio);
             radioGroup->addButton(radio, method.id());
@@ -540,7 +558,7 @@ void ResultTab::setDefaultResolutionMethods()
     scrollAreaLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Preferred, QSizePolicy::Expanding));
     scrollArea->setWidget(scrollAreaContents);
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &dialog);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &dialog);
     connect(buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
     layout->addWidget(buttonBox);
     dialog.exec();
@@ -548,6 +566,6 @@ void ResultTab::setDefaultResolutionMethods()
 
 void ResultTab::storeDefaultResolutionMethod(int id) const
 {
-    QString errorType = qobject_cast<QButtonGroup*>(QObject::sender())->property("errorType").toString();
+    QString errorType = qobject_cast<QButtonGroup *>(QObject::sender())->property("errorType").toString();
     QgsSettings().setValue(sSettingsGroup + errorType, id);
 }

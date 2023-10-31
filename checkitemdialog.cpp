@@ -290,9 +290,10 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线/面图层"));
             ui->tableWidgetPara->showRow(7);
             ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("反向检查"));
-        }else if(btn == ui->btnInvalid || btn == ui->btnCollinear || btn == ui->btnDuplicateNode){
+        }else if(btn == ui->btnCollinear || btn == ui->btnDuplicateNode){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线/面图层"));
         }else if(btn == ui->btnDuplicate){
+            bool oneToOne = mCheckSet->oneToOne;
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("图层"));
             ui->tableWidgetPara->item(7, 0)->setText(QStringLiteral("只检查同层地物"));
             ui->tableWidgetPara->showRow(7);
@@ -300,6 +301,7 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
             comboBoxLayerMode->setItemText(0, QStringLiteral("图形一致"));
             comboBoxLayerMode->setItemText(1, QStringLiteral("节点一致"));
             ui->tableWidgetPara->showRow(5);
+            if(oneToOne) comboBoxLayerMode->setCurrentIndex(1);
         }else if(btn == ui->btnConvexhull){
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
             ui->tableWidgetPara->showRow(7);
@@ -309,6 +311,14 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("图层"));
             ui->tableWidgetPara->showRow(8);
             setAttrText();
+        }else if(btn == ui->btnInvalid){
+            bool oneToOne = mCheckSet->oneToOne;
+            ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线/面图层"));
+            ui->tableWidgetPara->item(5, 0)->setText(QStringLiteral("检查方法"));
+            comboBoxLayerMode->setItemText(0, QStringLiteral("QGIS"));
+            comboBoxLayerMode->setItemText(1, QStringLiteral("GEOS"));
+            ui->tableWidgetPara->showRow(5);
+            if(oneToOne) comboBoxLayerMode->setCurrentIndex(1);
         }
         setBtnText(layerA, mCheckSet->layersA);
         setLayerModeText();
@@ -351,6 +361,7 @@ void CheckItemDialog::selectLayerA()
         mCheckSet->layersA = layerSelectDialog->getSelectedLayers();
         mCheckSet->setlayersStr();
     });
+    layerSelectDialog->selectType(ui->tableWidgetPara->item(0, 0)->text());
     layerSelectDialog->selectLayer(mCheckSet->layersA);
     layerSelectDialog->show();
 }
@@ -363,6 +374,7 @@ void CheckItemDialog::selectLayerB()
         mCheckSet->layersB = layerSelectDialog->getSelectedLayers();
         mCheckSet->setlayersStr();
     });
+    layerSelectDialog->selectType(ui->tableWidgetPara->item(1, 0)->text());
     layerSelectDialog->selectLayer(mCheckSet->layersB);
     layerSelectDialog->show();
 }
@@ -438,6 +450,8 @@ void CheckItemDialog::run()
     }
     if (layers.isEmpty()) return;
 
+
+
     for (QgsVectorLayer* layer : layers)
     {
         if (layer->isEditable())
@@ -458,6 +472,8 @@ void CheckItemDialog::run()
     for (QgsVectorLayer *layer : qgis::as_const(layers)) {
         featurePools.insert(layer->id(), new VectorDataProviderFeaturePool(layer, selectedOnly));
     }
+
+    QgsProject::instance()->setCrs((*layers.begin())->crs());
 
     CheckContext *context = new CheckContext( ui->spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext(), QgsProject::instance() );
 
@@ -629,6 +645,7 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
             configuration.insert( "minAngle", checkset.angle );
             checks.append(new AngleCheck(context, configuration));
         }else if(checkset.name == ui->btnInvalid->text()){
+            configuration.insert( "GEOS", checkset.oneToOne );
             checks.append(new IsValidCheck(context, configuration));
         }else if(checkset.name == ui->btnDuplicate->text()){
             configuration.insert( "sameNode", checkset.oneToOne );

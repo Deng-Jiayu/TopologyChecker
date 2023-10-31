@@ -157,8 +157,9 @@ void SameCheck::fixError(const QMap<QString, FeaturePool *> &featurePools, Check
 QStringList SameCheck::resolutionMethods() const
 {
     static QStringList methods = QStringList()
-                                 << QStringLiteral("无")
-                                 << QStringLiteral("移除重复");
+                                 << QStringLiteral("移除重复")
+                                 << QStringLiteral("无");
+
     return methods;
 }
 

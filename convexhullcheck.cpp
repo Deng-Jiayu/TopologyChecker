@@ -82,6 +82,11 @@ void ConvexHullCheck::fixError(const QMap<QString, FeaturePool *> &featurePools,
     }
     else if (method == TransformToConvexHull)
     {
+        if(reverse)
+        {
+            error->setFixFailed(QStringLiteral("已是凸包"));
+            return;
+        }
         QString errMsg;
         if (transformToConvexHull(featurePools, error->layerId(), feature, vidx.part, method, mergeAttributeIndices[error->layerId()], changes, errMsg))
         {
@@ -89,7 +94,7 @@ void ConvexHullCheck::fixError(const QMap<QString, FeaturePool *> &featurePools,
         }
         else
         {
-            error->setFixFailed(QString("Failed to merge with neighbor: %1").arg(errMsg));
+            error->setFixFailed(QStringLiteral("转化失败"));
         }
     }
     else
@@ -117,4 +122,3 @@ QStringList ConvexHullCheck::resolutionMethods() const
                                  << QStringLiteral("无");
     return methods;
 }
-

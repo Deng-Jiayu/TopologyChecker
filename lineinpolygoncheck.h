@@ -31,7 +31,7 @@ public:
     QStringList resolutionMethods() const override
     {
         static QStringList methods = QStringList()
-                                     << QStringLiteral("删除要素")
+                                     << QStringLiteral("删除线要素")
                                      << QStringLiteral("无");
         return methods;
     }

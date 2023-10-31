@@ -464,6 +464,53 @@ bool CheckerUtils::pointOnLine( const QgsPoint &p, const QgsLineString *line, do
   return false;
 }
 
+// It's actually getting the closest point on the line
+QgsPoint __getFootOfPerpendicular(QgsPoint pt, QgsPoint begin, QgsPoint end, double tol)
+{
+  QgsPoint retVal;
+
+  if(begin.distance(end) <= tol) return begin;
+
+  double dx = begin.x() - end.x();
+  double dy = begin.y() - end.y();
+
+  double u = (pt.x() - begin.x()) * (begin.x() - end.x()) +
+             (pt.y() - begin.y()) * (begin.y() - end.y());
+  u = u / ((dx * dx) + (dy * dy));
+
+  retVal.setX(begin.x() + u * dx);
+  retVal.setY(begin.y() + u * dy);
+
+  double dist = pointLineDist( begin, end, retVal );
+  // foot of perpendicular not on line
+  if (dist > tol)
+  {
+    if (pt.distance(begin) < pt.distance(end))
+      return begin;
+    else
+      return end;
+  }
+
+  return retVal;
+}
+
+// It's actually getting the closest point on the line
+QgsPoint CheckerUtils::getFootOfPerpendicular(const QgsPoint &p, const QgsLineString *line, double tol)
+{
+  QgsPoint ans = line->vertexAt(QgsVertexId(0, 0, 0));
+  int nVerts = line->vertexCount();
+  for ( int i = 0; i < nVerts - 1; ++i )
+  {
+    QgsPoint p1 = line->vertexAt( QgsVertexId( 0, 0, i ) );
+    QgsPoint p2 = line->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
+
+    QgsPoint retVal = __getFootOfPerpendicular(p, p1, p2, tol);
+    if(p.distance(ans) > p.distance(retVal))
+      ans = retVal;
+  }
+  return ans;
+}
+
 QVector<CheckerUtils::SelfIntersection> CheckerUtils::selfIntersections(const QgsAbstractGeometry *geom, int part, int ring, double tolerance, bool acceptImproperIntersection)
 {
   QVector<SelfIntersection> intersections;

@@ -111,6 +111,16 @@ void Check::replaceFeatureGeometryPart( const QMap<QString, FeaturePool *> &feat
   featurePool->updateFeature( feature );
 }
 
+void Check::replaceFeatureGeometry(const QMap<QString, FeaturePool *> &featurePools,
+    const QString &layerId, QgsFeature &feature, QgsAbstractGeometry *newPartGeom, Changes &changes) const
+{
+  FeaturePool *featurePool = featurePools[layerId];
+
+  feature.setGeometry( QgsGeometry( newPartGeom ) );
+  changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
+  featurePool->updateFeature( feature );
+}
+
 void Check::deleteFeatureGeometryPart( const QMap<QString, FeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const
 {
   FeaturePool *featurePool = featurePools[layerId];
