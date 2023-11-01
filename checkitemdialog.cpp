@@ -226,7 +226,8 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
                || btn == ui->btnGap || btn == ui->btnHole || btn == ui->btnConvexhull
                || btn == ui->btnArea || btn == ui->btnClockwise || btn == ui->btnAngle
                || btn == ui->btnInvalid || btn == ui->btnDuplicate || btn == ui->btnCollinear
-               || btn == ui->btnDuplicateNode || btn == ui->btnInvalidAttr || btn == ui->btnUniqueAttr)
+               || btn == ui->btnDuplicateNode || btn == ui->btnInvalidAttr || btn == ui->btnUniqueAttr
+               || btn == ui->btnPseudos)
     {
         ui->tableWidgetPara->hideRow(1);
         ui->tableWidgetPara->hideRow(2);
@@ -238,7 +239,7 @@ void CheckItemDialog::setParaUi(QPushButton *btn)
         ui->tableWidgetPara->hideRow(8);
         if(btn == ui->btnPointDuplicate)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("点图层"));
-        else if(btn == ui->btnLineDuplicate || btn == ui->btnLineOverlap || btn == ui->btnDangle)
+        else if(btn == ui->btnLineDuplicate || btn == ui->btnLineOverlap || btn == ui->btnDangle || btn == ui->btnPseudos)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("线图层"));
         else if(btn == ui->btnPolygonDuplicate || btn == ui->btnHole)
             ui->tableWidgetPara->item(0, 0)->setText(QStringLiteral("面图层"));
@@ -550,6 +551,7 @@ void CheckItemDialog::run()
 #include "duplicatenodecheck.h"
 #include "attrvalidcheck.h"
 #include "uniqueattrcheck.h"
+#include "pseudoscheck.h"
 QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
 {
     QList<Check *> checks;
@@ -660,6 +662,8 @@ QList<Check *> CheckItemDialog::getChecks(CheckContext *context)
         }else if(checkset.name == ui->btnUniqueAttr->text()){
             configuration.insert( "attr", checkset.attr );
             checks.append(new UniqueAttrCheck(context, configuration));
+        }else if(checkset.name == ui->btnPseudos->text()){
+            checks.append(new PseudosCheck(context, configuration));
         }
     }
 

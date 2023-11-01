@@ -17,6 +17,7 @@ public:
                          const CheckerUtils::LayerFeature &layerFeature,
                          const QgsGeometry &geometry,
                          const QgsPointXY &errorLocation,
+                         const QVariant &value,
                          QgsVertexId vidx);
 
     bool isEqual(CheckError *other) const override;

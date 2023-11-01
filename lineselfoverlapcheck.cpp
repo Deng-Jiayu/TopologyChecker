@@ -3,8 +3,8 @@
 #include <qgsgeometryengine.h>
 #include "checkerror.h"
 
-LineSelfOverlapError::LineSelfOverlapError(const Check *check, const CheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx)
-    : CheckError(check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, vidx)
+LineSelfOverlapError::LineSelfOverlapError(const Check *check, const CheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, const QVariant &value, QgsVertexId vidx)
+    : CheckError(check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, vidx, value, ValueLength)
 {
 }
 
@@ -50,7 +50,6 @@ void LineSelfOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &fea
             const QgsAbstractGeometry *lineA = CheckerUtils::getGeomPart(geom, iPart);
             if (lineA->vertexCount() <= 2)
                 continue;
-
             QVector<LineSegment> lines;
             auto i = lineA->vertices_begin();
             QgsPoint first = *i;
@@ -79,7 +78,7 @@ void LineSelfOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &fea
                 else
                     conflict = conflict.combine(*k);
             }
-            errors.append(new LineSelfOverlapError(this, layerFeature, conflict, conflict.centroid().asPoint(), QgsVertexId(iPart)));
+            errors.append(new LineSelfOverlapError(this, layerFeature, conflict, conflict.centroid().asPoint(), conflict.length(), QgsVertexId(iPart)));
         }
         if (!asTotal)
             continue;
@@ -96,7 +95,7 @@ void LineSelfOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &fea
             else
                 conflict = conflict.combine(*k);
         }
-        errors.append(new LineSelfOverlapError(this, layerFeature, conflict, conflict.centroid().asPoint(), QgsVertexId()));
+        errors.append(new LineSelfOverlapError(this, layerFeature, conflict, conflict.centroid().asPoint(), conflict.length(), QgsVertexId()));
     }
 }
 

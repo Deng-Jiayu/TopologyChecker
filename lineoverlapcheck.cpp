@@ -87,7 +87,7 @@ void LineOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &feature
                         else
                             conflict = conflict.combine(*k);
                     }
-                    errors.append(new LineOverlapCheckError(this, layerFeatureA, conflict, conflict.centroid().asPoint(),
+                    errors.append(new LineOverlapCheckError(this, layerFeatureA, conflict, conflict.centroid().asPoint(),conflict.length(),
                                                             layerFeatureB, QgsVertexId(iPart), QgsVertexId(jPart)));
                 }
             }
@@ -202,7 +202,7 @@ Check::Flags LineOverlapCheck::flags() const
 
 QString LineOverlapCheck::factoryDescription()
 {
-    return QStringLiteral("一个线数据集中线对象之间有重叠");
+    return QStringLiteral("同一线数据集中线对象之间有重叠");
 }
 
 Check::CheckType LineOverlapCheck::factoryCheckType()
@@ -230,8 +230,8 @@ bool LineOverlapCheck::factoryIsCompatible(QgsVectorLayer *layer) SIP_SKIP
     return factoryCompatibleGeometryTypes().contains(layer->geometryType());
 }
 
-LineOverlapCheckError::LineOverlapCheckError(const Check *check, const CheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, const CheckerUtils::LayerFeature &overlappedFeature, const QgsVertexId &vida, const QgsVertexId &vidb)
-    : CheckError(check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, vida),
+LineOverlapCheckError::LineOverlapCheckError(const Check *check, const CheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, const QVariant &value, const CheckerUtils::LayerFeature &overlappedFeature, const QgsVertexId &vida, const QgsVertexId &vidb)
+    : CheckError(check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, vida, value, ValueLength),
       mOverlappedFeature(OverlappedFeature(overlappedFeature.layer(), overlappedFeature.feature().id(), vidb))
 {
 }

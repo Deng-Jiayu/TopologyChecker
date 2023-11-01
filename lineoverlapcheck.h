@@ -38,6 +38,7 @@ public:
                           const CheckerUtils::LayerFeature &layerFeature,
                           const QgsGeometry &geometry,
                           const QgsPointXY &errorLocation,
+                          const QVariant &value,
                           const CheckerUtils::LayerFeature &overlappedFeature,
                           const QgsVertexId &vida,
                           const QgsVertexId &vidb);

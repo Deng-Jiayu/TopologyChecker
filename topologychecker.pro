@@ -31,6 +31,7 @@ HEADERS += \
     checkitemdialog.h \
     checkresolutionmethod.h \
     checkset.h \
+    classifydialog.h \
     clockwisecheck.h \
     collapsiblegroupbox.h \
     collinearcheck.h \
@@ -92,6 +93,7 @@ SOURCES += \
     checkitemdialog.cpp \
     checkresolutionmethod.cpp \
     checkset.cpp \
+    classifydialog.cpp \
     clockwisecheck.cpp \
     collapsiblegroupbox.cpp \
     collinearcheck.cpp \
@@ -146,6 +148,7 @@ RESOURCES += \
 FORMS += \
     checkdock.ui \
     checkitemdialog.ui \
+    classifydialog.ui \
     layerselectiondialog.ui \
     messagebox.ui \
     resulttab.ui \

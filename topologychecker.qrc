@@ -1,5 +1,14 @@
 <RCC>
-    <qresource prefix="/topologychecker/" >
+    <qresource prefix="/topologychecker">
         <file>topologychecker.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>icons/mActionFromSelectedFeature.svg</file>
+        <file>icons/mActionOptions.svg</file>
+        <file>icons/mIconSuccess.svg</file>
+        <file>icons/mExport.svg</file>
+        <file>icons/mImport.svg</file>
+        <file>icons/mClassification.svg</file>
+        <file>icons/mRefresh.svg</file>
     </qresource>
 </RCC>

@@ -117,6 +117,8 @@ bool CheckError::isEqual( CheckError *other ) const
   return other->check() == check() &&
          other->layerId() == layerId() &&
          other->featureId() == featureId() &&
+         other->geometry().equals(geometry()) &&
+         other->value() == value() &&
          other->vidx() == vidx();
 }
 

@@ -34,7 +34,7 @@ void PointOnLineCheck::collectErrors(const QMap<QString, FeaturePool *> &feature
             {
                 if (std::find(lineLayers.begin(), lineLayers.end(), checkFeature.layer()) == lineLayers.end())
                     continue;
-                qDebug() << checkFeature.id();
+
                 const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
                 for (int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart)
                 {

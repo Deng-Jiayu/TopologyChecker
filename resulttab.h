@@ -6,6 +6,7 @@
 #include <qgisinterface.h>
 #include <qgsrubberband.h>
 #include "checker.h"
+#include "classifydialog.h"
 #include <QItemSelection>
 
 namespace Ui {
@@ -29,6 +30,7 @@ private:
 
     QTabWidget *mTabWidget = nullptr;
     QgisInterface *mIface = nullptr;
+    ClassifyDialog *mClassifyDialog = nullptr;
     Checker *mChecker = nullptr;
     QList<QgsRubberBand *> mCurrentRubberBands;
     QMap<CheckError *, QPersistentModelIndex> mErrorMap;
@@ -54,6 +56,10 @@ private slots:
     void fixErrorsWithDefault();
     void setDefaultResolutionMethods();
     void storeDefaultResolutionMethod(int) const;
+    void classify();
+    void doClassify();
+    void RedoCheck();
+
 };
 
 #endif // RESULTTAB_H

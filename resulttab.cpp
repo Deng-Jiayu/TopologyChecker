@@ -20,6 +20,7 @@ ResultTab::ResultTab(QgisInterface *iface, Checker *checker, QTabWidget *tabWidg
     : QWidget(parent), ui(new Ui::ResultTab), mTabWidget(tabWidget), mIface(iface), mChecker(checker)
 {
     ui->setupUi(this);
+    ui->progressBarFixErrors->hide();
     mErrorCount = 0;
     mFixedCount = 0;
 
@@ -33,6 +34,8 @@ ResultTab::ResultTab(QgisInterface *iface, Checker *checker, QTabWidget *tabWidg
     connect(ui->btnFix, &QAbstractButton::clicked, this, &ResultTab::fixCurrentError);
     connect(ui->btnErrorResolutionSettings, &QAbstractButton::clicked, this, &ResultTab::setDefaultResolutionMethods);
     connect(ui->btnFixWithDefault, &QAbstractButton::clicked, this, &ResultTab::fixErrorsWithDefault);
+    connect(ui->btnClassify, &QPushButton::clicked, this, &ResultTab::classify);
+    connect(ui->btnRefresh, &QPushButton::clicked, this, &ResultTab::RedoCheck);
 
     bool allLayersEditable = true;
     for (const FeaturePool *featurePool : mChecker->featurePools().values())
@@ -258,8 +261,8 @@ void ResultTab::updateError(CheckError *error, bool statusChanged)
     }
     else if (error->status() == CheckError::StatusObsolete)
     {
-        ui->tableWidgetErrors->setRowHidden(row, true);
-        //    setRowStatus( row, Qt::gray, tr( "Obsolete" ), false );
+        //ui->tableWidgetErrors->setRowHidden(row, true);
+        setRowStatus( row, Qt::gray, tr( "Obsolete" ), false );
         --mErrorCount;
     }
     ui->labelErrorCount->setText(QStringLiteral("错误数目：") + QString::number(mErrorCount) + QStringLiteral("，修复数目：") + QString::number(mFixedCount));
@@ -505,6 +508,7 @@ void ResultTab::fixErrorsWithDefault()
         ui->progressBarFixErrors->setValue(ui->progressBarFixErrors->value() + 1);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     }
+    ui->progressBarFixErrors->hide();
 
     unsetCursor();
 
@@ -568,4 +572,58 @@ void ResultTab::storeDefaultResolutionMethod(int id) const
 {
     QString errorType = qobject_cast<QButtonGroup *>(QObject::sender())->property("errorType").toString();
     QgsSettings().setValue(sSettingsGroup + errorType, id);
+}
+
+
+void ResultTab::classify()
+{
+    if(mChecker == nullptr) return;
+
+    if(mClassifyDialog == nullptr)
+    {
+        mClassifyDialog = new ClassifyDialog(this);
+        connect(mClassifyDialog, &ClassifyDialog::ClassifyDone, this, &ResultTab::doClassify);
+        mClassifyDialog->initList(mChecker->getChecks());
+    }
+
+    mClassifyDialog->show();
+
+}
+
+void ResultTab::doClassify()
+{
+    mErrorCount = 0;
+    mFixedCount = 0;
+    mClassifyDialog->hide();
+    QStringList selectedTypes = mClassifyDialog->selectedType();
+
+    int sum = ui->tableWidgetErrors->rowCount();
+
+    for (int i = 0; i < sum; ++i)
+    {
+        ui->tableWidgetErrors->showRow(i);
+        CheckError *error = ui->tableWidgetErrors->item(i, 0)->data(Qt::UserRole).value<CheckError *>();
+        if (!selectedTypes.contains(error->check()->description()))
+        {
+            ui->tableWidgetErrors->setRowHidden(i, true);
+        }
+        else
+        {
+            ++mErrorCount;
+            if (error->status() == CheckError::StatusFixed)
+            {
+                ++mFixedCount;
+            }
+            else if (error->status() == CheckError::StatusObsolete)
+            {
+                --mErrorCount;
+            }
+        }
+    }
+    ui->labelErrorCount->setText(QStringLiteral("错误数目：") + QString::number(mErrorCount) + QStringLiteral("，修复数目：") + QString::number(mFixedCount));
+}
+
+void ResultTab::RedoCheck()
+{
+
 }

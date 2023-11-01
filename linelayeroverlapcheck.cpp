@@ -90,7 +90,8 @@ void LineLayerOverlapCheck::collectErrors(const QMap<QString, FeaturePool *> &fe
                         else
                             conflict = conflict.combine(*k);
                     }
-                    errors.append(new LineLayerOverlapCheckError(this, layerFeatureA, conflict, conflict.centroid().asPoint(),
+
+                    errors.append(new LineLayerOverlapCheckError(this, layerFeatureA, conflict, conflict.centroid().asPoint(), conflict.length(),
                                                                  layerFeatureB, QgsVertexId(iPart), QgsVertexId(jPart)));
                 }
             }
@@ -234,8 +235,8 @@ bool LineLayerOverlapCheck::factoryIsCompatible(QgsVectorLayer *layer) SIP_SKIP
     return factoryCompatibleGeometryTypes().contains(layer->geometryType());
 }
 
-LineLayerOverlapCheckError::LineLayerOverlapCheckError(const Check *check, const CheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, const CheckerUtils::LayerFeature &overlappedFeature, const QgsVertexId &vida, const QgsVertexId &vidb)
-    : CheckError(check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, vida),
+LineLayerOverlapCheckError::LineLayerOverlapCheckError(const Check *check, const CheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, const QVariant &value, const CheckerUtils::LayerFeature &overlappedFeature, const QgsVertexId &vida, const QgsVertexId &vidb)
+    : CheckError(check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, vida, value, ValueLength),
       mOverlappedFeature(OverlappedFeature(overlappedFeature.layer(), overlappedFeature.feature().id(), vidb))
 {
 }
