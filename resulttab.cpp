@@ -35,7 +35,6 @@ ResultTab::ResultTab(QgisInterface *iface, Checker *checker, QTabWidget *tabWidg
     connect(ui->btnErrorResolutionSettings, &QAbstractButton::clicked, this, &ResultTab::setDefaultResolutionMethods);
     connect(ui->btnFixWithDefault, &QAbstractButton::clicked, this, &ResultTab::fixErrorsWithDefault);
     connect(ui->btnClassify, &QPushButton::clicked, this, &ResultTab::classify);
-    connect(ui->btnRefresh, &QPushButton::clicked, this, &ResultTab::RedoCheck);
 
     bool allLayersEditable = true;
     for (const FeaturePool *featurePool : mChecker->featurePools().values())
@@ -470,6 +469,8 @@ void ResultTab::fixErrorsWithDefault()
 
     for (int i = 0; i < sum; ++i)
     {
+        if(ui->tableWidgetErrors->isRowHidden(i))
+            continue;
         CheckError *error = ui->tableWidgetErrors->item(i, 0)->data(Qt::UserRole).value<CheckError *>();
         if (error->status() < CheckError::StatusFixed)
         {
@@ -621,9 +622,4 @@ void ResultTab::doClassify()
         }
     }
     ui->labelErrorCount->setText(QStringLiteral("错误数目：") + QString::number(mErrorCount) + QStringLiteral("，修复数目：") + QString::number(mFixedCount));
-}
-
-void ResultTab::RedoCheck()
-{
-
 }

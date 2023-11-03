@@ -11,8 +11,9 @@
 #include "checker.h"
 #include "messagebox.h"
 
-namespace Ui {
-class SetupTab;
+namespace Ui
+{
+    class SetupTab;
 }
 
 class SetupTab : public QWidget
@@ -20,12 +21,12 @@ class SetupTab : public QWidget
     Q_OBJECT
 
 public:
-    SetupTab( QgisInterface *iface, QDockWidget *checkDock, QWidget *parent = nullptr );
+    SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent = nullptr);
     ~SetupTab() override;
 
 signals:
-    void checkerStarted( Checker *checker );
-    void checkerFinished( bool );
+    void checkerStarted(Checker *checker);
+    void checkerFinished(bool);
 
 private:
     Ui::SetupTab *ui;
@@ -39,13 +40,12 @@ private:
     QMap<PushButton *, CheckItem *> btnToCheck;
 
     QVector<bool> boxCollapsed;
-    QVector<CollapsibleGroupBox*> groupBoxs;
-    QVector<PushButton*> btns;
-    QSet<QgsVectorLayer*> layers;
+    QVector<CollapsibleGroupBox *> groupBoxs;
+    QVector<PushButton *> btns;
+    QSet<QgsVectorLayer *> layers;
     QPushButton *mAbortButton = nullptr;
 
     bool mIsRunningInBackground;
-
 
     void initLists();
     void initUi();

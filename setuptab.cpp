@@ -21,11 +21,11 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
 {
     ui->setupUi(this);
     ui->widgetProgress->hide();
-    mAbortButton = new QPushButton( QStringLiteral( "取消" ) );
+    mAbortButton = new QPushButton(QStringLiteral("取消"));
     connect(ui->widgetInputs, &Widget::addGroup, this, &SetupTab::addGroup);
 
     double x = 123123.1415926535231321;
-    qDebug() <<QString::number(x,'g',18);
+    qDebug() << QString::number(x, 'g', 18);
 
     qDebug() << QString::number(0.0000000012333214, 'g', 12);
 
@@ -36,7 +36,7 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
     connect(ui->btnDeleteList, &QPushButton::clicked, this, &SetupTab::deleteList);
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, &SetupTab::initUi);
     connect(QgsProject::instance(), &QgsProject::layersAdded, this, &SetupTab::updateLayers);
-    connect(QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersRemoved ), this, &SetupTab::updateLayers);
+    connect(QgsProject::instance(), static_cast<void (QgsProject::*)(const QStringList &)>(&QgsProject::layersRemoved), this, &SetupTab::updateLayers);
 
     updateLayers();
 }
@@ -46,7 +46,6 @@ SetupTab::~SetupTab()
     delete mAbortButton;
     delete ui;
 }
-
 
 void SetupTab::initLists()
 {
@@ -95,13 +94,11 @@ void SetupTab::initLists()
     lineCoveredByItem.sets.push_back(lineCoveredByBoundaryCheckSet);
     lineCoveredByItem.sets.push_back(lineCoveredByLineCheckSet);
 
-
     CheckGroup lineGroup(QStringLiteral("线拓扑检查"));
     lineGroup.items.push_back(turnbackItem);
     lineGroup.items.push_back(lineIntersectionItem);
     lineGroup.items.push_back(lineOverlapItem);
     lineGroup.items.push_back(lineCoveredByItem);
-
 
     CheckSet holeCheckSet(QStringLiteral("面内无岛"));
     CheckSet gapCheckSet(QStringLiteral("面内无缝隙"));
@@ -139,7 +136,6 @@ void SetupTab::initLists()
     ui->comboBox->addItem(mlists.back().name);
 }
 
-
 void SetupTab::initUi()
 {
     curList = nullptr;
@@ -166,7 +162,8 @@ void SetupTab::initUi()
     verticalLayout = new QVBoxLayout(ui->widgetInputs);
     verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
 
-    if(curList == nullptr) return;
+    if (curList == nullptr)
+        return;
 
     for (int i = 0; i < curList->groups.size(); ++i)
     {
@@ -217,58 +214,71 @@ void SetupTab::initUi()
 
 void SetupTab::initConnection()
 {
-    for (auto it = boxToGroup.begin(); it != boxToGroup.end(); ) {
-        if (it.key()) {
+    for (auto it = boxToGroup.begin(); it != boxToGroup.end();)
+    {
+        if (it.key())
+        {
 
             ++it;
-        } else {
+        }
+        else
+        {
             it = boxToGroup.erase(it);
         }
     }
-    for (auto it = btnToCheck.begin(); it != btnToCheck.end(); ) {
-        if (it.key()) {
+    for (auto it = btnToCheck.begin(); it != btnToCheck.end();)
+    {
+        if (it.key())
+        {
 
             ++it;
-        } else {
+        }
+        else
+        {
             it = btnToCheck.erase(it);
         }
     }
 
-    for (auto it : as_const(btns)) {
-        if(!it) continue;
-        connect(it, &PushButton::clicked, this, [=]() {
+    for (auto it : as_const(btns))
+    {
+        if (!it)
+            continue;
+        connect(it, &PushButton::clicked, this, [=]()
+                {
             CheckItemDialog *dialog = new CheckItemDialog(mIface, btnToCheck[it], this);
             connect(dialog, &CheckItemDialog::checkerStarted, this, &SetupTab::checkerStarted);
             connect(dialog, &CheckItemDialog::checkerFinished, this, &SetupTab::checkerFinished);
             dialog->setAttribute(Qt::WA_DeleteOnClose);
             dialog->show();
-            dialog->set();
-        });
+            dialog->set(); });
     }
 }
 
-
 void SetupTab::save()
 {
-    if(curList == nullptr || mlists.size() <= 0) return;
+    if (curList == nullptr || mlists.size() <= 0)
+        return;
     QJsonArray groupArray;
-    for (int i = 0; i < curList->groups.size(); ++i) {
+    for (int i = 0; i < curList->groups.size(); ++i)
+    {
 
         CheckGroup group = curList->groups[i];
         QJsonArray itemArray;
 
-        for (int j = 0; j < group.items.size(); ++j) {
+        for (int j = 0; j < group.items.size(); ++j)
+        {
 
             CheckItem item = group.items[j];
             QJsonArray setArray;
 
-            for(int k = 0; k < item.sets.size(); ++k){
+            for (int k = 0; k < item.sets.size(); ++k)
+            {
 
                 CheckSet set = item.sets[k];
 
-                QJsonObject object({{ "name", set.name }});
-                object.insert("layersA",QJsonArray::fromStringList(set.layersAStr));
-                object.insert("layersB",QJsonArray::fromStringList(set.layersBStr));
+                QJsonObject object({{"name", set.name}});
+                object.insert("layersA", QJsonArray::fromStringList(set.layersAStr));
+                object.insert("layersB", QJsonArray::fromStringList(set.layersBStr));
                 object.insert("angle", set.angle);
                 object.insert("upperLimit", set.upperLimit);
                 object.insert("lowerLimit", set.lowerLimit);
@@ -279,28 +289,28 @@ void SetupTab::save()
             }
 
             QJsonObject itemObj;
-            itemObj.insert("name",item.name);
-            itemObj.insert("sets",setArray);
+            itemObj.insert("name", item.name);
+            itemObj.insert("sets", setArray);
             itemArray.append(itemObj);
         }
 
         QJsonObject groupObj;
-        groupObj.insert("name",group.name);
-        groupObj.insert("items",itemArray);
+        groupObj.insert("name", group.name);
+        groupObj.insert("items", itemArray);
         groupArray.append(groupObj);
     }
 
-    QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("保存"), "./"+curList->name, "Json(*.json)");
+    QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("保存"), "./" + curList->name, "Json(*.json)");
 
     QJsonDocument doc(groupArray);
     QByteArray jsonData = doc.toJson();
 
     QFile file(fileName);
-    if (file.open(QIODevice::WriteOnly)) {
+    if (file.open(QIODevice::WriteOnly))
+    {
         file.write(jsonData);
         file.close();
     }
-
 }
 
 void SetupTab::read()
@@ -317,33 +327,36 @@ void SetupTab::read()
 
     CheckList list;
     QJsonArray arr = d.array();
-    for(int i = 0;i<arr.size();++i){
+    for (int i = 0; i < arr.size(); ++i)
+    {
         QJsonValue val = arr[i];
         QJsonObject obj = val.toObject();
         CheckGroup group(obj["name"].toString());
 
         QJsonArray items = obj["items"].toArray();
-        for(int j = 0;j<items.size();++j){
+        for (int j = 0; j < items.size(); ++j)
+        {
             val = items[j];
             obj = val.toObject();
             CheckItem item(obj["name"].toString());
 
             QJsonArray sets = obj["sets"].toArray();
-            for(int k = 0;k<sets.size();++k){
+            for (int k = 0; k < sets.size(); ++k)
+            {
                 val = sets[k];
                 obj = val.toObject();
 
-                //CheckSet set(obj["name"].toString(),obj["description"].toString());
+                // CheckSet set(obj["name"].toString(),obj["description"].toString());
                 CheckSet set(obj["name"].toString());
                 QStringList list;
                 QJsonArray array = obj["layersA"].toArray();
                 for (auto it : as_const(array))
-                  list.append(it.toString());
+                    list.append(it.toString());
                 set.layersAStr = list;
                 list.clear();
                 array = obj["layersB"].toArray();
                 for (auto it : as_const(array))
-                  list.append(it.toString());
+                    list.append(it.toString());
                 set.layersBStr = list;
                 set.angle = obj["angle"].toDouble();
                 set.upperLimit = obj["upperLimit"].toDouble();
@@ -359,10 +372,9 @@ void SetupTab::read()
         }
 
         list.groups.push_back(group);
-
     }
 
-    list.name  = QFileInfo(fileName).completeBaseName();
+    list.name = QFileInfo(fileName).completeBaseName();
 
     int i = mlists.size();
     mlists.push_back(list);
@@ -390,10 +402,12 @@ void SetupTab::createList()
 
 void SetupTab::deleteList()
 {
-    if(mlists.size() <= 0) return;
+    if (mlists.size() <= 0)
+        return;
     if (QMessageBox::No ==
         QMessageBox::question(this, QStringLiteral("拓扑检查"), QStringLiteral("删除后不可恢复，您确认删除？"),
-            QMessageBox::Yes, QMessageBox::No)) {
+                              QMessageBox::Yes, QMessageBox::No))
+    {
         return;
     }
 
@@ -405,11 +419,12 @@ void SetupTab::deleteList()
 void SetupTab::updateLayers()
 {
     layers.clear();
-    for ( QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>() )
+    for (QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>())
     {
-        if(!layer || !layer->isValid()) continue;
+        if (!layer || !layer->isValid())
+            continue;
 
-        if(layer->geometryType() == QgsWkbTypes::PointGeometry ||
+        if (layer->geometryType() == QgsWkbTypes::PointGeometry ||
             layer->geometryType() == QgsWkbTypes::LineGeometry ||
             layer->geometryType() == QgsWkbTypes::PolygonGeometry)
         {
@@ -422,7 +437,8 @@ void SetupTab::updateLayers()
 
 void SetupTab::addGroup()
 {
-    if (curList == nullptr) {
+    if (curList == nullptr)
+    {
         QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("请先新建方案"));
         return;
     }
@@ -437,7 +453,8 @@ void SetupTab::addGroup()
 
     for (int i = 0; i < curList->groups.size(); ++i)
     {
-        if (text == curList->groups[i].name) {
+        if (text == curList->groups[i].name)
+        {
             QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("组已存在"));
             return;
         }
@@ -460,13 +477,15 @@ void SetupTab::addItem()
     CheckGroup *group = nullptr;
     CollapsibleGroupBox *p = qobject_cast<CollapsibleGroupBox *>(sender());
 
-    if (p) {
+    if (p)
+    {
         group = boxToGroup[p];
     }
     else
     {
         PushButton *p = qobject_cast<PushButton *>(sender());
-        if(!p) return;
+        if (!p)
+            return;
 
         CheckItem *item = btnToCheck[p];
         bool found = false;
@@ -474,20 +493,25 @@ void SetupTab::addItem()
         {
             for (int j = 0; j < curList->groups[i].items.size(); ++j)
             {
-                if (item == &curList->groups[i].items[j]) {
+                if (item == &curList->groups[i].items[j])
+                {
                     group = &curList->groups[i];
                     found = true;
                     break;
                 }
             }
-            if (found) break;
+            if (found)
+                break;
         }
     }
 
-    if (!group) return;
+    if (!group)
+        return;
 
-    for (auto &it : as_const(group->items)) {
-        if (it.name == text) {
+    for (auto &it : as_const(group->items))
+    {
+        if (it.name == text)
+        {
             QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("项已存在"));
             return;
         }
@@ -510,13 +534,15 @@ void SetupTab::remove()
 {
     if (QMessageBox::No ==
         QMessageBox::question(this, QStringLiteral("拓扑检查"), QStringLiteral("确认删除？"),
-            QMessageBox::Yes, QMessageBox::No)) {
+                              QMessageBox::Yes, QMessageBox::No))
+    {
         return;
     }
 
     CollapsibleGroupBox *p = qobject_cast<CollapsibleGroupBox *>(sender());
 
-    if (p) {
+    if (p)
+    {
         for (int i = 0; i < curList->groups.size(); ++i)
         {
             if (curList->groups[i].name == p->title())
@@ -526,9 +552,12 @@ void SetupTab::remove()
                 return;
             }
         }
-    } else {
+    }
+    else
+    {
         PushButton *p = qobject_cast<PushButton *>(sender());
-        if(!p) return;
+        if (!p)
+            return;
 
         CheckItem *item = btnToCheck[p];
         for (int i = 0; i < curList->groups.size(); ++i)
@@ -550,7 +579,8 @@ void SetupTab::rename()
 {
     CollapsibleGroupBox *p = qobject_cast<CollapsibleGroupBox *>(sender());
 
-    if (p) {
+    if (p)
+    {
         QString dlgTitle = QStringLiteral("重命名");
         QString txtLabel = QStringLiteral("请输入检查组名");
         QLineEdit::EchoMode echoMode = QLineEdit::Normal;
@@ -561,7 +591,8 @@ void SetupTab::rename()
 
         for (int i = 0; i < curList->groups.size(); ++i)
         {
-            if (text == curList->groups[i].name) {
+            if (text == curList->groups[i].name)
+            {
                 QMessageBox::critical(this, QStringLiteral("拓扑检查"), QStringLiteral("组已存在"));
                 return;
             }
@@ -569,10 +600,12 @@ void SetupTab::rename()
 
         boxToGroup[p]->name = text;
         initUi();
-    } else
+    }
+    else
     {
         PushButton *p = qobject_cast<PushButton *>(sender());
-        if(!p) return;
+        if (!p)
+            return;
 
         QString dlgTitle = QStringLiteral("重命名");
         QString txtLabel = QStringLiteral("请输入检查项名");
@@ -589,15 +622,18 @@ void SetupTab::rename()
         {
             for (int j = 0; j < curList->groups[i].items.size(); ++j)
             {
-                if (item == &curList->groups[i].items[j]) {
+                if (item == &curList->groups[i].items[j])
+                {
                     group = &curList->groups[i];
                     found = true;
                     break;
                 }
             }
-            if(found) break;
+            if (found)
+                break;
         }
-        if(group == nullptr) return;
+        if (group == nullptr)
+            return;
 
         for (int i = 0; i < group->items.size(); ++i)
         {
@@ -628,9 +664,10 @@ void SetupTab::runItem()
 
 void SetupTab::setPara()
 {
-    if(curList == nullptr || mlists.size() <= 0)
+    if (curList == nullptr || mlists.size() <= 0)
         return;
-    if(mMessageBox == nullptr){
+    if (mMessageBox == nullptr)
+    {
         mMessageBox = new MessageBox(this);
         connect(mMessageBox, &MessageBox::run, this, &SetupTab::run);
     }
@@ -652,8 +689,9 @@ void SetupTab::run()
             }
         }
     }
-    if (!exist){
-        QMessageBox::critical( this, QStringLiteral( "一键检查项" ), QStringLiteral( "检查列表为空" ) );
+    if (!exist)
+    {
+        QMessageBox::critical(this, QStringLiteral("一键检查项"), QStringLiteral("检查列表为空"));
         return;
     }
 
@@ -665,14 +703,18 @@ void SetupTab::run()
         {
             for (auto set : (j.sets))
             {
-                for (auto layer : as_const(set.layersA)) processLayers.insert(layer);
-                for (auto layer : as_const(set.layersB)) processLayers.insert(layer);
-                for (auto layer : as_const(set.excludedLayers)) processLayers.insert(layer);
+                for (auto layer : as_const(set.layersA))
+                    processLayers.insert(layer);
+                for (auto layer : as_const(set.layersB))
+                    processLayers.insert(layer);
+                for (auto layer : as_const(set.excludedLayers))
+                    processLayers.insert(layer);
             }
         }
     }
 
-    if(processLayers.empty()) return;
+    if (processLayers.empty())
+        return;
 
     for (QgsVectorLayer *layer : processLayers)
     {
@@ -686,66 +728,66 @@ void SetupTab::run()
     double tolerance = mMessageBox->tolerance();
 
     // Setup checker
-    setCursor( Qt::WaitCursor );
-    ui->labelStatus->setText( QStringLiteral( "<b>Building spatial index…</b>" ) );
+    setCursor(Qt::WaitCursor);
+    ui->labelStatus->setText(QStringLiteral("<b>Building spatial index…</b>"));
     ui->labelStatus->show();
-    QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 
     QMap<QString, FeaturePool *> featurePools;
-    for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
+    for (QgsVectorLayer *layer : qgis::as_const(processLayers))
     {
-        featurePools.insert( layer->id(), new VectorDataProviderFeaturePool( layer, selectedOnly ) );
+        featurePools.insert(layer->id(), new VectorDataProviderFeaturePool(layer, selectedOnly));
     }
 
     QgsProject::instance()->setCrs((*processLayers.begin())->crs());
 
-    CheckContext *context = new CheckContext( tolerance, QgsProject::instance()->crs(), QgsProject::instance()->transformContext(), QgsProject::instance() );
+    CheckContext *context = new CheckContext(tolerance, QgsProject::instance()->crs(), QgsProject::instance()->transformContext(), QgsProject::instance());
 
     QList<Check *> checks = getChecks(context);
 
-    Checker *checker = new Checker( checks, context, featurePools );
+    Checker *checker = new Checker(checks, context, featurePools);
 
-    emit checkerStarted( checker );
+    emit checkerStarted(checker);
 
     // Run
-    ui->buttonBox->addButton( mAbortButton, QDialogButtonBox::ActionRole );
-    ui->progressBar->setRange( 0, 0 );
+    ui->widgetProgress->show();
+    ui->buttonBox->addButton(mAbortButton, QDialogButtonBox::ActionRole);
+    ui->progressBar->setRange(0, 0);
     ui->labelStatus->hide();
     ui->progressBar->show();
     QEventLoop evLoop;
     QFutureWatcher<void> futureWatcher;
-    connect( checker, &Checker::progressValue, ui->progressBar, &QProgressBar::setValue );
-    connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
-    connect( mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
+    connect(checker, &Checker::progressValue, ui->progressBar, &QProgressBar::setValue);
+    connect(&futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit);
+    connect(mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel);
 
     mIsRunningInBackground = true;
 
     int maxSteps = 0;
-    futureWatcher.setFuture( checker->execute( &maxSteps ) );
-    ui->progressBar->setRange( 0, maxSteps );
+    futureWatcher.setFuture(checker->execute(&maxSteps));
+    ui->progressBar->setRange(0, maxSteps);
     evLoop.exec();
 
     mIsRunningInBackground = false;
 
     // Restore window
     unsetCursor();
-    mAbortButton->setEnabled( true );
-    ui->buttonBox->removeButton( mAbortButton );
+    mAbortButton->setEnabled(true);
+    ui->buttonBox->removeButton(mAbortButton);
     ui->progressBar->hide();
     ui->labelStatus->hide();
 
     // Show result
-    emit checkerFinished( !futureWatcher.isCanceled() );
-
+    emit checkerFinished(!futureWatcher.isCanceled());
 }
 
 QList<Check *> SetupTab::getChecks(CheckContext *context)
 {
     QList<Check *> checks;
-    for(int i = 0;i<curList->groups.size();++i)
+    for (int i = 0; i < curList->groups.size(); ++i)
     {
         CheckGroup &group = curList->groups[i];
-        for(int j = 0;j<group.items.size();++j)
+        for (int j = 0; j < group.items.size(); ++j)
         {
             CheckItem &item = group.items[j];
             CheckItemDialog *dialog = new CheckItemDialog(mIface, &item);
@@ -760,7 +802,8 @@ QList<Check *> SetupTab::getChecks(CheckContext *context)
 
 void SetupTab::initItemLayers()
 {
-    if(curList == nullptr) return;
+    if (curList == nullptr)
+        return;
     for (auto &i : curList->groups)
     {
         for (auto &j : (i.items))
@@ -769,22 +812,22 @@ void SetupTab::initItemLayers()
             {
                 set.layersA.clear();
                 set.layersB.clear();
-                for(auto layerName : set.layersAStr)
+                for (auto layerName : set.layersAStr)
                 {
-                    for(auto layer : layers)
+                    for (auto layer : layers)
                     {
-                        if(layer->name() == layerName)
+                        if (layer->name() == layerName)
                         {
                             set.layersA.insert(layer);
                             break;
                         }
                     }
                 }
-                for(auto layerName : set.layersBStr)
+                for (auto layerName : set.layersBStr)
                 {
-                    for(auto layer : layers)
+                    for (auto layer : layers)
                     {
-                        if(layer->name() == layerName)
+                        if (layer->name() == layerName)
                         {
                             set.layersB.insert(layer);
                             break;
@@ -798,7 +841,8 @@ void SetupTab::initItemLayers()
 
 void SetupTab::setupItemLayers()
 {
-    if(curList == nullptr) return;
+    if (curList == nullptr)
+        return;
     for (auto &i : curList->groups)
     {
         for (auto &j : (i.items))

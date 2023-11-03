@@ -58,7 +58,6 @@ private slots:
     void storeDefaultResolutionMethod(int) const;
     void classify();
     void doClassify();
-    void RedoCheck();
 
 };
 
