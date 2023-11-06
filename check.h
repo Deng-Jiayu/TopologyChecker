@@ -154,8 +154,8 @@ class Check
     enum CheckType
     {
       FeatureNodeCheck, //!< The check controls individual nodes
-      FeatureCheck,     //!< The check controls geometries as a whole
-      LayerCheck        //!< The check controls a whole layer (topology checks)
+      LayerCheck,        //!< The check controls a whole layer (topology checks)
+      FeatureCheck     //!< The check controls geometries as a whole
     };
 
     /**

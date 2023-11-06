@@ -89,7 +89,7 @@ QFuture<void> Checker::execute( int *totalSteps )
   connect( timer, &QTimer::timeout, this, &Checker::emitProgressValue );
   connect( watcher, &QFutureWatcherBase::finished, timer, &QObject::deleteLater );
   connect( watcher, &QFutureWatcherBase::finished, watcher, &QObject::deleteLater );
-  timer->start( 500 );
+  timer->start( 100 );
 
   return future;
 }

@@ -10,6 +10,7 @@ FORMS += \
 HEADERS += \
     $$PWD/checkdock.h \
     $$PWD/checkitemdialog.h \
+    $$PWD/checktask.h \
     $$PWD/classifydialog.h \
     $$PWD/layerselectiondialog.h \
     $$PWD/messagebox.h \
@@ -20,6 +21,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/checkdock.cpp \
     $$PWD/checkitemdialog.cpp \
+    $$PWD/checktask.cpp \
     $$PWD/classifydialog.cpp \
     $$PWD/layerselectiondialog.cpp \
     $$PWD/messagebox.cpp \

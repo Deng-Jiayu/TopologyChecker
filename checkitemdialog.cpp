@@ -436,6 +436,8 @@ void CheckItemDialog::deleteCheck()
 #include "checker.h"
 #include "checkcontext.h"
 #include <qgsproject.h>
+#include "checktask.h"
+#include <qgsapplication.h>
 void CheckItemDialog::run()
 {
     if (mcheckItem == nullptr || mcheckItem->sets.empty())
@@ -484,35 +486,46 @@ void CheckItemDialog::run()
 
     emit checkerStarted( checker );
 
-    // Run
-    ui->progressBar->setRange( 0, 0 );
-    ui->labelStatus->hide();
-    ui->progressBar->show();
-    ui->btnCancel->show();
-    QEventLoop evLoop;
-    QFutureWatcher<void> futureWatcher;
-    connect( checker, &Checker::progressValue, ui->progressBar, &QProgressBar::setValue );
-    connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
-    connect( ui->btnCancel, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
+    // TODO, use task
+    CheckTask * task = new CheckTask(checker);
+    QgsApplication::taskManager()->addTask( task );
 
-    mIsRunningInBackground = true;
+    connect(task, &QgsTask::taskCompleted, this, [&](){
+        emit checkerFinished( true );
+        this->hide();
+    });
 
-    int maxSteps = 0;
-    futureWatcher.setFuture( checker->execute( &maxSteps ) );
-    ui->progressBar->setRange( 0, maxSteps );
-    evLoop.exec();
+//    // Run
+//    ui->progressBar->setRange( 0, 0 );
+//    ui->labelStatus->hide();
+//    ui->progressBar->show();
+//    ui->btnCancel->show();
+//    QEventLoop evLoop;
+//    QFutureWatcher<void> futureWatcher;
+//    connect( checker, &Checker::progressValue, ui->progressBar, &QProgressBar::setValue );
+//    connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
+//    connect( ui->btnCancel, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
 
-    mIsRunningInBackground = false;
+//    mIsRunningInBackground = true;
 
-    // Restore window
-    unsetCursor();
-    ui->progressBar->hide();
-    ui->btnCancel->hide();
-    ui->btnRun->setEnabled( true );
+//    int maxSteps = 0;
+//    futureWatcher.setFuture( checker->execute( &maxSteps ) );
+//    ui->progressBar->setRange( 0, maxSteps );
+//    evLoop.exec();
 
-    // Show result
-    emit checkerFinished( !futureWatcher.isCanceled() );
-    this->hide();
+//    mIsRunningInBackground = false;
+
+//    // Restore window
+//    unsetCursor();
+//    ui->progressBar->hide();
+//    ui->btnCancel->hide();
+//    ui->btnRun->setEnabled( true );
+
+
+
+//    // Show result
+//    emit checkerFinished( !futureWatcher.isCanceled() );
+//    this->hide();
 }
 
 #include "pointonlinecheck.h"
