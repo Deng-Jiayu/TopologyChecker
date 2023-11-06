@@ -41,7 +41,7 @@ static const QString sDescription = QObject::tr("QGIS topology checker");
 static const QString sCategory = QObject::tr("vector");
 static const QString sPluginVersion = QObject::tr("Version 0.1");
 static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/topologychecker/topologychecker.png";
+static const QString sPluginIcon = ":/icons/mTool.svg";
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -71,7 +71,7 @@ void TopologyChecker::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/topologychecker/topologychecker.png"), tr("Topology checker"), this);
+  mQActionPointer = new QAction(QIcon(":/icons/mTool.svg"), QStringLiteral("数据检查"), this);
   mQActionPointer->setObjectName("mQActionPointer");
   // Set the what's this text
   mQActionPointer->setWhatsThis(tr("QGIS topology checker"));

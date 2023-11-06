@@ -209,6 +209,10 @@ void SetupTab::initUi()
         this->groupBoxs.push_back(groupBox);
     }
 
+    QSpacerItem *verticalSpacer;
+    verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    verticalLayout->addItem(verticalSpacer);
+
     initConnection();
 }
 
