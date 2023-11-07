@@ -11,15 +11,11 @@ public:
 
     CheckTask( Checker * checker );
 
-    void cancel() override;
-
-signals:
-    void canceled();
 
 protected:
 
     bool run() override;
-    void finished( bool result ) override;
+
 
 private:
 

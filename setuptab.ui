@@ -28,7 +28,7 @@
         <x>0</x>
         <y>0</y>
         <width>684</width>
-        <height>435</height>
+        <height>443</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3"/>
@@ -82,23 +82,9 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QProgressBar" name="progressBar">
-        <property name="value">
-         <number>24</number>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QLabel" name="labelStatus">
         <property name="text">
          <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDialogButtonBox" name="buttonBox">
-        <property name="standardButtons">
-         <set>QDialogButtonBox::NoButton</set>
         </property>
        </widget>
       </item>

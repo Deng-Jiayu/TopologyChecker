@@ -10,7 +10,7 @@
 #include "checkset.h"
 #include "checker.h"
 #include "messagebox.h"
-
+#include "checkdock.h"
 namespace Ui
 {
     class SetupTab;
@@ -21,8 +21,10 @@ class SetupTab : public QWidget
     Q_OBJECT
 
 public:
-    SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent = nullptr);
+    SetupTab(QgisInterface *iface, CheckDock *checkDock, QWidget *parent = nullptr);
     ~SetupTab() override;
+
+    bool mIsRunningInBackground = false;
 
 signals:
     void checkerStarted(Checker *checker);
@@ -31,7 +33,7 @@ signals:
 private:
     Ui::SetupTab *ui;
     QgisInterface *mIface = nullptr;
-    QDockWidget *mCheckDock;
+    CheckDock *mCheckDock;
     MessageBox *mMessageBox = nullptr;
 
     CheckList *curList = nullptr;
@@ -43,9 +45,6 @@ private:
     QVector<CollapsibleGroupBox *> groupBoxs;
     QVector<PushButton *> btns;
     QSet<QgsVectorLayer *> layers;
-    QPushButton *mAbortButton = nullptr;
-
-    bool mIsRunningInBackground;
 
     void initLists();
     void initUi();

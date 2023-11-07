@@ -16,12 +16,11 @@
 #include <qgsproject.h>
 #include <qgsvectorfilewriter.h>
 
-SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent)
+SetupTab::SetupTab(QgisInterface *iface, CheckDock *checkDock, QWidget *parent)
     : QWidget(parent), ui(new Ui::SetupTab), mIface(iface), mCheckDock(checkDock)
 {
     ui->setupUi(this);
     ui->widgetProgress->hide();
-    mAbortButton = new QPushButton(QStringLiteral("取消"));
     connect(ui->widgetInputs, &Widget::addGroup, this, &SetupTab::addGroup);
 
     double x = 123123.1415926535231321;
@@ -43,7 +42,6 @@ SetupTab::SetupTab(QgisInterface *iface, QDockWidget *checkDock, QWidget *parent
 
 SetupTab::~SetupTab()
 {
-    delete mAbortButton;
     delete ui;
 }
 
@@ -249,7 +247,7 @@ void SetupTab::initConnection()
             continue;
         connect(it, &PushButton::clicked, this, [=]()
                 {
-            CheckItemDialog *dialog = new CheckItemDialog(mIface, btnToCheck[it], this);
+            CheckItemDialog *dialog = new CheckItemDialog(mIface, btnToCheck[it], mCheckDock, this);
             connect(dialog, &CheckItemDialog::checkerStarted, this, &SetupTab::checkerStarted);
             connect(dialog, &CheckItemDialog::checkerFinished, this, &SetupTab::checkerFinished);
             dialog->setAttribute(Qt::WA_DeleteOnClose);
@@ -526,7 +524,7 @@ void SetupTab::addItem()
 
     initUi();
 
-    CheckItemDialog *dialog = new CheckItemDialog(mIface, &group->items.back(), this);
+    CheckItemDialog *dialog = new CheckItemDialog(mIface, &group->items.back(), mCheckDock, this);
     connect(dialog, &CheckItemDialog::checkerStarted, this, &SetupTab::checkerStarted);
     connect(dialog, &CheckItemDialog::checkerFinished, this, &SetupTab::checkerFinished);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
@@ -656,7 +654,7 @@ void SetupTab::rename()
 void SetupTab::runItem()
 {
     PushButton *p = qobject_cast<PushButton *>(sender());
-    CheckItemDialog *dialog = new CheckItemDialog(mIface, btnToCheck[p], this);
+    CheckItemDialog *dialog = new CheckItemDialog(mIface, btnToCheck[p], mCheckDock, this);
     dialog->setWindowTitle(QStringLiteral("执行检查"));
     connect(dialog, &CheckItemDialog::checkerStarted, this, &SetupTab::checkerStarted);
     connect(dialog, &CheckItemDialog::checkerFinished, this, &SetupTab::checkerFinished);
@@ -678,6 +676,9 @@ void SetupTab::setPara()
     mMessageBox->show();
 }
 
+#include "checktask.h"
+#include <qgsapplication.h>
+#include "checkdock.h"
 void SetupTab::run()
 {
     mMessageBox->hide();
@@ -730,11 +731,16 @@ void SetupTab::run()
     }
     bool selectedOnly = mMessageBox->selectedOnly();
     double tolerance = mMessageBox->tolerance();
-
+    mIsRunningInBackground = true;
     // Setup checker
     setCursor(Qt::WaitCursor);
-    ui->labelStatus->setText(QStringLiteral("<b>Building spatial index…</b>"));
+    ui->widgetProgress->show();
+    ui->labelStatus->setText(QStringLiteral("创建空间索引..."));
     ui->labelStatus->show();
+    this->setEnabled(false);
+
+    mCheckDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+
     QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 
     QMap<QString, FeaturePool *> featurePools;
@@ -753,36 +759,20 @@ void SetupTab::run()
 
     emit checkerStarted(checker);
 
-    // Run
-    ui->widgetProgress->show();
-    ui->buttonBox->addButton(mAbortButton, QDialogButtonBox::ActionRole);
-    ui->progressBar->setRange(0, 0);
-    ui->labelStatus->hide();
-    ui->progressBar->show();
-    QEventLoop evLoop;
-    QFutureWatcher<void> futureWatcher;
-    connect(checker, &Checker::progressValue, ui->progressBar, &QProgressBar::setValue);
-    connect(&futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit);
-    connect(mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel);
-
-    mIsRunningInBackground = true;
-
-    int maxSteps = 0;
-    futureWatcher.setFuture(checker->execute(&maxSteps));
-    ui->progressBar->setRange(0, maxSteps);
-    evLoop.exec();
-
-    mIsRunningInBackground = false;
-
     // Restore window
     unsetCursor();
-    mAbortButton->setEnabled(true);
-    ui->buttonBox->removeButton(mAbortButton);
-    ui->progressBar->hide();
     ui->labelStatus->hide();
+    ui->widgetProgress->hide();
 
-    // Show result
-    emit checkerFinished(!futureWatcher.isCanceled());
+    CheckTask * task = new CheckTask(checker);
+    QgsApplication::taskManager()->addTask( task );
+
+    connect(task, &QgsTask::taskCompleted, this, [&](){
+        emit checkerFinished( true );
+        this->setEnabled(true);
+        mIsRunningInBackground = false;
+        mCheckDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    });
 }
 
 QList<Check *> SetupTab::getChecks(CheckContext *context)
@@ -794,10 +784,9 @@ QList<Check *> SetupTab::getChecks(CheckContext *context)
         for (int j = 0; j < group.items.size(); ++j)
         {
             CheckItem &item = group.items[j];
-            CheckItemDialog *dialog = new CheckItemDialog(mIface, &item);
+            CheckItemDialog *dialog = new CheckItemDialog(mIface, &item, mCheckDock, this);
 
             checks.append(dialog->getChecks(context));
-
             delete dialog;
         }
     }

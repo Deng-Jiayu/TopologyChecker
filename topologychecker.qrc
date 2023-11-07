@@ -9,5 +9,7 @@
         <file>icons/mClassification.svg</file>
         <file>icons/mRefresh.svg</file>
         <file>icons/mTool.svg</file>
+        <file>icons/mSwitch.svg</file>
+        <file>icons/mSwitchFalse.svg</file>
     </qresource>
 </RCC>

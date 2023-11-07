@@ -31,3 +31,5 @@ RESOURCES += \
     topologychecker.qrc
 
 FORMS +=
+
+DISTFILES +=

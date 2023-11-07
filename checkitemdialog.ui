@@ -47,7 +47,7 @@
             <x>0</x>
             <y>0</y>
             <width>295</width>
-            <height>271</height>
+            <height>285</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -102,7 +102,7 @@
             <x>0</x>
             <y>0</y>
             <width>295</width>
-            <height>271</height>
+            <height>286</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -244,7 +244,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-451</y>
+            <y>0</y>
             <width>278</width>
             <height>1061</height>
            </rect>
@@ -801,21 +801,28 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="1" column="6">
-       <widget class="QPushButton" name="btnClose">
+      <item row="0" column="2">
+       <widget class="QPushButton" name="btnRun">
         <property name="text">
-         <string>关闭</string>
+         <string>执行检查</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
+      <item row="0" column="0">
        <widget class="QLabel" name="labelStatus">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="0" column="5">
+       <widget class="QPushButton" name="btnClose">
+        <property name="text">
+         <string>关闭</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -827,27 +834,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="btnRun">
-        <property name="text">
-         <string>执行检查</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="6">
-       <widget class="QPushButton" name="btnCancel">
-        <property name="text">
-         <string>取消</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="4">
-       <widget class="QProgressBar" name="progressBar">
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>

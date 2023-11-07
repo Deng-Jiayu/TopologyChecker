@@ -8,6 +8,7 @@
 #include "checker.h"
 #include "classifydialog.h"
 #include <QItemSelection>
+#include <QKeyEvent>
 
 namespace Ui {
 class ResultTab;
@@ -24,6 +25,9 @@ public:
     bool isCloseable() const { return mCloseable; }
 
     static QString sSettingsGroup;
+
+protected:
+    void keyReleaseEvent(QKeyEvent *event);
 
 private:
     Ui::ResultTab *ui;
@@ -44,6 +48,9 @@ private:
     bool exportErrorsDo( const QString &file );
     void updateComboBox();
 
+    bool enableKeyboard = false;
+    int mCurrentRow = -1;
+
 private slots:
     void addError( CheckError *error );
     void updateError( CheckError *error, bool statusChanged );
@@ -58,6 +65,7 @@ private slots:
     void storeDefaultResolutionMethod(int) const;
     void classify();
     void doClassify();
+    void switchByKey();
 
 };
 

@@ -18,19 +18,39 @@ CheckDock::CheckDock(QgisInterface *iface, QWidget *parent)
 
     connect( dynamic_cast< SetupTab * >( mTabWidget->widget( 0 ) ), &SetupTab::checkerStarted, this, &CheckDock::onCheckerStarted );
     connect( dynamic_cast< SetupTab * >( mTabWidget->widget( 0 ) ), &SetupTab::checkerFinished, this, &CheckDock::onCheckerFinished );
-    connect( this, &CheckDock::visibilityChanged, this, [&](){
-        if(this->isHidden()){
-            delete mTabWidget->widget( 1 );
-            mTabWidget->removeTab( 1 );
-            mTabWidget->addTab( new QWidget(), QStringLiteral( "检查结果列表" ) );
-            mTabWidget->setTabEnabled( 1, false );
-        }
-    });
 }
 
 CheckDock::~CheckDock()
 {
     delete ui;
+}
+#include <QCloseEvent>
+void CheckDock::closeEvent(QCloseEvent *ev)
+{
+    if ( SetupTab *setupTab = qobject_cast<SetupTab *>( mTabWidget->widget( 0 ) ) )
+    {
+        // do not allow closing the dialog - this would delete the geometry checker and crash
+        if ( setupTab->mIsRunningInBackground )
+        {
+            ev->ignore();
+            return;
+        }
+    }
+
+    if ( qobject_cast<ResultTab *>( mTabWidget->widget( 1 ) ) &&
+        !static_cast<ResultTab *>( mTabWidget->widget( 1 ) )->isCloseable() )
+    {
+        ev->ignore();
+    }
+    else
+    {
+        delete mTabWidget->widget( 1 );
+        mTabWidget->removeTab( 1 );
+        mTabWidget->addTab( new QWidget(), QStringLiteral( "检查结果列表" ) );
+        mTabWidget->setTabEnabled( 1, false );
+
+        QDockWidget::closeEvent( ev );
+    }
 }
 
 void CheckDock::onCheckerStarted( Checker *checker )

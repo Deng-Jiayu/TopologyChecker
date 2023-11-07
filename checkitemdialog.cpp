@@ -2,13 +2,11 @@
 #include "ui_checkitemdialog.h"
 #include <QDebug>
 
-CheckItemDialog::CheckItemDialog(QgisInterface *iface, CheckItem *item, QWidget *parent)
-    : QDialog(parent), ui(new Ui::CheckItemDialog), iface(iface), mcheckItem(item)
+CheckItemDialog::CheckItemDialog(QgisInterface *iface, CheckItem *item, CheckDock *dock, QWidget *parent)
+    : QDialog(parent), ui(new Ui::CheckItemDialog), iface(iface), mcheckItem(item), mCheckDock(dock)
 {
     ui->setupUi(this);
     ui->textShortHelp->setAcceptRichText(true);
-    ui->btnCancel->hide();
-    ui->progressBar->hide();
     ui->labelStatus->hide();
     this->resize(900, 650);
 
@@ -438,6 +436,8 @@ void CheckItemDialog::deleteCheck()
 #include <qgsproject.h>
 #include "checktask.h"
 #include <qgsapplication.h>
+#include "setuptab.h"
+#include <QDockWidget>
 void CheckItemDialog::run()
 {
     if (mcheckItem == nullptr || mcheckItem->sets.empty())
@@ -453,8 +453,6 @@ void CheckItemDialog::run()
     }
     if (layers.isEmpty()) return;
 
-
-
     for (QgsVectorLayer* layer : layers)
     {
         if (layer->isEditable())
@@ -468,8 +466,9 @@ void CheckItemDialog::run()
     // Setup checker
     setCursor(Qt::WaitCursor);
     ui->btnRun->setEnabled(false);
-    ui->labelStatus->setText(tr("<b>Building spatial index…</b>"));
+    ui->labelStatus->setText(QStringLiteral("创建空间索引..."));
     ui->labelStatus->show();
+    this->setEnabled(false);
     QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     QMap<QString, FeaturePool *> featurePools;
     for (QgsVectorLayer *layer : qgis::as_const(layers)) {
@@ -486,46 +485,21 @@ void CheckItemDialog::run()
 
     emit checkerStarted( checker );
 
-    // TODO, use task
+    this->hide();
+
+    qobject_cast<SetupTab *>(this->parent())->setEnabled(false);
+    qobject_cast<SetupTab *>(this->parent())->mIsRunningInBackground = true;
+    mCheckDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+
     CheckTask * task = new CheckTask(checker);
     QgsApplication::taskManager()->addTask( task );
 
     connect(task, &QgsTask::taskCompleted, this, [&](){
         emit checkerFinished( true );
-        this->hide();
+        qobject_cast<SetupTab *>(this->parent())->setEnabled(true);
+        qobject_cast<SetupTab *>(this->parent())->mIsRunningInBackground = false;
+        mCheckDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     });
-
-//    // Run
-//    ui->progressBar->setRange( 0, 0 );
-//    ui->labelStatus->hide();
-//    ui->progressBar->show();
-//    ui->btnCancel->show();
-//    QEventLoop evLoop;
-//    QFutureWatcher<void> futureWatcher;
-//    connect( checker, &Checker::progressValue, ui->progressBar, &QProgressBar::setValue );
-//    connect( &futureWatcher, &QFutureWatcherBase::finished, &evLoop, &QEventLoop::quit );
-//    connect( ui->btnCancel, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
-
-//    mIsRunningInBackground = true;
-
-//    int maxSteps = 0;
-//    futureWatcher.setFuture( checker->execute( &maxSteps ) );
-//    ui->progressBar->setRange( 0, maxSteps );
-//    evLoop.exec();
-
-//    mIsRunningInBackground = false;
-
-//    // Restore window
-//    unsetCursor();
-//    ui->progressBar->hide();
-//    ui->btnCancel->hide();
-//    ui->btnRun->setEnabled( true );
-
-
-
-//    // Show result
-//    emit checkerFinished( !futureWatcher.isCanceled() );
-//    this->hide();
 }
 
 #include "pointonlinecheck.h"

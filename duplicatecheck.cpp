@@ -131,9 +131,8 @@ void DuplicateCheck::fixError(const QMap<QString, FeaturePool *> &featurePools, 
 
 QStringList DuplicateCheck::resolutionMethods() const
 {
-    static QStringList methods = QStringList()
-                                 << QStringLiteral("无")
-                                 << QStringLiteral("移除重复");
+    static QStringList methods = QStringList() << QStringLiteral("移除重复") << QStringLiteral("无");
+
     return methods;
 }
 

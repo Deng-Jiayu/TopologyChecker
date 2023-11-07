@@ -24,6 +24,8 @@ private:
     QgisInterface *mIface;
     QTabWidget *mTabWidget = nullptr;
 
+    void closeEvent( QCloseEvent *ev ) override;
+
 private slots:
     void onCheckerStarted( Checker *checker );
     void onCheckerFinished( bool successful );

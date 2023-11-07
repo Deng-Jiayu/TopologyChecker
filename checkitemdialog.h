@@ -11,6 +11,7 @@
 
 #include "checker.h"
 #include "checkset.h"
+#include "checkdock.h"
 
 namespace Ui {
 class CheckItemDialog;
@@ -21,7 +22,7 @@ class CheckItemDialog : public QDialog
     Q_OBJECT
 
 public:
-    CheckItemDialog(QgisInterface *iface, CheckItem *item, QWidget *parent = nullptr);
+    CheckItemDialog(QgisInterface *iface, CheckItem *item, CheckDock *dock, QWidget *parent = nullptr);
     ~CheckItemDialog();
 
     void set();
@@ -39,6 +40,7 @@ private:
     LayerSelectionDialog* layerSelectDialog = nullptr;
     QMap<int, CheckSet *> mCheckMap;
     QMap<QString, QPushButton*> nameToBtn;
+    CheckDock *mCheckDock;
     bool mIsRunningInBackground;
 
     void initTable();

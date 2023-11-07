@@ -72,8 +72,8 @@ public:
 
     enum ResolutionMethod
     {
-        NoChange,
-        RemoveDuplicates
+        RemoveDuplicates,
+        NoChange
     };
 
     QSet<QgsVectorLayer *> layers;

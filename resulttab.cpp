@@ -21,6 +21,7 @@ ResultTab::ResultTab(QgisInterface *iface, Checker *checker, QTabWidget *tabWidg
 {
     ui->setupUi(this);
     ui->progressBarFixErrors->hide();
+    this->grabKeyboard();
     mErrorCount = 0;
     mFixedCount = 0;
 
@@ -35,6 +36,8 @@ ResultTab::ResultTab(QgisInterface *iface, Checker *checker, QTabWidget *tabWidg
     connect(ui->btnErrorResolutionSettings, &QAbstractButton::clicked, this, &ResultTab::setDefaultResolutionMethods);
     connect(ui->btnFixWithDefault, &QAbstractButton::clicked, this, &ResultTab::fixErrorsWithDefault);
     connect(ui->btnClassify, &QPushButton::clicked, this, &ResultTab::classify);
+
+    connect(ui->btnSwitch, &QPushButton::clicked, this, &ResultTab::switchByKey);
 
     bool allLayersEditable = true;
     for (const FeaturePool *featurePool : mChecker->featurePools().values())
@@ -82,6 +85,20 @@ void ResultTab::finalize()
         connect(bbox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
         dialog.setWindowTitle(tr("Check Errors Occurred"));
         dialog.exec();
+    }
+}
+
+void ResultTab::keyReleaseEvent(QKeyEvent *event)
+{
+    if(!enableKeyboard)return;
+    switch (event->key())
+    {
+    case Qt::Key_A:
+        ui->tableWidgetErrors->selectRow(mCurrentRow + 1);
+        break;
+    case Qt::Key_S:
+        ui->tableWidgetErrors->selectRow(mCurrentRow - 1);
+        break;
     }
 }
 
@@ -275,6 +292,7 @@ void ResultTab::onSelectionChanged(const QItemSelection &newSel, const QItemSele
     updateComboBox();
 
     QModelIndex idx = ui->tableWidgetErrors->currentIndex();
+    mCurrentRow = ui->tableWidgetErrors->currentRow();
     if (idx.isValid() && !ui->tableWidgetErrors->isRowHidden(idx.row()) && newSel.contains(idx))
     {
         highlightErrors();
@@ -497,7 +515,7 @@ void ResultTab::fixErrorsWithDefault()
     //! Fix errors
     mCloseable = false;
 
-    setCursor(Qt::WaitCursor);
+    //setCursor(Qt::WaitCursor);
     ui->progressBarFixErrors->setVisible(true);
     ui->progressBarFixErrors->setRange(0, errors.size());
 
@@ -511,7 +529,7 @@ void ResultTab::fixErrorsWithDefault()
     }
     ui->progressBarFixErrors->hide();
 
-    unsetCursor();
+    //unsetCursor();
 
     for (const QString &layerId : mChecker->featurePools().keys())
     {
@@ -622,4 +640,17 @@ void ResultTab::doClassify()
         }
     }
     ui->labelErrorCount->setText(QStringLiteral("错误数目：") + QString::number(mErrorCount) + QStringLiteral("，修复数目：") + QString::number(mFixedCount));
+}
+
+void ResultTab::switchByKey()
+{
+    if(enableKeyboard)
+    {
+        ui->btnSwitch->setIcon(QIcon(":/icons/mSwitchFalse.svg"));
+    }
+    else
+    {
+        ui->btnSwitch->setIcon(QIcon(":/icons/mSwitch.svg"));
+    }
+    enableKeyboard = !enableKeyboard;
 }
